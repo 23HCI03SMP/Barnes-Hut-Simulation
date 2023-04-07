@@ -3,16 +3,12 @@
 
 class node{
     //min and max points (2x2x2 box)
-    float box[3][2] = {
+    bbox box;
+
+    box.box = {
         {-1, 1},
         {-1, 1},
         {-1, 1}
-    };
-
-
-    template<class C, typename T>
-    bool contains(C&& c, T t) {
-        return std::find(std::begin(c), std::end(c), t) != std::end(c);
     };
 
     void insertParticle(Particle particle, bbox box)
