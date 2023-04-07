@@ -1,5 +1,6 @@
 #include <list>
 #include <array>
+#include <vector>
 
 class Particle{
     public:
@@ -8,10 +9,5 @@ class Particle{
 
 class bbox{
     public:
-    
-    float box[3][2] = {
-        {},
-        {},
-        {}
-    };
+    std::vector<std::vector<float>> box;
 };
