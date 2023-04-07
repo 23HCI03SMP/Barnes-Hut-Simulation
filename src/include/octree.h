@@ -3,8 +3,8 @@
 #include <vector>
 #include <gsl/gsl_rng.h>
 
-// Returns d-dimentional random unit vector (norm = 1)
-std::vector<> randUnitVector(d, gsl_rng *r);
+std::vector<> randUnitVector(int d, gsl_rng *r);
+std::vector<> plummer(int Npart, float a, float m, float G, int seed);
 
 class Particle {
     public:
