@@ -1,5 +1,6 @@
 #include "include/octree.h"
 #include <iostream>
+
 int main(){
     int boxX;
     int boxY;
