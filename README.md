@@ -3,5 +3,6 @@
 
 ## To-do list
 
-- [ ] Finish creating Octree
-- [ ] Finish computation of particle acceleration
+- [x] octree.cpp
+- [ ] initialConditions.cpp
+- [ ] utils.cpp
