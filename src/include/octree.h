@@ -1,15 +1,20 @@
-#include <list>
 #include <array>
-#include <vector>
+#include <cmath>
 #include <gsl/gsl_rng.h>
+#include <list>
+#include <vector>
 
-std::vector<> randUnitVector(int d, gsl_rng *r);
-std::vector<> plummer(int Npart, float a, float m, float G, int seed);
+// Pi constant
+constexpr double pi() { return std::acos(-1); }
+
+std::vector<double> randUnitVector(int d, gsl_rng *r);
+std::vector<std::array<int, 3>> plummer(int Npart, float a, float m, float G, int seed);
+std::vector<int> plummerDist_3d_xyz(int Npart, float a, int seed);
 
 class Particle {
     public:
         float position[3]= {};
-}
+};
 
 class Bbox {
     public:
@@ -32,7 +37,7 @@ class Bbox {
         float centre[3] = {(xLow + xMax)/2, (yLow, yMax)/2, (zLow, zMax)/2};
         
         int n = 0; //number of particles
-}
+};
 
 class Node {
     //min and max points (2x2x2 box)
@@ -40,4 +45,4 @@ class Node {
         void insertParticle(Particle particle, Bbox box);
         void createChildren(Bbox box);
         void updateCom(Bbox box);
-}
+};
