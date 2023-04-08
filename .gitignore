@@ -1,3 +1,5 @@
 .vscode/
 
 *.exe
+
+# pycache files from running the python version
