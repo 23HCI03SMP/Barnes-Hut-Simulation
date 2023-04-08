@@ -39,8 +39,15 @@ output:
     [pos, vel] - [(Npart x 3), (Npart x 3)] of positions and velocities
                     in cartesian coordinates
 */
-std::vector<std::array<int, 3>> plummer(int Npart, float a, float m=1, float G=4.483e-3, gsl_rng *r) {
-    
+std::vector<std::array<int, 3>> plummer(int Npart, float a, gsl_rng *r, float m=1, float G=4.483e-3) {
+    std::vector<int> pos = plummerDist_3d_xyz(Npart, a, r);
+    int M;
+
+    if (pos.size() == 1) {
+        M = Npart * m[0];
+    } else {
+        M = std::accumulate(pos.begin(), pos.end(), 0);
+    }
 }
 
 /*
@@ -54,7 +61,7 @@ output:
 */
 std::vector<int> plummerDist_3d_xyz(int Npart, float a, gsl_rng *r) {
     std::vector<int> r(Npart); 
-    std::vector<> pos(Npart, 3);
+    std::vector<int> pos(Npart, 3);
 
     for (int i = 0; i < Npart; i++) {
         // Let enclosed mass function f_mi be random number between 0 and 1

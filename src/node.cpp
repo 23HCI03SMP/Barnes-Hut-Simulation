@@ -43,7 +43,7 @@ void Node::createChildren(Bbox box) {
 
     //create octets
     Bbox c1;
-    c1.box =  {
+    c1.box = {
         {box.xLow, xhalf},
         {box.yLow, yhalf},
         {box.zLow, zhalf}
