@@ -18,7 +18,7 @@ The octree is a tree data structure that is used to partition space. Each node i
 
 <figure>
   <img
-  src="/ignore/octets.png">
+  src="/ignore/octet.png">
   <figcaption>Octree with numberings used in code</figcaption>
 </figure>
 
