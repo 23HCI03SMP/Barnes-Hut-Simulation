@@ -1,7 +1,7 @@
 # Barnes Hut Model for Charged Particles
 
 ## Description
-The Barnes Hut Model is a method for calculating the gravitational force between charged particles. It is a tree-based algorithm that uses a quadtree or octree to calculate the force between particles. The algorithm is described in the paper [A hierarchical O(N log N) force-calculation algorithm](http://arxiv.org/abs/physics/9405103) by Barnes and Hut.
+The Barnes Hut Model is a method for calculating the gravitational force between charged particles. It is a tree-based algorithm that uses a quadtree or octree to calculate the force between particles. The algorithm is described in the paper [A hierarchical O(N log N) force-calculation algorithm](https://www.doi.org/10.1038/324446a0) by Barnes and Hut.
 
 ## Required libraries
 - GSL
