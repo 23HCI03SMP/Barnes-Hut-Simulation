@@ -1,4 +1,5 @@
 #include <array>
+#include <numeric>
 #include "include/octree.h"
 #include <vector>
 #include <gsl/gsl_rng.h>
@@ -44,7 +45,7 @@ std::vector<std::array<int, 3>> plummer(int Npart, float a, gsl_rng *r, float m=
     int M;
 
     if (pos.size() == 1) {
-        M = Npart * m[0];
+        M = Npart * m;
     } else {
         M = std::accumulate(pos.begin(), pos.end(), 0);
     }
@@ -59,14 +60,16 @@ input:
 output:
     pos - (Npart x 3) array of positions in cartesian coordinates
 */
-std::vector<int> plummerDist_3d_xyz(int Npart, float a, gsl_rng *r) {
-    std::vector<int> r(Npart); 
-    std::vector<int> pos(Npart, 3);
+std::vector<int> plummerDist_3d_xyz(int Npart, auto a, gsl_rng *r) {
+    std::vector<double> r(Npart); 
+    std::vector<double> pos(Npart, 3);
 
     for (int i = 0; i < Npart; i++) {
         // Let enclosed mass function f_mi be random number between 0 and 1
         double f_mi = gsl_rng_uniform(r);
-        r[i] = a/std::sqrt(std::pow(f_mi, -2.0/3.0) - 1);
+        r[i] = a/std::sqrt(std::pow(f_mi, -2.0/3.0) - 1.0);
+
+
         pos[i] = r[i] * randUnitVector(3, r);
     }
 
