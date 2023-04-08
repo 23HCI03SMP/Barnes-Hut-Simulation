@@ -14,7 +14,16 @@ The Barnes Hut Model is a method for calculating the gravitational force between
 
 ## Methodology
 ### Octree
-The octree is a tree data structure that is used to partition space. Each node in the tree represents a cube in space. The root node represents the entire space. Each node has 8 children, which represent the 8 cubes that make up the parent cube. The children of a node are only created if the node contains more than one particle. The particles are then distributed among the children. The algorithm for creating the octree is as follows:
+The octree is a tree data structure that is used to partition space. Each node in the tree represents a cube in space. The root node represents the entire space. Each node has 8 children, which represent the 8 cubes that make up the parent cube. 
+
+<figure>
+  <img
+  src="/ignore/octree.png">
+  <figcaption>Octree with numberings used in code</figcaption>
+</figure>
+
+
+The children of a node are only created if the node contains more than one particle. The particles are then distributed among the children. The algorithm for creating the octree is as follows:
 
 1. Create the root node, which represents the entire space
 2. When a new particle is added to the tree, check if there is a particle in the root node
