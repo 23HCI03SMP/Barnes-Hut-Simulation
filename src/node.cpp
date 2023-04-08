@@ -43,7 +43,7 @@ void Node::createChildren(Bbox box) {
 
     //create octets
     Bbox c1;
-    c1.box =  {
+    c1.box = {
         {box.xLow, xhalf},
         {box.yLow, yhalf},
         {box.zLow, zhalf}
@@ -101,7 +101,7 @@ void Node::createChildren(Bbox box) {
     box.children.push_back(c8);
 }
 
-Node::updateCom(Bbox box) {
+void Node::updateCom(Bbox box) {
     box.com = {0, 0 , 0};
     //Assume all have charge 1 *Instead of using multipole expansion we will use centre of mass for now
     //since there is only one particle in each node, the centre of gravity for that node will be the particle position
