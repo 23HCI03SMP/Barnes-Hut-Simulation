@@ -37,9 +37,9 @@ void Node::insertParticle(Particle particle, Bbox box) {
 
 //create child nodes
 void Node::createChildren(Bbox box) {
-    float xhalf = box.centre[0];
-    float yhalf = box.centre[1];
-    float zhalf = box.centre[2];
+    double xhalf = box.centre[0];
+    double yhalf = box.centre[1];
+    double zhalf = box.centre[2];
 
     //create octets
     Bbox c1;
