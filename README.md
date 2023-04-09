@@ -32,11 +32,11 @@ The children of a node are only created if the node contains more than one parti
 3. Repeat step 2 until all particles are in the tree
 
 The octree allows for us to calculate the force between particles in O(N log N) time. The original equation for the calculation of the force between particles is as follows:
-$$ F = \frac{Gm_1m_2}{r^2} $$
+$$F = \frac{Gm_1m_2}{r^2}$$ 
 where $G$ is the gravitational constant, $m_1$ and $m_2$ are the masses of the particles, and $r$ is the distance between the particles. The force between particles can be calculated by summing the forces between each particle and all other particles. This is an O(N^2) operation. 
 
 Similarly, for the calculation of the force between charged particles, we can use Coulomb's law which resembles the equation for the gravitational force:
-$$ F = \frac{kq_1q_2}{r^2} $$
+$$F = \frac{kq_1q_2}{r^2}$$
 where $k$ is the Coulomb constant, $q_1$ and $q_2$ are the charges of the particles, and $r$ is the distance between the particles. The force between particles can be calculated by summing the forces between each particle and all other particles. This isn also an O(N^2) operation.
 
 ### Barnes Hut Simulation
