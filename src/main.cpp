@@ -1,4 +1,4 @@
-#include "include/octree.h"
+#include "include/barnesHut.h"
 #include <iostream>
 
 int main()

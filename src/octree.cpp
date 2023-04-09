@@ -4,7 +4,7 @@
 #include <list>
 #include <vector>
 #include <iostream>
-#include "include/octree.h"
+#include "include/barnesHut.h"
 
 // o represents octet
 #define o1 0

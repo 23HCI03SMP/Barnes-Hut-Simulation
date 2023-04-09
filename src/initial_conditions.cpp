@@ -1,6 +1,6 @@
 #include <array>
 #include <numeric>
-#include "include/octree.h"
+#include "include/barnesHut.h"
 #include <vector>
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_blas.h>
