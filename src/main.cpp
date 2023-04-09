@@ -5,6 +5,8 @@ int main()
 {
     Octree tree(1, 1, 1, 5, 5, 5);
 
+    tree.insert(1, 1, 1, 1);
+    tree.insert(5, 5, 5, 1);
     tree.insert(1, 2, 3);
     tree.insert(1, 2, 3);
     tree.insert(6, 5, 5);
