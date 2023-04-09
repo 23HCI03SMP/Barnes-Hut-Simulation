@@ -116,7 +116,7 @@ bool Octree::find(int x, int y, int z)
     return 0;
 }
 
-void Octree::insert(int x, int y, int z)
+void Octree::insert(int x, int y, int z, float mass)
 {
     if (find(x, y, x))
     {
@@ -188,7 +188,7 @@ void Octree::insert(int x, int y, int z)
 
     if (children[pos]->point == nullptr)
     {
-        children[pos]->insert(x, y, z);
+        children[pos]->insert(x, y, z, mass);
         return;
     }
     else if (children[pos]->point->x == -1)
@@ -237,6 +237,45 @@ void Octree::insert(int x, int y, int z)
         {
             children[pos] = new Octree(midX + 1, midY + 1, midZ + 1, maxPoints->x, maxPoints->y, maxPoints->z);
         }
-        children[pos]->insert(x_, y_, z_);
+
+        calculateCenterOfMass(children[pos], mass);
+        children[pos]->insert(x_, y_, z_, mass);
+    }
+}
+
+void Octree::calculateCenterOfMass(Octree*& octree, float mass)
+{
+    std::vector<Octree*> children = octree->children;
+        
+    if (children.size() == 0) 
+    {
+        // if the size of the children is 0, then we have reached a leaf node
+        // com is the center of mass of the particle at the leaf node
+        octree->com = octree->point;
+        octree->mass = mass;
+    } else {
+        // if there are children, we take the center of mass of the children
+        // using the formula for center of mass, where 
+
+        float xPosSum;
+        float yPosSum;
+        float zPosSum;
+        float xMassSum;
+        float yMassSum;
+        float zMassSum;
+
+        for (int i = 0; i <= children.size(), i++;) {
+            Octree* child = children[i];
+
+            xMassSum += child->mass;
+            yMassSum += child->mass;
+            zMassSum += child->mass;
+            
+            xPosSum += child->com->x * child->mass;
+            yPosSum += child->com->y * child->mass;
+            zPosSum += child->com->z * child->mass;                              
+        }
+
+        octree->com = new Point(xPosSum / xMassSum, yPosSum / yMassSum, zPosSum / zMassSum);
     }
 }
