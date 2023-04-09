@@ -251,34 +251,31 @@ void Octree::calculateCenterOfMass(Octree*& octree, float mass)
     {
         // if the size of the children is 0, then we have reached a leaf node
         // com is the center of mass of the particle at the leaf node
-        octree->com = this->point;
+        octree->com = octree->point;
         octree->mass = mass;
     } else {
         // if there are children, we take the center of mass of the children
         // using the formula for center of mass, where 
 
-        if(octree) {
-            float xPosSum;
-            float yPosSum;
-            float zPosSum;
-            float xMassSum;
-            float yMassSum;
-            float zMassSum;
+        float xPosSum;
+        float yPosSum;
+        float zPosSum;
+        float xMassSum;
+        float yMassSum;
+        float zMassSum;
 
-            for (int i = 0; i <= children.size(), i++;) {
-                Octree* child = children[i];
+        for (int i = 0; i <= children.size(), i++;) {
+            Octree* child = children[i];
 
-                xMassSum += child->mass;
-                yMassSum += child->mass;
-                zMassSum += child->mass;
-                
-                xPosSum += child->com->x * child->mass;
-                yPosSum += child->com->y * child->mass;
-                zPosSum += child->com->z * child->mass;                              
-            }
-
-            // octree->com = new Point(xPosSum / xMassSum, yPosSum / yMassSum, zPosSum / zMassSum);
-            octree->com = new Point(xPosSum / xMassSum, yPosSum / yMassSum, zPosSum / zMassSum);
+            xMassSum += child->mass;
+            yMassSum += child->mass;
+            zMassSum += child->mass;
+            
+            xPosSum += child->com->x * child->mass;
+            yPosSum += child->com->y * child->mass;
+            zPosSum += child->com->z * child->mass;                              
         }
+
+        octree->com = new Point(xPosSum / xMassSum, yPosSum / yMassSum, zPosSum / zMassSum);
     }
 }
