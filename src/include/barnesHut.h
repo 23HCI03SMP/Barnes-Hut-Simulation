@@ -25,13 +25,18 @@ class Octree
 {
     Point *point;
     Point *minPoints, *maxPoints;
+    Point *com;
     std::vector<Octree *> children;
+    float mass;
 
-public:
-    Octree();
-    Octree(int x, int y, int z);
-    Octree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ);
+    private:
+        void calculateCenterOfMass(Octree*& octree, float mass);
 
-    bool find(int x, int y, int z);
-    void insert(int x, int y, int z);
+    public:
+        Octree();
+        Octree(int x, int y, int z);
+        Octree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ);
+
+        bool find(int x, int y, int z);
+        void insert(int x, int y, int z, float mass);
 };
