@@ -7,8 +7,8 @@ int main()
     // tree.insert(2, 2, 2, 1);
     // tree.insert(4, 4, 4, 1);
 
-    tree.insert(1, 1, 1, 1);
-    tree.insert(5, 5, 5, 5);
+    // tree.insert(1, 1, 1, 1);
+    tree.insert(5, 5, 5, 1);
 
     // std::cout << (tree.find(1, 2, 3)
     //                   ? "Found\n"

@@ -97,24 +97,22 @@ bool Octree::find(int x, int y, int z)
     }
 
     // If an internal node is encountered
-    if (children[pos]->point == nullptr)
+    if (children[pos] == nullptr)
     {
         return children[pos]->find(x, y, z);
     }
 
     // If an empty node is encountered
-    else if (children[pos]->point->x == -1)
+    if (children[pos]->point->x == -1)
     {
         return 0;
     }
-    else
-    {
 
-        // If node is found with
-        // the given value
-        if (x == children[pos]->point->x && y == children[pos]->point->y && z == children[pos]->point->z)
-            return 1;
-    }
+    // If node is found with
+    // the given value
+    if (x == children[pos]->point->x && y == children[pos]->point->y && z == children[pos]->point->z)
+        return 1;
+
     return 0;
 }
 
