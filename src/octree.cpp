@@ -219,23 +219,23 @@ void Octree::insert(int x, int y, int z, float mass)
         {
             children[pos] = new Octree(minPoints->x, midY + 1, minPoints->z, midX, maxPoints->y, midZ, mass);
         }
-        else if (pos == 4)
+        else if (pos == o4)
         {
             children[pos] = new Octree(midX + 1, midY + 1, minPoints->z, maxPoints->x, maxPoints->y, midZ, mass);
         }
-        else if (pos == 5)
+        else if (pos == o5)
         {
             children[pos] = new Octree(minPoints->x, minPoints->y, midZ + 1, midX, midY, maxPoints->z, mass);
         }
-        else if (pos == 6)
+        else if (pos == o6)
         {
             children[pos] = new Octree(midX + 1, minPoints->y, midZ + 1, maxPoints->x, midY, maxPoints->z, mass);
         }
-        else if (pos == 7)
+        else if (pos == o7)
         {
             children[pos] = new Octree(minPoints->x, midY + 1, midZ + 1, midX, maxPoints->y, maxPoints->z, mass);
         }
-        else if (pos == 8)
+        else if (pos == o8)
         {
             children[pos] = new Octree(midX + 1, midY + 1, midZ + 1, maxPoints->x, maxPoints->y, maxPoints->z, mass);
         }

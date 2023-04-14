@@ -7,9 +7,8 @@ int main()
     // tree.insert(2, 2, 2, 1);
     // tree.insert(4, 4, 4, 1);
 
-    tree.insert(1, 2, 3, 1);
-    tree.insert(2, 3, 1, 1);
-    tree.insert(5, 5, 1, 1);
+    tree.insert(1, 1, 1, 1);
+    tree.insert(5, 5, 5, 5);
 
     // std::cout << (tree.find(1, 2, 3)
     //                   ? "Found\n"
@@ -18,8 +17,6 @@ int main()
     // std::cout << (tree.find(3, 4, 4)
     //                   ? "Found\n"
     //                   : "Not Found\n");
-
-    tree.insert(3, 4, 4, 5);
 
     // std::cout << (tree.find(3, 4, 4)
     //                   ? "Found\n"
