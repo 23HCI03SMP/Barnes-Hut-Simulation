@@ -27,15 +27,16 @@ class Octree
     Point *minPoints, *maxPoints;
     Point *com;
     std::vector<Octree *> children;
-    float mass;
+    Octree* parent;
+    float mass = 0; // Need to set mass to zero because default value of floating point is some random negative number
 
     private:
         void calculateCenterOfMass(Octree*& octree, float mass);
 
     public:
-        Octree();
-        Octree(int x, int y, int z);
-        Octree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ);
+        Octree(float m);
+        Octree(int x, int y, int z, float m);
+        Octree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, float m);
 
         bool find(int x, int y, int z);
         void insert(int x, int y, int z, float mass);
