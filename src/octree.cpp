@@ -40,7 +40,7 @@ Octree::Octree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, float
     maxPoints = new Point(maxX, maxY, maxZ);
 
     children.assign(8, nullptr);
-    for (int i = o1; i <= o7; ++i)
+    for (int i = o1; i <= o8; i++)
     {
         children[i] = new Octree(m);
     }
