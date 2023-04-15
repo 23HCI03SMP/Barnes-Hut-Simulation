@@ -16,19 +16,22 @@
 #define o7 6
 #define o8 7
 
-Octree::Octree(float m)
+Octree::Octree(float mass)
 {
     point = new Point();
-    mass = m;
+
+    this->mass = mass;
 }
 
-Octree::Octree(int x, int y, int z, float m)
+Octree::Octree(int x, int y, int z, float mass)
 {
     point = new Point(x, y, z);
-    mass = m;
+
+    this->mass = mass;
 }
 
-Octree::Octree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, float m)
+// Initializing a base octree
+Octree::Octree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, float mass)
 {
     if (maxX < minX || maxY < minY || maxZ < minZ)
     {
@@ -42,7 +45,8 @@ Octree::Octree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, float
     children.assign(8, nullptr);
     for (int i = o1; i <= o8; i++)
     {
-        children[i] = new Octree(m);
+        // Since this is the base octree, there is no parent
+        children[i] = new Octree(mass);
     }
 }
 
@@ -116,7 +120,7 @@ bool Octree::find(int x, int y, int z)
     return 0;
 }
 
-void Octree::insert(int x, int y, int z, float mass)
+void Octree::insert(Octree *&root, int x, int y, int z, float mass)
 {
     if (find(x, y, z))
     {
@@ -188,14 +192,14 @@ void Octree::insert(int x, int y, int z, float mass)
 
     if (children[pos]->point == nullptr)
     {
-        children[pos]->insert(x, y, z, mass);
+        children[pos]->insert(children[pos], x, y, z, mass);
     }
     else if (children[pos]->point->x == -1)
     {
         delete children[pos];
         children[pos] = new Octree(x, y, z, mass);
 
-        calculateCenterOfMass(children[pos], mass);
+        recalculateCenterOfMass(root);
     }
     else
     {
@@ -238,30 +242,20 @@ void Octree::insert(int x, int y, int z, float mass)
             children[pos] = new Octree(midX + 1, midY + 1, midZ + 1, maxPoints->x, maxPoints->y, maxPoints->z, mass);
         }
 
-        calculateCenterOfMass(children[pos], mass);
-        children[pos]->insert(x_, y_, z_, mass);
+        children[pos]->insert(children[pos], x_, y_, z_, mass);
+        recalculateCenterOfMass(root);
     }
-
-    // Recalculate center of mass of parent, by first settling the mass of the parent
-    // for (Octree* child: parent->children) {
-    //     if(child->point != nullptr) {
-    //         parent->mass += child->mass;   
-    //     }
-    // }
-
-    // calculateCenterOfMass(parent, parent->mass);
 }
 
-void Octree::calculateCenterOfMass(Octree *&octree, float mass)
+void Octree::recalculateCenterOfMass(Octree *&octree)
 {
-    std::vector<Octree *> children = octree->children;
-
-    if (children.size() == 0)
+    if (octree->children.size() == 0)
     {
         // if the size of the children is 0, then we have reached a leaf node
         // com is the center of mass of the particle at the leaf node
         octree->com = octree->point;
-        octree->mass = mass;
+
+        return;
     }
     else
     {
@@ -272,23 +266,56 @@ void Octree::calculateCenterOfMass(Octree *&octree, float mass)
         float xPosSum;
         float yPosSum;
         float zPosSum;
-        float xMassSum;
-        float yMassSum;
-        float zMassSum;
+        
+        float massSum;
 
-        for (int i = 0; i <= children.size(), i++;)
+        for(Octree* child : octree->children)
         {
-            Octree *child = children[i];
+            if (child->point->x != -1)
+            {
+                recalculateCenterOfMass(child);
 
-            xMassSum += child->mass;
-            yMassSum += child->mass;
-            zMassSum += child->mass;
+                massSum += child->mass;
 
-            xPosSum += child->com->x * child->mass;
-            yPosSum += child->com->y * child->mass;
-            zPosSum += child->com->z * child->mass;
+                xPosSum += child->com->x * child->mass;
+                yPosSum += child->com->y * child->mass;
+                zPosSum += child->com->z * child->mass;
+            }
         }
 
-        octree->com = new Point(xPosSum / xMassSum, yPosSum / yMassSum, zPosSum / zMassSum);
+        octree->mass = massSum;
+        octree->com = new Point(xPosSum / massSum, yPosSum / massSum, zPosSum / massSum);
     }
+
+    // else
+    // {
+    //     // if there are children, we take the center of mass of the children
+    //     // using the formula for center of mass, where
+    //     // coordinate = m1x1 + m2x2 + ... / m1 + m2 + ...
+
+    //     float xPosSum;
+    //     float yPosSum;
+    //     float zPosSum;
+    //     float xMassSum;
+    //     float yMassSum;
+    //     float zMassSum;
+
+    //     for (int i = 0; i <= children.size(), i++;)
+    //     {
+    //         if (children[i]->point->x != -1)
+    //         {
+    //             Octree *child = children[i];
+
+    //             xMassSum += child->mass;
+    //             yMassSum += child->mass;
+    //             zMassSum += child->mass;
+
+    //             xPosSum += child->com->x * child->mass;
+    //             yPosSum += child->com->y * child->mass;
+    //             zPosSum += child->com->z * child->mass;
+    //         }
+    //     }
+
+    //     octree->com = new Point(xPosSum / xMassSum, yPosSum / yMassSum, zPosSum / zMassSum);
+    // }
 }
