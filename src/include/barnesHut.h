@@ -26,8 +26,10 @@ class Octree
     Point *point;
     Point *minPoints, *maxPoints;
     Point *com;
+    
     std::vector<Octree *> children;
     Octree* parent;
+    
     float mass = 0; // Need to set mass to zero because default value of floating point is some random negative number
 
     private:
