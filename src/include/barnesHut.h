@@ -6,19 +6,15 @@
 #include <iostream>
 
 // Pi constant
-constexpr double pi() { return std::acos(-1); }
-
-std::vector<double> randUnitVector(int d, gsl_rng *r);
-std::vector<std::array<int, 3>> plummer(int Npart, double a, double m, double G, int seed);
-std::vector<int> plummerDist_3d_xyz(int Npart, double a, int seed);
+constexpr float PI = 3.14159265358979323846;
 
 struct Point
 {
-    int x;
-    int y;
-    int z;
+    float x;
+    float y;
+    float z;
     Point() : x(-1), y(-1), z(-1) {}
-    Point(int a, int b, int c) : x(a), y(b), z(c) {}
+    Point(float a, float b, float c) : x(a), y(b), z(c) {}
 };
 
 class Octree
@@ -38,11 +34,20 @@ public:
     std::vector<Octree *> children;
 
     Octree(float mass);
-    Octree(int x, int y, int z, float mass);
-    Octree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, float mass);
+    Octree(float x, float y, float z, float mass);
+    Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass);
 
-    void insert(Octree *&root, int x, int y, int z, float mass);
-    bool find(int x, int y, int z);
+    void insert(Octree *&root, float x, float y, float z, float mass);
+    bool find(float x, float y, float z);
+};
+
+class Barnes
+{
+    private:
+        bool isExternalNode(Octree *&octree);
+    public:
+        void calcForce(Octree *&node, Octree *&b, float thetaLimit);
+
 };
 
 class Barnes

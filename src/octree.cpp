@@ -23,7 +23,7 @@ Octree::Octree(float mass)
     this->mass = mass;
 }
 
-Octree::Octree(int x, int y, int z, float mass)
+Octree::Octree(float x, float y, float z, float mass)
 {
     point = new Point(x, y, z);
 
@@ -31,7 +31,7 @@ Octree::Octree(int x, int y, int z, float mass)
 }
 
 // Initializing a base octree
-Octree::Octree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, float mass)
+Octree::Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass)
 {
     if (maxX < minX || maxY < minY || maxZ < minZ)
     {
@@ -50,18 +50,18 @@ Octree::Octree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, float
     }
 }
 
-bool Octree::find(int x, int y, int z)
+bool Octree::find(float x, float y, float z)
 {
     // If point is out of bound
     if (x < minPoints->x || x > maxPoints->x || y < minPoints->y || y > maxPoints->y || z < minPoints->z || z > maxPoints->z)
-        return 0;
+        return false;
 
     // Otherwise perform binary search
     // for each ordinate
-    int midx = (minPoints->x + maxPoints->x) / 2;
-    int midy = (minPoints->y + maxPoints->y) / 2;
-    int midz = (minPoints->z + maxPoints->z) / 2;
-    int pos = -1;
+    float midx = (minPoints->x + maxPoints->x) / 2;
+    float midy = (minPoints->y + maxPoints->y) / 2;
+    float midz = (minPoints->z + maxPoints->z) / 2;
+    float pos = -1;
 
     // Deciding the position
     // where to move
@@ -109,18 +109,18 @@ bool Octree::find(int x, int y, int z)
     // If an empty node is encountered
     if (children[pos]->point->x == -1)
     {
-        return 0;
+        return false;
     }
 
     // If node is found with
     // the given value
     if (x == children[pos]->point->x && y == children[pos]->point->y && z == children[pos]->point->z)
-        return 1;
+        return true;
 
-    return 0;
+    return false;
 }
 
-void Octree::insert(Octree *&root, int x, int y, int z, float mass)
+void Octree::insert(Octree *&root, float x, float y, float z, float mass)
 {
     if (find(x, y, z))
     {
@@ -134,10 +134,10 @@ void Octree::insert(Octree *&root, int x, int y, int z, float mass)
         return;
     }
 
-    int midX = (minPoints->x + maxPoints->x) / 2;
-    int midY = (minPoints->y + maxPoints->y) / 2;
-    int midZ = (minPoints->z + maxPoints->z) / 2;
-    int pos = -1;
+    float midX = (minPoints->x + maxPoints->x) / 2;
+    float midY = (minPoints->y + maxPoints->y) / 2;
+    float midZ = (minPoints->z + maxPoints->z) / 2;
+    float pos = -1;
 
     if (x <= midX)
     {
@@ -198,14 +198,12 @@ void Octree::insert(Octree *&root, int x, int y, int z, float mass)
     {
         delete children[pos];
         children[pos] = new Octree(x, y, z, mass);
-
-        recalculateCenterOfMass(root);
     }
     else
     {
-        int x_ = children[pos]->point->x;
-        int y_ = children[pos]->point->y;
-        int z_ = children[pos]->point->z;
+        float x_ = children[pos]->point->x;
+        float y_ = children[pos]->point->y;
+        float z_ = children[pos]->point->z;
         delete children[pos];
         children[pos] = nullptr;
 
@@ -243,8 +241,9 @@ void Octree::insert(Octree *&root, int x, int y, int z, float mass)
         }
 
         children[pos]->insert(children[pos], x_, y_, z_, mass);
-        recalculateCenterOfMass(root);
     }
+
+    recalculateCenterOfMass(root);
 }
 
 void Octree::recalculateCenterOfMass(Octree *&octree)
@@ -263,15 +262,15 @@ void Octree::recalculateCenterOfMass(Octree *&octree)
         // using the formula for center of mass, where
         // coordinate = m1x1 + m2x2 + ... / m1 + m2 + ...
 
-        float xPosSum;
-        float yPosSum;
-        float zPosSum;
+        float xPosSum = 0;
+        float yPosSum = 0;
+        float zPosSum = 0;
         
-        float massSum;
+        float massSum = 0;
 
         for(Octree* child : octree->children)
         {
-            if (child->point->x != -1)
+            if (child != nullptr || child->point->x != -1)
             {
                 recalculateCenterOfMass(child);
 
@@ -286,36 +285,4 @@ void Octree::recalculateCenterOfMass(Octree *&octree)
         octree->mass = massSum;
         octree->com = new Point(xPosSum / massSum, yPosSum / massSum, zPosSum / massSum);
     }
-
-    // else
-    // {
-    //     // if there are children, we take the center of mass of the children
-    //     // using the formula for center of mass, where
-    //     // coordinate = m1x1 + m2x2 + ... / m1 + m2 + ...
-
-    //     float xPosSum;
-    //     float yPosSum;
-    //     float zPosSum;
-    //     float xMassSum;
-    //     float yMassSum;
-    //     float zMassSum;
-
-    //     for (int i = 0; i <= children.size(), i++;)
-    //     {
-    //         if (children[i]->point->x != -1)
-    //         {
-    //             Octree *child = children[i];
-
-    //             xMassSum += child->mass;
-    //             yMassSum += child->mass;
-    //             zMassSum += child->mass;
-
-    //             xPosSum += child->com->x * child->mass;
-    //             yPosSum += child->com->y * child->mass;
-    //             zPosSum += child->com->z * child->mass;
-    //         }
-    //     }
-
-    //     octree->com = new Point(xPosSum / xMassSum, yPosSum / yMassSum, zPosSum / zMassSum);
-    // }
 }
