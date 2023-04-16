@@ -8,6 +8,9 @@
 // Pi constant
 constexpr float PI = 3.14159265358979323846;
 
+// Coulomb's constant
+constexpr float K = 8.9875517923e9;
+
 struct Point
 {
     float x;

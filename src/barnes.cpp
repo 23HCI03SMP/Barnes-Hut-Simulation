@@ -6,16 +6,10 @@
 // Otherwise, run the procedure recursively on each of the current node’s children.
 
 bool Barnes::isExternalNode(Octree *&octree) {
-    bool externalNode = false;
-    if (octree->children.size() == 0) {
-        externalNode = true;
-    }
-    return externalNode;
+    return octree->children.size() == 0;
 }
 
 void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
-    double k = 8.9875517923e9;
-
     // if negative, force on b is in the negative direction
     double dx = node->com->x - b->com->x;
     double dy = node->com->y - b->com->y;
@@ -23,9 +17,9 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
     
     if (isExternalNode(node)) {
         // Coulomb's law
-        double forceX = k*((node->mass * b->mass)/(dx * dx));
-        double forceY = k*((node->mass * b->mass)/(dy * dy));
-        double forceZ = k*((node->mass * b->mass)/(dz * dz));
+        double forceX = K*((node->mass * b->mass)/(dx * dx));
+        double forceY = K*((node->mass * b->mass)/(dy * dy));
+        double forceZ = K*((node->mass * b->mass)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
@@ -50,9 +44,9 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
 
     //if theta < 0.5(arbitrary number), treat as a single body
     if (theta < thetaLimit) {
-        double forceX = k*((node->mass * b->mass)/(dx * dx));
-        double forceY = k*((node->mass * b->mass)/(dy * dy));
-        double forceZ = k*((node->mass * b->mass)/(dz * dz));
+        double forceX = K*((node->mass * b->mass)/(dx * dx));
+        double forceY = K*((node->mass * b->mass)/(dy * dy));
+        double forceZ = K*((node->mass * b->mass)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
@@ -76,9 +70,9 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
         double dy = child->com->y - b->com->y;
         double dz = child->com->z - b->com->z;
 
-        double forceX = k*((child->mass * b->mass)/(dx * dx));
-        double forceY = k*((child->mass * b->mass)/(dy * dy));
-        double forceZ = k*((child->mass * b->mass)/(dz * dz));
+        double forceX = K*((child->mass * b->mass)/(dx * dx));
+        double forceY = K*((child->mass * b->mass)/(dy * dy));
+        double forceZ = K*((child->mass * b->mass)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
