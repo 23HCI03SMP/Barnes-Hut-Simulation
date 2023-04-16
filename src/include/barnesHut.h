@@ -6,15 +6,15 @@
 #include <iostream>
 
 // Pi constant
-constexpr double PI = 3.14159265358979323846;
+constexpr float PI = 3.14159265358979323846;
 
 struct Point
 {
-    int x;
-    int y;
-    int z;
+    float x;
+    float y;
+    float z;
     Point() : x(-1), y(-1), z(-1) {}
-    Point(int a, int b, int c) : x(a), y(b), z(c) {}
+    Point(float a, float b, float c) : x(a), y(b), z(c) {}
 };
 
 class Octree
@@ -32,9 +32,9 @@ private:
 
 public:
     Octree(float mass);
-    Octree(int x, int y, int z, float mass);
-    Octree(int minX, int minY, int minZ, int maxX, int maxY, int maxZ, float mass);
+    Octree(float x, float y, float z, float mass);
+    Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass);
 
-    void insert(Octree *&root, int x, int y, int z, float mass);
-    bool find(int x, int y, int z);
+    void insert(Octree *&root, float x, float y, float z, float mass);
+    bool find(float x, float y, float z);
 };

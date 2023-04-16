@@ -7,10 +7,10 @@ int main()
     Octree* tree_ptr = &tree;
 
     tree.insert(tree_ptr, 2, 2, 2, 100);
-    tree.insert(tree_ptr, 4, 4, 4, 100);
+    // tree.insert(tree_ptr, 4, 4, 4, 100);
 
     // tree.insert(1, 1, 1, 1);
-    // tree.insert(tree_ptr, 5, 5, 5, 100);
+    tree.insert(tree_ptr, 5, 5, 5, 100);
 
     // std::cout << (tree.find(1, 2, 3)
     //                   ? "Found\n"
