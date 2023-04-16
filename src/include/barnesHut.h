@@ -31,9 +31,9 @@ private:
     void recalculateCenterOfMass(Octree *&octree);
 
 public:
-    Octree(float mass);
+    Octree();
     Octree(float x, float y, float z, float mass);
-    Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass);
+    Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
     void insert(Octree *&root, float x, float y, float z, float mass);
     bool find(float x, float y, float z);
