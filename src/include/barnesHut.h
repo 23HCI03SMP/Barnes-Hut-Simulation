@@ -49,12 +49,3 @@ class Barnes
         void calcForce(Octree *&node, Octree *&b, float thetaLimit);
 
 };
-
-class Barnes
-{
-    private:
-        bool isExternalNode(Octree *&octree);
-    public:
-        void calcForce(Octree *&node, Octree *&b, float thetaLimit);
-
-};

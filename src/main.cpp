@@ -25,13 +25,6 @@ int main()
     //                   : "Not Found\n");
 
     //barnes.cpp
-    std::cout << "Working" << std::endl;
-
-    int iterations;
-    std::cin >> iterations;
-
-    Octree octree = Octree(1, 1, 1, 5, 5, 5, 1);
-    Octree* octree_ptr = &octree;
 
     Barnes barnes;
     barnes.calcForce(tree_ptr->children[0], tree_ptr->children[7], 0.5);
