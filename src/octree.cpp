@@ -270,7 +270,7 @@ void Octree::recalculateCenterOfMass(Octree *&octree)
 
         for(Octree* child : octree->children)
         {
-            if (child->point->x != -1)
+            if (child != nullptr || child->point->x != -1)
             {
                 recalculateCenterOfMass(child);
 
