@@ -32,6 +32,12 @@ int main()
     // std::cout << (tree.find(3, 4, 4)
     //                   ? "Found\n"
     //                   : "Not Found\n");
+
+    //barnes.cpp
+
+    Barnes barnes;
+    barnes.calcForce(tree_ptr->children[0], tree_ptr->children[7], 0.5);
+
     std::getchar();
     return 0;
 }
