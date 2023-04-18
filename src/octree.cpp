@@ -201,6 +201,9 @@ void Octree::insert(Octree *&root, float x, float y, float z, float mass)
         float x_ = children[pos]->point->x;
         float y_ = children[pos]->point->y;
         float z_ = children[pos]->point->z;
+        float mass_ = children[pos]->mass;
+
+        
         delete children[pos];
         children[pos] = nullptr;
 
@@ -237,7 +240,8 @@ void Octree::insert(Octree *&root, float x, float y, float z, float mass)
             children[pos] = new Octree(midX + 1, midY + 1, midZ + 1, maxPoints->x, maxPoints->y, maxPoints->z);
         }
 
-        children[pos]->insert(root, x_, y_, z_, mass);
+        children[pos]->insert(root, x_, y_, z_, mass_);
+        children[pos]->insert(root, x, y, z, mass);
     }
 
     recalculateCenterOfMass(root);
