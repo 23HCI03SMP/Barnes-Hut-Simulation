@@ -104,10 +104,10 @@ bool Octree::find(float x, float y, float z)
     }
 
     // If an empty node is encountered
-    // if (children[pos]->point->x == -1)
-    // {
-    //     return false;
-    // }
+    if (children[pos]->point->x == -1)
+    {
+        return false;
+    }
 
     // If node is found with
     // the given value
@@ -203,7 +203,7 @@ void Octree::insert(Octree *&root, float x, float y, float z, float mass)
         float z_ = children[pos]->point->z;
         float mass_ = children[pos]->mass;
 
-        
+
         delete children[pos];
         children[pos] = nullptr;
 
