@@ -5,7 +5,7 @@ int main()
 {
     std::vector<std::array<float, 4>> a = loadInitialValues();
 
-    Octree tree = Octree(1, 1, 1, 5, 5, 5);
+    Octree tree = Octree(1, 1, 1, 1000000, 1000000, 1000000);
     Octree *tree_ptr = &tree;
 
     for (std::array<float, 4> point: a)
@@ -36,6 +36,9 @@ int main()
 
     Barnes barnes;
     barnes.calcForce(tree_ptr->children[0], tree_ptr->children[7], 0.5);
+
+    Simulation sim = Simulation();
+    Octree final = sim.mainLoop(tree_ptr, 1, 0.5);
 
     std::getchar();
     return 0;

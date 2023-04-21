@@ -58,3 +58,11 @@ private:
 public:
     void calcForce(Octree *&node, Octree *&b, float thetaLimit);
 };
+
+class Simulation
+{
+    private:
+        std::vector<Octree *> getChildren(Octree *&volume);
+    public:
+        Octree mainLoop(Octree *&volume, int iterations, float timeStep);
+};

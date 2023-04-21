@@ -286,6 +286,6 @@ void Octree::recalculateCenterOfMass(Octree *&octree)
         }
 
         octree->charge = massSum;
-        octree->com = new Point(xPosSum / massSum, yPosSum / massSum, zPosSum / massSum);
+        octree->com = new Point(xPosSum, yPosSum / massSum, zPosSum / massSum);
     }
 }
