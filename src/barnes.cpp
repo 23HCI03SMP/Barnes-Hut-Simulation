@@ -90,3 +90,7 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
     }
 }
 
+void calcAccel() {
+    
+}
+
