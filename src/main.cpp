@@ -8,10 +8,10 @@ int main()
     Octree tree = Octree(1, 1, 1, 5, 5, 5);
     Octree *tree_ptr = &tree;
 
-    // for (std::array<float, 4> point: a)
-    // {
-    //     tree.insert(tree_ptr, point[0], point[1], point[2], point[3]);
-    // }
+    for (std::array<float, 4> point: a)
+    {
+        tree.insert(tree_ptr, point[0], point[1], point[2], point[3], point[3]);
+    }
 
     // tree.insert(1, 1, 1, 1);
     // tree.insert(tree_ptr, 5, 5, 5, 100);
