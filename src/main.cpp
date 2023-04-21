@@ -3,16 +3,15 @@
 
 int main()
 {
-    Octree tree = Octree(1, 1, 1, 5, 5, 5);
-    Octree* tree_ptr = &tree;
+    std::vector<std::array<float, 4>> a = loadInitialValues();
 
-    // tree.insert(tree_ptr, 1, 1, 1, 100);
-    // tree.insert(tree_ptr, 2, 1, 1, 100);
-    
-    tree.insert(tree_ptr, 5, 2, 2, 100);
-    tree.insert(tree_ptr, 1, 5, 1, 500);
-    tree.insert(tree_ptr, 2, 1, 1, 20);
-    tree.insert(tree_ptr, 4, 4, 4, 3);
+    Octree tree = Octree(1, 1, 1, 5, 5, 5);
+    Octree *tree_ptr = &tree;
+
+    for (std::array<float, 4> point: a)
+    {
+        tree.insert(tree_ptr, point[0], point[1], point[2], point[3]);
+    }
 
     // tree.insert(1, 1, 1, 1);
     // tree.insert(tree_ptr, 5, 5, 5, 100);
@@ -33,7 +32,7 @@ int main()
     //                   ? "Found\n"
     //                   : "Not Found\n");
 
-    //barnes.cpp
+    // barnes.cpp
 
     Barnes barnes;
     barnes.calcForce(tree_ptr->children[0], tree_ptr->children[7], 0.5);

@@ -2,5 +2,6 @@
 
 *.exe
 *.csv
+!initial_values.csv
 
 # pycache files from running the python version
