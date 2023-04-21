@@ -35,7 +35,7 @@ public:
     Point *minPoints, *maxPoints;
     Point *com;
 
-    double forceX = 0, forceY = 0, forceZ = 0;
+    float forceX = 0, forceY = 0, forceZ = 0;
 
     float charge = 0; // Need to set charge to zero because default value of floating point is some random negative number
     float mass = 0;
