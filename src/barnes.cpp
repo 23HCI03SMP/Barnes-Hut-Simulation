@@ -89,3 +89,8 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
         b->forceZ += forceZ;
     }
 }
+
+void calcAccel() {
+    
+}
+

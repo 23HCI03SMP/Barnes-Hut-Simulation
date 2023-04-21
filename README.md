@@ -8,9 +8,14 @@ The Barnes Hut Model is a method for calculating the gravitational force between
 
 ## To-do list
 
-- [x] octree.cpp
+- [x] octree.cpp - Octree data structure
+- [ ] octree.cpp - Update Center of Mass/Charge
+- [x] barnes.cpp - Calculate Force
+- [ ] barnes.cpp - Calculate Acceleration
+- [ ] barnes.cpp - Update tree and particle position
 - [ ] initialConditions.cpp
 - [ ] utils.cpp
+- [ ] loader.cpp
 
 ## Methodology
 ### Octree
