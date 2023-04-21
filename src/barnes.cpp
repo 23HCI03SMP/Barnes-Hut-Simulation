@@ -11,15 +11,15 @@ bool Barnes::isExternalNode(Octree *&octree) {
 
 void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
     // if negative, force on b is in the negative direction
-    double dx = node->com->x - b->com->x;
-    double dy = node->com->y - b->com->y;
-    double dz = node->com->z - b->com->z;
+    float dx = node->com->x - b->com->x;
+    float dy = node->com->y - b->com->y;
+    float dz = node->com->z - b->com->z;
     
     if (isExternalNode(node)) {
         // Coulomb's law
-        double forceX = K*((node->charge * b->charge)/(dx * dx));
-        double forceY = K*((node->charge * b->charge)/(dy * dy));
-        double forceZ = K*((node->charge * b->charge)/(dz * dz));
+        float forceX = K*((node->charge * b->charge)/(dx * dx));
+        float forceY = K*((node->charge * b->charge)/(dy * dy));
+        float forceZ = K*((node->charge * b->charge)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
@@ -44,9 +44,9 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
 
     //if theta < 0.5(arbitrary number), treat as a single body
     if (theta < thetaLimit) {
-        double forceX = K*((node->charge * b->charge)/(dx * dx));
-        double forceY = K*((node->charge * b->charge)/(dy * dy));
-        double forceZ = K*((node->charge * b->charge)/(dz * dz));
+        float forceX = K*((node->charge * b->charge)/(dx * dx));
+        float forceY = K*((node->charge * b->charge)/(dy * dy));
+        float forceZ = K*((node->charge * b->charge)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
@@ -66,13 +66,13 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
 
     //else, run recursively on children
     for(Octree* child : node->children) {
-        double dx = child->com->x - b->com->x;
-        double dy = child->com->y - b->com->y;
-        double dz = child->com->z - b->com->z;
+        float dx = child->com->x - b->com->x;
+        float dy = child->com->y - b->com->y;
+        float dz = child->com->z - b->com->z;
 
-        double forceX = K*((child->charge * b->charge)/(dx * dx));
-        double forceY = K*((child->charge * b->charge)/(dy * dy));
-        double forceZ = K*((child->charge * b->charge)/(dz * dz));
+        float forceX = K*((child->charge * b->charge)/(dx * dx));
+        float forceY = K*((child->charge * b->charge)/(dy * dy));
+        float forceZ = K*((child->charge * b->charge)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
