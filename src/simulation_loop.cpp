@@ -1,9 +1,9 @@
 #include <iostream>
 #include "include/barnesHut.h"
 
-std::vector<Octree *&> getChildren(Octree *&volume) {
-    std::vector<Octree *&> childrenList;
-    for (Octree*& child : volume->children) {
+std::vector<Octree *> getChildren(Octree *&volume) {
+    std::vector<Octree *> childrenList;
+    for (Octree* child : volume->children) {
         childrenList.push_back(child);
         if (child->children.size() == 0) {
             break;
@@ -18,8 +18,8 @@ Octree mainLoop(Octree *&volume, int iterations, double timeStep) { //simulation
     Octree newOctree = Octree(volume->minPoints->x, volume->minPoints->y, volume->minPoints->z, volume->maxPoints->x, volume->maxPoints->y, volume->maxPoints->z);
     Octree *newOctreePtr = &newOctree;
     for (int i = 0; i < iterations; i++) {
-        std::vector<Octree *&> childrenList = getChildren(volume);
-        for (Octree*& child : childrenList) {
+        std::vector<Octree *> childrenList = getChildren(volume);
+        for (Octree *child : childrenList) {
             //update accelerations
             double accelX = child->forceX/child->mass;
             double accelY = child->forceY/child->mass;
