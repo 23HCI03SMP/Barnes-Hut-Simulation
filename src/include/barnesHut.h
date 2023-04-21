@@ -46,9 +46,9 @@ public:
 
 class Barnes
 {
-    private:
-        bool isExternalNode(Octree *&octree);
-    public:
-        void calcForce(Octree *&node, Octree *&b, float thetaLimit);
+private:
+    bool isExternalNode(Octree *&octree);
 
+public:
+    void calcForce(Octree *&node, Octree *&b, float thetaLimit);
 };
