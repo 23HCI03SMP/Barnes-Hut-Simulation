@@ -5,11 +5,16 @@
 #include <vector>
 #include <iostream>
 
+// Path to initial conditions csv file
+constexpr char INITIAL_VALUES_PATH[] = "initial_values.csv";
+
 // Pi constant
 constexpr float PI = 3.14159265358979323846;
 
 // Coulomb's constant
 constexpr float K = 8.9875517923e9;
+
+std::vector<std::array<float, 4>> loadInitialValues();
 
 struct Point
 {
@@ -22,7 +27,6 @@ struct Point
 
 class Octree
 {
-
 private:
     void recalculateCenterOfMass(Octree *&octree);
 
