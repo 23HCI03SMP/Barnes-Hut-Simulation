@@ -37,14 +37,16 @@ public:
 
     double forceX = 0, forceY = 0, forceZ = 0;
 
-    float mass = 0; // Need to set mass to zero because default value of floating point is some random negative number
+    float charge = 0; // Need to set charge to zero because default value of floating point is some random negative number
+    float mass = 0;
+    float velocityX = 0, velocityY = 0, velocityZ = 0;
     std::vector<Octree *> children;
 
     Octree();
-    Octree(float x, float y, float z, float mass);
+    Octree(float x, float y, float z, float charge, float mass);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
-    void insert(Octree *&root, float x, float y, float z, float mass);
+    void insert(Octree *&root, float x, float y, float z, float charge, float mass);
     bool find(float x, float y, float z);
 };
 

@@ -17,9 +17,9 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
     
     if (isExternalNode(node)) {
         // Coulomb's law
-        double forceX = K*((node->mass * b->mass)/(dx * dx));
-        double forceY = K*((node->mass * b->mass)/(dy * dy));
-        double forceZ = K*((node->mass * b->mass)/(dz * dz));
+        double forceX = K*((node->charge * b->charge)/(dx * dx));
+        double forceY = K*((node->charge * b->charge)/(dy * dy));
+        double forceZ = K*((node->charge * b->charge)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
@@ -44,9 +44,9 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
 
     //if theta < 0.5(arbitrary number), treat as a single body
     if (theta < thetaLimit) {
-        double forceX = K*((node->mass * b->mass)/(dx * dx));
-        double forceY = K*((node->mass * b->mass)/(dy * dy));
-        double forceZ = K*((node->mass * b->mass)/(dz * dz));
+        double forceX = K*((node->charge * b->charge)/(dx * dx));
+        double forceY = K*((node->charge * b->charge)/(dy * dy));
+        double forceZ = K*((node->charge * b->charge)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
@@ -70,9 +70,9 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
         double dy = child->com->y - b->com->y;
         double dz = child->com->z - b->com->z;
 
-        double forceX = K*((child->mass * b->mass)/(dx * dx));
-        double forceY = K*((child->mass * b->mass)/(dy * dy));
-        double forceZ = K*((child->mass * b->mass)/(dz * dz));
+        double forceX = K*((child->charge * b->charge)/(dx * dx));
+        double forceY = K*((child->charge * b->charge)/(dy * dy));
+        double forceZ = K*((child->charge * b->charge)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
@@ -88,9 +88,5 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
         b->forceY += forceY;
         b->forceZ += forceZ;
     }
-}
-
-void calcAccel() {
-    
 }
 
