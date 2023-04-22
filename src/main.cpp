@@ -3,20 +3,20 @@
 
 int main()
 {
-    // auto points = generatePoints(1, 1, 1, 5, 5, 5, 1, 0.5);
-    // generateFile(points);
+    auto points = generatePoints(1, 1, 1, 5, 5, 5, 1, 0.1);
+    generateFile(points);
 
     // std::vector<std::array<float, 4>> a = loadInitialValues();
 
     Octree tree = Octree(1, 1, 1, 5, 5, 5);
     Octree *tree_ptr = &tree;
 
-    tree.insert(tree_ptr, 3.84147, 3.4597, 4.75517, 1, 1);
-    tree.insert(tree_ptr, 2.10208, 2.66365, 4.75517, 1, 1);
+    // tree.insert(tree_ptr, 3.84147, 3.4597, 4.75517, 1, 1);
+    // tree.insert(tree_ptr, 2.10208, 2.66365, 4.75517, 1, 1);
     // tree.insert(tree_ptr, 2.37325, 2.27434, 4.75517, 1, 1);
     // tree.insert(tree_ptr, 2.79788, 2.06269, 4.75517, 1, 1);
-    tree.insert(tree_ptr, 3.27199, 2.08053, 4.75517, 1, 1);
-    tree.insert(tree_ptr, 3.67951, 2.32349, 4.75517, 1, 1);
+    // tree.insert(tree_ptr, 3.27199, 2.08053, 4.75517, 1, 1);
+    // tree.insert(tree_ptr, 3.67951, 2.32349, 4.75517, 1, 1);
 
     // for (std::array<float, 4> point: a)
     // {
