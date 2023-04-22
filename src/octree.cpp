@@ -215,31 +215,31 @@ void Octree::insert(Octree *&root, float x, float y, float z, float charge, floa
         }
         else if (pos == o2)
         {
-            children[pos] = new Octree(midX + 1e-10, minPoints->y, minPoints->z, maxPoints->x, midY, midZ);
+            children[pos] = new Octree(midX, minPoints->y, minPoints->z, maxPoints->x, midY, midZ);
         }
         else if (pos == o3)
         {
-            children[pos] = new Octree(minPoints->x, midY + 1e-10, minPoints->z, midX, maxPoints->y, midZ);
+            children[pos] = new Octree(minPoints->x, midY, minPoints->z, midX, maxPoints->y, midZ);
         }
         else if (pos == o4)
         {
-            children[pos] = new Octree(midX + 1e-10, midY + 1e-10, minPoints->z, maxPoints->x, maxPoints->y, midZ);
+            children[pos] = new Octree(midX, midY, minPoints->z, maxPoints->x, maxPoints->y, midZ);
         }
         else if (pos == o5)
         {
-            children[pos] = new Octree(minPoints->x, minPoints->y, midZ + 1e-10, midX, midY, maxPoints->z);
+            children[pos] = new Octree(minPoints->x, minPoints->y, midZ, midX, midY, maxPoints->z);
         }
         else if (pos == o6)
         {
-            children[pos] = new Octree(midX + 1e-10, minPoints->y, midZ + 1e-10, maxPoints->x, midY, maxPoints->z);
+            children[pos] = new Octree(midX, minPoints->y, midZ, maxPoints->x, midY, maxPoints->z);
         }
         else if (pos == o7)
         {
-            children[pos] = new Octree(minPoints->x, midY + 1e-10, midZ + 1e-10, midX, maxPoints->y, maxPoints->z);
+            children[pos] = new Octree(minPoints->x, midY, midZ, midX, maxPoints->y, maxPoints->z);
         }
         else if (pos == o8)
         {
-            children[pos] = new Octree(midX + 1e-10, midY + 1e-10, midZ + 1e-10, maxPoints->x, maxPoints->y, maxPoints->z);
+            children[pos] = new Octree(midX, midY, midZ, maxPoints->x, maxPoints->y, maxPoints->z);
         }
 
         children[pos]->insert(root, x_, y_, z_, charge_, mass_);
