@@ -12,7 +12,8 @@ constexpr char INITIAL_VALUES_PATH[] = "initial_values.csv";
 constexpr float PI = 3.14159265358979323846;
 
 // Coulomb's constant
-constexpr float K = 8.9875517923e9;
+constexpr float K = 1;
+//8.9875517923e9;
 
 std::vector<std::array<float, 4>> loadInitialValues();
 std::vector<std::array<float, 4>> generatePoints(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass, float density);

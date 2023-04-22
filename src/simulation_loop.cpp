@@ -6,12 +6,12 @@ std::vector<Octree *> Simulation::getChildren(Octree *&volume)
     std::vector<Octree *> childrenList;
     for (Octree *child : volume->children)
     {
-        childrenList.push_back(child);
-        if (child->children.size() == 0)
+        if (child->children.size() == 0 && child->point != nullptr && child->point->x != -1)
         {
-            break;
+            childrenList.push_back(child);
         }
-        getChildren(child);
+        std::vector<Octree *> recursChildren = getChildren(child);
+        childrenList.insert(childrenList.end(), recursChildren.begin(), recursChildren.end());
     }
     return childrenList;
 }
