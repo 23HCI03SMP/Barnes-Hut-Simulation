@@ -41,7 +41,17 @@ Octree Simulation::mainLoop(Octree *&volume, int iterations, float timeStep)
             child->point->z += sZ;
 
             // update simulation volume
-            newOctree.insert(newOctreePtr, child->point->x, child->point->y, child->point->z, child->charge, child->mass);
+            newOctree.insert(
+                newOctreePtr, 
+                child->point->x, 
+                child->point->y, 
+                child->point->z, 
+                child->velocityX, 
+                child->velocityY,
+                child->velocityZ,
+                child->charge, 
+                child->mass
+            );
         }
     }
     return newOctree;

@@ -17,9 +17,9 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
     
     if (isExternalNode(node)) {
         // Coulomb's law
-        float forceX = K*((node->charge * b->charge)/(dx * dx));
-        float forceY = K*((node->charge * b->charge)/(dy * dy));
-        float forceZ = K*((node->charge * b->charge)/(dz * dz));
+        float forceX = K_E*((node->charge * b->charge)/(dx * dx));
+        float forceY = K_E*((node->charge * b->charge)/(dy * dy));
+        float forceZ = K_E*((node->charge * b->charge)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
@@ -44,9 +44,9 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
 
     //if theta < 0.5(arbitrary number), treat as a single body
     if (theta < thetaLimit) {
-        float forceX = K*((node->charge * b->charge)/(dx * dx));
-        float forceY = K*((node->charge * b->charge)/(dy * dy));
-        float forceZ = K*((node->charge * b->charge)/(dz * dz));
+        float forceX = K_E*((node->charge * b->charge)/(dx * dx));
+        float forceY = K_E*((node->charge * b->charge)/(dy * dy));
+        float forceZ = K_E*((node->charge * b->charge)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
@@ -70,9 +70,9 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
         float dy = child->com->y - b->com->y;
         float dz = child->com->z - b->com->z;
 
-        float forceX = K*((child->charge * b->charge)/(dx * dx));
-        float forceY = K*((child->charge * b->charge)/(dy * dy));
-        float forceZ = K*((child->charge * b->charge)/(dz * dz));
+        float forceX = K_E*((child->charge * b->charge)/(dx * dx));
+        float forceY = K_E*((child->charge * b->charge)/(dy * dy));
+        float forceZ = K_E*((child->charge * b->charge)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
