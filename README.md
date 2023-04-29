@@ -13,7 +13,8 @@ The Barnes Hut Model is a method for calculating the gravitational force between
 - [x] barnes.cpp - Calculate Force
 - [x] simulation_loop.cpp - Calculate Acceleration
 - [x] simulation_loop.cpp - Update tree and particle position
-- [ ] initialConditions.cpp
+- [x] initialConditions.cpp
+- [ ] initialConditions.cpp - implement initial velocity
 - [ ] utils.cpp
 - [x] Create initial values csv file
 
