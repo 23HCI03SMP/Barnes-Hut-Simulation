@@ -3,8 +3,10 @@
 
 int main()
 {
-    auto points = generatePoints(1, 1, 1, 5, 5, 5, 1, 100);
+    std::vector<std::array<float, 7>> points = generatePoints(1, 1, 1, 5, 5, 5, 1, 2);
     generateFile(points);
+
+    
 
     // std::vector<std::array<float, 4>> a = loadInitialValues();
 

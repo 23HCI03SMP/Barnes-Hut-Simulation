@@ -4,19 +4,19 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
-std::vector<std::array<float, 4>> generatePoints(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass, float density)
+std::vector<std::array<float, 7>> generatePoints(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass, float density)
 {
-    std::vector<std::array<float, 4>> points;
+    std::vector<std::array<float, 7>> points;
 
     float rangeX = maxX - minX;
     float rangeY = maxY - minY;
     float rangeZ = maxZ - minZ;
     float minRange = std::min(std::min(rangeX, rangeY), rangeZ);
-    
+
     float radius = minRange / 2.0f;
     int numPoints = std::ceil(density * 4.0f * PI * std::pow(radius, 3.0f) / 3.0f);
 
-    gsl_rng* rng = gsl_rng_alloc(gsl_rng_mt19937);
+    gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
     gsl_rng_set(rng, time(NULL));
 
     for (int i = 0; i < numPoints; ++i)
@@ -28,7 +28,12 @@ std::vector<std::array<float, 4>> generatePoints(float minX, float minY, float m
             z = minZ + gsl_rng_uniform(rng) * rangeZ;
         } while (pow(x - 3, 2) + pow(y - 3, 2) + pow(z - 3, 2) > pow(radius, 2));
 
-        points.push_back({x, y, z, mass});
+        float vel_scale = gsl_ran_gaussian(rng, 1.0f);
+        float vx = vel_scale * gsl_ran_gaussian(rng, 1.0f);
+        float vy = vel_scale * gsl_ran_gaussian(rng, 1.0f);
+        float vz = vel_scale * gsl_ran_gaussian(rng, 1.0f);
+
+        points.push_back({x, y, z, vx, vy, vz, mass});
     }
 
     gsl_rng_free(rng);
