@@ -14,7 +14,7 @@ constexpr float PI = 3.14159265358979323846;
 // Coulomb's constant
 constexpr float K = 8.9875517923e9;
 
-std::vector<std::array<float, 4>> loadInitialValues();
+std::vector<std::array<float, 7>> loadInitialValues();
 std::vector<std::array<float, 4>> generatePoints(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass, float density);
 
 void generateFile(std::vector<std::array<float, 4>> points);
