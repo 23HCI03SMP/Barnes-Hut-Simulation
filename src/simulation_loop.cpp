@@ -1,7 +1,7 @@
 #include <iostream>
 #include "include/barnesHut.h"
 
-std::vector<Octree *> Simulation::getChildren(Octree *&volume)
+std::vector<Octree *> getChildren(Octree *&volume)
 {
     std::vector<Octree *> childrenList;
     for (Octree *child : volume->children)

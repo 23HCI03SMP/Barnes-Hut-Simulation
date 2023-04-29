@@ -17,11 +17,6 @@ constexpr float K_E = 8.9875517923e9;
 // Boltzmann constant
 constexpr float K_B = 1.380649e-23;
 
-std::vector<std::array<float, 7>> loadInitialValues();
-std::vector<std::array<float, 7>> generatePoints(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass, float density, float temperature);
-
-void generateFile(std::vector<std::array<float, 7>> points);
-
 struct Point
 {
     float x;
@@ -68,8 +63,13 @@ public:
 class Simulation
 {
 private:
-    std::vector<Octree *> getChildren(Octree *&volume);
-
 public:
     Octree mainLoop(Octree *&volume, int iterations, float timeStep);
 };
+
+std::vector<std::array<float, 7>> loadInitialValues();
+std::vector<std::array<float, 7>> generatePoints(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass, float density, float temperature);
+
+std::vector<Octree *> getChildren(Octree *&volume);
+
+void generateFile(std::vector<std::array<float, 7>> points);

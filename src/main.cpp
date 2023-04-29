@@ -1,21 +1,6 @@
 #include "include/barnesHut.h"
 #include <iostream>
 
-std::vector<Octree *> getChildren(Octree *&volume)
-{
-    std::vector<Octree *> childrenList;
-    for (Octree *child : volume->children)
-    {
-        if (child->children.size() == 0 && child->point != nullptr && child->point->x != -1)
-        {
-            childrenList.push_back(child);
-        }
-        std::vector<Octree *> recursChildren = getChildren(child);
-        childrenList.insert(childrenList.end(), recursChildren.begin(), recursChildren.end());
-    }
-    return childrenList;
-}
-
 Octree *loop(int iteration, Octree *octree)
 {
     Octree *finalPtr;
