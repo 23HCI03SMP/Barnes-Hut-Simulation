@@ -84,7 +84,7 @@ int main()
     //                   : "Not Found\n");
 
     // barnes.cpp
-    Octree *final = loop(10, tree_ptr);
+    Octree *final = loop(4, tree_ptr);
     std::getchar();
     return 0;
 }
