@@ -3,7 +3,7 @@
 
 int main()
 {
-    std::vector<std::array<float, 7>> points = generatePoints(1, 1, 1, 5, 5, 5, 1, 1, 293); // 293K = 20C
+    std::vector<std::array<float, 7>> points = generatePoints(1, 1, 1, 5, 5, 5, 1, 100, 293); // 293K = 20C
     generateFile(points);
 
 
