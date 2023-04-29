@@ -22,15 +22,15 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
         float forceZ = 0;
         if (dx != 0)
         {
-            forceX = K*((node->charge * b->charge)/(dx * dx));
+            forceX = K_E*((node->charge * b->charge)/(dx * dx));
         }
         if (dy != 0)
         {
-            forceY = K*((node->charge * b->charge)/(dy * dy));
+            forceY = K_E*((node->charge * b->charge)/(dy * dy));
         }
         if (dz != 0)
         {
-            forceZ = K*((node->charge * b->charge)/(dz * dz));
+            forceZ = K_E*((node->charge * b->charge)/(dz * dz));
         }
 
         if (dx < 0) {
@@ -56,9 +56,9 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
 
     //if theta < 0.5(arbitrary number), treat as a single body
     if (theta < thetaLimit) {
-        float forceX = K*((node->charge * b->charge)/(dx * dx));
-        float forceY = K*((node->charge * b->charge)/(dy * dy));
-        float forceZ = K*((node->charge * b->charge)/(dz * dz));
+        float forceX = K_E*((node->charge * b->charge)/(dx * dx));
+        float forceY = K_E*((node->charge * b->charge)/(dy * dy));
+        float forceZ = K_E*((node->charge * b->charge)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;
@@ -82,9 +82,9 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
         float dy = child->com->y - b->com->y;
         float dz = child->com->z - b->com->z;
 
-        float forceX = K*((child->charge * b->charge)/(dx * dx));
-        float forceY = K*((child->charge * b->charge)/(dy * dy));
-        float forceZ = K*((child->charge * b->charge)/(dz * dz));
+        float forceX = K_E*((child->charge * b->charge)/(dx * dx));
+        float forceY = K_E*((child->charge * b->charge)/(dy * dy));
+        float forceZ = K_E*((child->charge * b->charge)/(dz * dz));
 
         if (dx < 0) {
             forceX = -forceX;

@@ -21,12 +21,15 @@ Octree::Octree()
     point = new Point();
 }
 
-Octree::Octree(float x, float y, float z, float charge, float mass)
+Octree::Octree(float x, float y, float z, float vx, float vy, float vz, float charge, float mass)
 {
     point = new Point(x, y, z);
 
     this->charge = charge;
     this->mass = mass;
+    velocityX = vx;
+    velocityY = vy;
+    velocityZ = vz;
 }
 
 // Initializing a base octree
@@ -118,7 +121,7 @@ bool Octree::find(float x, float y, float z)
     return false;
 }
 
-void Octree::insert(Octree *&root, float x, float y, float z, float charge, float mass)
+void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float charge, float mass)
 {
     if (find(x, y, z))
     {
@@ -190,18 +193,21 @@ void Octree::insert(Octree *&root, float x, float y, float z, float charge, floa
 
     if (children[pos]->point == nullptr)
     {
-        children[pos]->insert(root, x, y, z, charge, mass);
+        children[pos]->insert(root, x, y, z, vx, vy, vz, charge, mass);
     }
     else if (children[pos]->point->x == -1)
     {
         delete children[pos];
-        children[pos] = new Octree(x, y, z, charge, mass);
+        children[pos] = new Octree(x, y, z, vx, vy, vz, charge, mass);
     }
     else
     {
         float x_ = children[pos]->point->x;
         float y_ = children[pos]->point->y;
         float z_ = children[pos]->point->z;
+        float vx_ = children[pos]->velocityX;
+        float vy_ = children[pos]->velocityY;
+        float vz_ = children[pos]->velocityZ;
         float charge_ = children[pos]->charge;
         float mass_ = children[pos]->mass;
 
@@ -242,8 +248,8 @@ void Octree::insert(Octree *&root, float x, float y, float z, float charge, floa
             children[pos] = new Octree(midX, midY, midZ, maxPoints->x, maxPoints->y, maxPoints->z);
         }
 
-        children[pos]->insert(root, x_, y_, z_, charge_, mass_);
-        children[pos]->insert(root, x, y, z, charge, mass);
+        children[pos]->insert(root, x_, y_, z_, vx_, vy_, vz_, charge_, mass_);
+        children[pos]->insert(root, x, y, z, vx, vy, vz, charge, mass);
     }
 
     recalculateCenterOfMass(root);

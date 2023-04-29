@@ -12,13 +12,15 @@ constexpr char INITIAL_VALUES_PATH[] = "initial_values.csv";
 constexpr float PI = 3.14159265358979323846;
 
 // Coulomb's constant
-constexpr float K = 8.9875517923e9;
-//8.9875517923e9;
+constexpr float K_E = 8.9875517923e9;
 
-std::vector<std::array<float, 4>> loadInitialValues();
-std::vector<std::array<float, 4>> generatePoints(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass, float density);
+// Boltzmann constant
+constexpr float K_B = 1.380649e-23;
 
-void generateFile(std::vector<std::array<float, 4>> points);
+std::vector<std::array<float, 7>> loadInitialValues();
+std::vector<std::array<float, 7>> generatePoints(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass, float density, float temperature);
+
+void generateFile(std::vector<std::array<float, 7>> points);
 
 struct Point
 {
@@ -47,10 +49,10 @@ public:
     std::vector<Octree *> children;
 
     Octree();
-    Octree(float x, float y, float z, float charge, float mass);
+    Octree(float x, float y, float z, float vx, float vy, float vz, float charge, float mass);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
-    void insert(Octree *&root, float x, float y, float z, float charge, float mass);
+    void insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float charge, float mass);
     bool find(float x, float y, float z);
 };
 

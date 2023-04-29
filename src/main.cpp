@@ -45,24 +45,33 @@ Octree *loop(int iteration, Octree *octree)
 
 int main()
 {
-    auto points = generatePoints(1, 1, 1, 5, 5, 5, 1, 1);
+    std::vector<std::array<float, 7>> points = generatePoints(1, 1, 1, 5, 5, 5, 1, 100, 293); // 293K = 20C
     generateFile(points);
 
-    std::vector<std::array<float, 4>> a = loadInitialValues();
+
+    std::vector<std::array<float, 7>> a = loadInitialValues();
 
     Octree tree = Octree(1, 1, 1, 5, 5, 5);
     Octree *tree_ptr = &tree;
 
-    tree.insert(tree_ptr, 1, 1, 1, 1, 1);
-    tree.insert(tree_ptr, 5, 5, 5, 1, 1);
+    // tree.insert(tree_ptr, 1, 1, 1, 1, 1);
+    // tree.insert(tree_ptr, 5, 5, 5, 1, 1);
     // tree.insert(tree_ptr, 2.79788, 2.06269, 4.75517, 1, 1);
     // tree.insert(tree_ptr, 3.27199, 2.08053, 4.75517, 1, 1);
     // tree.insert(tree_ptr, 3.67951, 2.32349, 4.75517, 1, 1);
 
-    // for (std::array<float, 4> point: a)
-    // {
-    //     tree.insert(tree_ptr, point[0], point[1], point[2], point[3], point[3]);
-    // }
+    for (std::array<float, 7> point: a)
+    {
+        float x = point[0];
+        float y = point[1];
+        float z = point[2];
+        float vx = point[3];
+        float vy = point[4];
+        float vz = point[5];
+        float mass = point[6];
+
+        tree.insert(tree_ptr, x, y, z, vx, vy, vz, mass, mass);
+    }
 
     // tree.insert(1, 1, 1, 1);
     // tree.insert(tree_ptr, 5, 5, 5, 100);
@@ -84,7 +93,7 @@ int main()
     //                   : "Not Found\n");
 
     // barnes.cpp
-    Octree *final = loop(4, tree_ptr);
+    Octree *final = loop(1, tree_ptr);
     std::getchar();
     return 0;
 }
