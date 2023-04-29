@@ -12,7 +12,7 @@ constexpr char INITIAL_VALUES_PATH[] = "initial_values.csv";
 constexpr float PI = 3.14159265358979323846;
 
 // Coulomb's constant
-constexpr float K = 1;
+constexpr float K = 8.9875517923e9;
 //8.9875517923e9;
 
 std::vector<std::array<float, 4>> loadInitialValues();
