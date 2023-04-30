@@ -1,7 +1,10 @@
 #include "include/barnesHut.h"
 #include <iostream>
+#include <chrono>
 
-Octree loop(Octree *octree, int iterations, float timeStep)
+using namespace std::chrono;
+
+Octree loop(Octree *octree, int iterations, float theta, float timeStep)
 {
     Octree final = Octree(0, 0, 0, 0, 0, 0);
     Octree *finalPtr;
@@ -16,7 +19,7 @@ Octree loop(Octree *octree, int iterations, float timeStep)
             for (Octree *&child2 : childVect)
             {
                 if (child != child2)
-                    barnes.calcForce(child, child2, 0.5);
+                    barnes.calcForce(child, child2, theta);
             }
         }
 
@@ -29,6 +32,7 @@ Octree loop(Octree *octree, int iterations, float timeStep)
 
 int main()
 {
+    auto start = high_resolution_clock::now();
     std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 20, 293); // 293K = 20C
     generateFile(points);
 
@@ -51,7 +55,11 @@ int main()
             point.charge);
     }
 
-    Octree final = loop(tree_ptr, 1, 1e-10);
+    Octree final = loop(tree_ptr, 1, 0.1, 1e-10);
+
+    auto stop = high_resolution_clock::now();
+    auto duration = duration_cast<microseconds>(stop - start);
+    std::cout << duration.count() << " µs " << duration.count()/1000 << " ms" << std::endl;
 
     std::getchar();
     return 0;
