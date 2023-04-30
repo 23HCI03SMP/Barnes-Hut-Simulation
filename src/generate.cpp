@@ -3,15 +3,16 @@
 #include <fstream>
 #include <filesystem>
 
-void generateFile(std::vector<CSVPoint> points)
+void generateInitialValuesFile(std::vector<CSVPoint> points)
 {
     std::ofstream ValueFile(std::filesystem::current_path() / INITIAL_VALUES_PATH);
 
-    ValueFile << "x,y,z,vx,vy,vz,mass,charge" << std::endl; // Insert headers into csv file
+    ValueFile << "x,y,z,vx,vy,vz,mass,charge"; // Insert headers into csv file
 
     for (CSVPoint point : points)
     {
         ValueFile
+            << std::endl
             << point.x << ","
             << point.y << ","
             << point.z << ","
@@ -19,9 +20,50 @@ void generateFile(std::vector<CSVPoint> points)
             << point.vy << ","
             << point.vz << ","
             << point.mass << ","
-            << point.charge
-            << std::endl;
+            << point.charge;
     }
 
+    ValueFile.close();
+}
+
+void initialiseSimulationValuesFile()
+{
+    std::ofstream ValueFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH);
+
+    ValueFile << "x,y,z,vx,vy,vz,mass,charge"; // Insert headers into csv file
+
+    ValueFile.close();
+}
+
+void generateSimulationValuesFile(Octree *octree)
+{
+    std::ofstream ValueFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH, std::ios::app);
+
+    std::vector<Octree *> children = getChildren(octree);
+
+    for (Octree *child : children)
+    {
+        float x = child->point->x;
+        float y = child->point->y;
+        float z = child->point->z;
+        float vx = child->velocityX;
+        float vy = child->velocityY;
+        float vz = child->velocityZ;
+        float mass = child->mass;
+        float charge = child->charge;
+
+        ValueFile
+            << std::endl
+            << x << ","
+            << y << ","
+            << z << ","
+            << vx << ","
+            << vy << ","
+            << vz << ","
+            << mass << ","
+            << charge;
+    }
+
+    ValueFile << "\n";
     ValueFile.close();
 }

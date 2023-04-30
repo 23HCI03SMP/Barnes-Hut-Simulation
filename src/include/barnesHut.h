@@ -8,6 +8,9 @@
 // Path to initial conditions csv file
 constexpr char INITIAL_VALUES_PATH[] = "initial_values.csv";
 
+// Path to simulation results csv file
+constexpr char SIMULATION_VALUES_PATH[] = "simulation_values.csv";
+
 // Pi constant
 constexpr float PI = 3.14159265358979323846;
 
@@ -46,14 +49,14 @@ struct CSVPoint
     float mass;
     float charge;
     CSVPoint() : x(-1), y(-1), z(-1), vx(-1), vy(-1), vz(-1), mass(-1) {}
-    CSVPoint(float a, float b, float c, float d, float e, float f, float g, float h) : x(a),
-                                                                                       y(b),
-                                                                                       z(c),
-                                                                                       vx(d),
-                                                                                       vy(e),
-                                                                                       vz(f),
-                                                                                       mass(g),
-                                                                                       charge(h) {}
+    CSVPoint(float x, float y, float z, float vx, float vy, float vz, float mass, float charge) : x(x),
+                                                                                                  y(y),
+                                                                                                  z(z),
+                                                                                                  vx(vx),
+                                                                                                  vy(vy),
+                                                                                                  vz(vz),
+                                                                                                  mass(mass),
+                                                                                                  charge(charge) {}
 };
 
 class Octree
@@ -99,15 +102,17 @@ public:
 
 std::vector<CSVPoint> loadInitialValues();
 std::vector<CSVPoint> generateInitialPoints(float minX,
-                                                        float minY,
-                                                        float minZ,
-                                                        float maxX,
-                                                        float maxY,
-                                                        float maxZ,
-                                                        float mass,
-                                                        float density,
-                                                        float temperature);
+                                            float minY,
+                                            float minZ,
+                                            float maxX,
+                                            float maxY,
+                                            float maxZ,
+                                            float mass,
+                                            float density,
+                                            float temperature);
 
 std::vector<Octree *> getChildren(Octree *&volume);
 
-void generateFile(std::vector<CSVPoint> points);
+void generateInitialValuesFile(std::vector<CSVPoint> points);
+void initialiseSimulationValuesFile();
+void generateSimulationValuesFile(Octree *octree);
