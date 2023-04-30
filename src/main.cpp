@@ -1,15 +1,16 @@
 #include "include/barnesHut.h"
 #include <iostream>
 
-Octree *loop(Octree *octree, int iterations, float timeStep)
+Octree loop(Octree *octree, int iterations, float timeStep)
 {
+    Octree final = Octree(0, 0, 0, 0, 0, 0);
     Octree *finalPtr;
 
-    for (int i = iterations; i >= 0; i--)
+    for (int i = 0; i < iterations; i++)
     {
         std::vector<Octree *> childVect = getChildren(octree);
         Barnes barnes;
-
+        
         for (Octree *&child : childVect)
         {
             for (Octree *&child2 : childVect)
@@ -20,11 +21,10 @@ Octree *loop(Octree *octree, int iterations, float timeStep)
         }
 
         Simulation sim = Simulation();
-        Octree final = sim.mainLoop(octree, 1, timeStep);
-        finalPtr = &final;
+        final = sim.mainLoop(octree, 1, timeStep);
     }
 
-    return finalPtr;
+    return final;
 }
 
 int main()
@@ -50,7 +50,9 @@ int main()
         tree.insert(tree_ptr, x, y, z, vx, vy, vz, mass, mass);
     }
 
-    Octree *final = loop(tree_ptr, 1, 1e-10);
+    Octree final = loop(tree_ptr, 1, 1e-10);
+
+
     std::getchar();
     return 0;
 }
