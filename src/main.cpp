@@ -10,7 +10,7 @@ Octree loop(Octree *octree, int iterations, float theta, float timeStep)
 
     for (int i = 0; i < iterations; i++)
     {
-        std::vector<Octree *> childVect = getChildren(octree);
+        std::vector<Octree *> childVect = getNodes(octree);
         Barnes barnes;
 
         for (Octree *&child : childVect)
