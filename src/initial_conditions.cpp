@@ -7,6 +7,7 @@
 std::vector<CSVPoint> generateInitialPoints(
     float minX, float minY, float minZ, 
     float maxX, float maxY, float maxZ, 
+    float radius,
     float mass, 
     float density,
     float temperature)
@@ -18,7 +19,6 @@ std::vector<CSVPoint> generateInitialPoints(
     float rangeZ = maxZ - minZ;
     float maxRange = std::max(rangeX, std::max(rangeY, rangeZ));
 
-    float radius = maxRange / 2.0f;
     int n = std::ceil(density * 4.0f * PI * std::pow(radius, 3.0f) / 3.0f);
 
     gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
