@@ -35,9 +35,9 @@ std::vector<std::array<float, 7>> generatePoints(
         } while (pow(x - (minX + maxX) / 2, 2) + pow(y - (minY + maxY) / 2, 2) + pow(z - (minZ + maxZ) / 2, 2) > pow(radius, 2)); // ensure coordinates are within range
 
         // generate random velocities for the point using Maxwell-Boltzmann distribution
-        vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(2.0);
-        vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(2.0);
-        vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(2.0);
+        vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
+        vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
+        vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
 
         points.push_back({x, y, z, vx, vy, vz, mass});
     }
