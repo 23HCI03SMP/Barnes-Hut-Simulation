@@ -30,7 +30,7 @@ Octree loop(Octree *octree, int iterations, float timeStep)
 
 int main()
 {
-    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 3, 293); // 293K = 20C
+    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 20, 293); // 293K = 20C
     generateInitialValuesFile(points);
 
     std::vector<CSVPoint> initialPoints = loadInitialValues();
@@ -52,8 +52,8 @@ int main()
             point.charge);
     }
 
-    initialiseSimulationValuesFile();
-    Octree final = loop(tree_ptr, 1, 1e-10);
+    initialiseSimulationValuesFile(initialPoints);
+    Octree final = loop(tree_ptr, 200, 1e-10);
 
     std::getchar();
     return 0;

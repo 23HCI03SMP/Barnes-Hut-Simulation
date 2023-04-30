@@ -12,7 +12,7 @@ void generateInitialValuesFile(std::vector<CSVPoint> points)
     for (CSVPoint point : points)
     {
         ValueFile
-            << std::endl
+            << "\n"
             << point.x << ","
             << point.y << ","
             << point.z << ","
@@ -26,12 +26,26 @@ void generateInitialValuesFile(std::vector<CSVPoint> points)
     ValueFile.close();
 }
 
-void initialiseSimulationValuesFile()
+void initialiseSimulationValuesFile(std::vector<CSVPoint> initialPoints)
 {
     std::ofstream ValueFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH);
 
     ValueFile << "x,y,z,vx,vy,vz,mass,charge"; // Insert headers into csv file
+    
+    for (CSVPoint point : initialPoints) {
+        ValueFile
+            << "\n"
+            << point.x << ","
+            << point.y << ","
+            << point.z << ","
+            << point.vx << ","
+            << point.vy << ","
+            << point.vz << ","
+            << point.mass << ","
+            << point.charge;
+    }
 
+    ValueFile << "\n";
     ValueFile.close();
 }
 
@@ -53,7 +67,7 @@ void generateSimulationValuesFile(Octree *octree)
         float charge = child->charge;
 
         ValueFile
-            << std::endl
+            << "\n"
             << x << ","
             << y << ","
             << z << ","
