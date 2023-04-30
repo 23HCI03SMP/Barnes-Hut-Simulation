@@ -35,6 +35,27 @@ struct Point
     Point(float a, float b, float c) : x(a), y(b), z(c) {}
 };
 
+struct CSVPoint
+{
+    float x;
+    float y;
+    float z;
+    float vx;
+    float vy;
+    float vz;
+    float mass;
+    float charge;
+    CSVPoint() : x(-1), y(-1), z(-1), vx(-1), vy(-1), vz(-1), mass(-1) {}
+    CSVPoint(float a, float b, float c, float d, float e, float f, float g, float h) : x(a),
+                                                                                       y(b),
+                                                                                       z(c),
+                                                                                       vx(d),
+                                                                                       vy(e),
+                                                                                       vz(f),
+                                                                                       mass(g),
+                                                                                       charge(h) {}
+};
+
 class Octree
 {
 private:
@@ -53,10 +74,10 @@ public:
     std::vector<Octree *> children;
 
     Octree();
-    Octree(float x, float y, float z, float vx, float vy, float vz, float charge, float mass);
+    Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
-    void insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float charge, float mass);
+    void insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     bool find(float x, float y, float z);
 };
 
@@ -76,9 +97,17 @@ public:
     Octree mainLoop(Octree *&volume, int iterations, float timeStep);
 };
 
-std::vector<std::array<float, 7>> loadInitialValues();
-std::vector<std::array<float, 7>> generatePoints(float minX, float minY, float minZ, float maxX, float maxY, float maxZ, float mass, float density, float temperature);
+std::vector<CSVPoint> loadInitialValues();
+std::vector<CSVPoint> generateInitialPoints(float minX,
+                                                        float minY,
+                                                        float minZ,
+                                                        float maxX,
+                                                        float maxY,
+                                                        float maxZ,
+                                                        float mass,
+                                                        float density,
+                                                        float temperature);
 
 std::vector<Octree *> getChildren(Octree *&volume);
 
-void generateFile(std::vector<std::array<float, 7>> points);
+void generateFile(std::vector<CSVPoint> points);

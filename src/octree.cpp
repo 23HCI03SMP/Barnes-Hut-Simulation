@@ -21,7 +21,7 @@ Octree::Octree()
     point = new Point();
 }
 
-Octree::Octree(float x, float y, float z, float vx, float vy, float vz, float charge, float mass)
+Octree::Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
 {
     point = new Point(x, y, z);
 
@@ -121,7 +121,7 @@ bool Octree::find(float x, float y, float z)
     return false;
 }
 
-void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float charge, float mass)
+void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
 {
     if (find(x, y, z))
     {
@@ -193,12 +193,12 @@ void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy
 
     if (children[pos]->point == nullptr)
     {
-        children[pos]->insert(root, x, y, z, vx, vy, vz, charge, mass);
+        children[pos]->insert(root, x, y, z, vx, vy, vz, mass, charge);
     }
     else if (children[pos]->point->x == -1)
     {
         delete children[pos];
-        children[pos] = new Octree(x, y, z, vx, vy, vz, charge, mass);
+        children[pos] = new Octree(x, y, z, vx, vy, vz, mass, charge);
     }
     else
     {
@@ -248,8 +248,8 @@ void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy
             children[pos] = new Octree(midX, midY, midZ, maxPoints->x, maxPoints->y, maxPoints->z);
         }
 
-        children[pos]->insert(root, x_, y_, z_, vx_, vy_, vz_, charge_, mass_);
-        children[pos]->insert(root, x, y, z, vx, vy, vz, charge, mass);
+        children[pos]->insert(root, x_, y_, z_, vx_, vy_, vz_, mass_, charge_);
+        children[pos]->insert(root, x, y, z, vx, vy, vz, mass, charge);
     }
 
     recalculateCenterOfMass(root);

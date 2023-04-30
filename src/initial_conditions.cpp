@@ -4,14 +4,14 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
-std::vector<std::array<float, 7>> generatePoints(
+std::vector<CSVPoint> generateInitialPoints(
     float minX, float minY, float minZ, 
     float maxX, float maxY, float maxZ, 
     float mass, 
     float density,
     float temperature)
 {
-    std::vector<std::array<float, 7>> points;
+    std::vector<CSVPoint> points;
 
     float rangeX = maxX - minX;
     float rangeY = maxY - minY;
@@ -39,7 +39,7 @@ std::vector<std::array<float, 7>> generatePoints(
         vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
         vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
 
-        points.push_back({x, y, z, vx, vy, vz, mass});
+        points.push_back(CSVPoint(x, y, z, vx, vy, vz, mass, 1.0f));
     }
 
     gsl_rng_free(rng);

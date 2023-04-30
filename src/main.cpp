@@ -10,7 +10,7 @@ Octree loop(Octree *octree, int iterations, float timeStep)
     {
         std::vector<Octree *> childVect = getChildren(octree);
         Barnes barnes;
-        
+
         for (Octree *&child : childVect)
         {
             for (Octree *&child2 : childVect)
@@ -29,29 +29,29 @@ Octree loop(Octree *octree, int iterations, float timeStep)
 
 int main()
 {
-    std::vector<std::array<float, 7>> points = generatePoints(1, 1, 1, 5, 5, 5, 1, 20, 293); // 293K = 20C
+    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 20, 293); // 293K = 20C
     generateFile(points);
 
-    std::vector<std::array<float, 7>> a = loadInitialValues();
+    std::vector<CSVPoint> initialPoints = loadInitialValues();
 
     Octree tree = Octree(1, 1, 1, 5, 5, 5);
     Octree *tree_ptr = &tree;
 
-    for (std::array<float, 7> point : a)
+    for (CSVPoint point : initialPoints)
     {
-        float x = point[0];
-        float y = point[1];
-        float z = point[2];
-        float vx = point[3];
-        float vy = point[4];
-        float vz = point[5];
-        float mass = point[6];
-
-        tree.insert(tree_ptr, x, y, z, vx, vy, vz, mass, mass);
+        tree.insert(
+            tree_ptr,
+            point.x,
+            point.y,
+            point.z,
+            point.vx,
+            point.vy,
+            point.vz,
+            point.mass,
+            point.charge);
     }
 
     Octree final = loop(tree_ptr, 1, 1e-10);
-
 
     std::getchar();
     return 0;
