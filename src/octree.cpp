@@ -131,7 +131,7 @@ void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy
 
     if (x < minPoints->x || x > maxPoints->x || y < minPoints->y || y > maxPoints->y || z < minPoints->z || z > maxPoints->z)
     {
-        std::cout << "Out of bound" << std::endl;
+        // std::cout << "Out of bound" << std::endl;
         return;
     }
 
@@ -293,6 +293,6 @@ void Octree::recalculateCenterOfMass(Octree *&octree)
 
         octree->charge = massSum;
         octree->mass = massSum;
-        octree->com = new Point(xPosSum, yPosSum / massSum, zPosSum / massSum);
+        octree->com = new Point(xPosSum / massSum, yPosSum / massSum, zPosSum / massSum);
     }
 }

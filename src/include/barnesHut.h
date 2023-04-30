@@ -11,6 +11,9 @@ constexpr char INITIAL_VALUES_PATH[] = "initial_values.csv";
 // Path to simulation results csv file
 constexpr char SIMULATION_VALUES_PATH[] = "simulation_values.csv";
 
+// Path to theta csv file
+constexpr char THETA_PATH[] = "theta.csv";
+
 // Pi constant
 constexpr float PI = 3.14159265358979323846;
 
