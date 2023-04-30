@@ -17,6 +17,7 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
     
     if (isExternalNode(node)) {
         // Coulomb's law
+        // std::cout << "External" << std::endl;
         float forceX = 0;
         float forceY = 0;
         float forceZ = 0;
@@ -56,6 +57,7 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
 
     //if theta < 0.5(arbitrary number), treat as a single body
     if (theta < thetaLimit) {
+        // std::cout << "Theta check" << std::endl;
         float forceX = K_E*((node->charge * b->charge)/(dx * dx));
         float forceY = K_E*((node->charge * b->charge)/(dy * dy));
         float forceZ = K_E*((node->charge * b->charge)/(dz * dz));
@@ -78,6 +80,7 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit) {
 
     //else, run recursively on children
     for(Octree* child : node->children) {
+        // std::cout << "child recursion" << std::endl;
         float dx = child->com->x - b->com->x;
         float dy = child->com->y - b->com->y;
         float dz = child->com->z - b->com->z;
