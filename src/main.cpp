@@ -34,7 +34,7 @@ Octree loop(Octree *octree, int iterations, float theta, float timeStep)
 int main()
 {
     auto start = high_resolution_clock::now();
-    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 20, 293); // 293K = 20C
+    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 1, 50, 293); // 293K = 20C
     generateInitialValuesFile(points);
 
     std::vector<CSVPoint> initialPoints = loadInitialValues();
