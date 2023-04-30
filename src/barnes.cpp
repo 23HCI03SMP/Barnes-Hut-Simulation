@@ -86,10 +86,8 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
         b->forceX += forceX;
         b->forceY += forceY;
         b->forceZ += forceZ;
-
-        if (node->children.size() != 0)
-        {
-            for (Octree *child : b->children)
+        
+        for (Octree *child : b->children)
             {
                 child->forceX += forceX;
                 child->forceY += forceY;

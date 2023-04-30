@@ -15,11 +15,7 @@ Octree loop(Octree *octree, int iterations, float theta, float timeStep)
 
         for (Octree *&child : childVect)
         {
-            for (Octree *&child2 : childVect)
-            {
-                if (child != child2)
-                    barnes.calcForce(child, child2, theta);
-            }
+            barnes.calcForce(octree, child, theta);
         }
 
         Simulation sim = Simulation();
