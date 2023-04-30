@@ -7,7 +7,6 @@ using namespace std::chrono;
 Octree loop(Octree *octree, int iterations, float theta, float timeStep)
 {
     Octree final = Octree(0, 0, 0, 0, 0, 0);
-    Octree *finalPtr;
 
     for (int i = 0; i < iterations; i++)
     {
@@ -25,6 +24,8 @@ Octree loop(Octree *octree, int iterations, float theta, float timeStep)
 
         Simulation sim = Simulation();
         final = sim.mainLoop(octree, 1, timeStep);
+
+        generateSimulationValuesFile(&final);
     }
 
     return final;
@@ -33,8 +34,8 @@ Octree loop(Octree *octree, int iterations, float theta, float timeStep)
 int main()
 {
     auto start = high_resolution_clock::now();
-    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 20, 293); // 293K = 20C
-    generateFile(points);
+    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 3, 293); // 293K = 20C
+    generateInitialValuesFile(points);
 
     std::vector<CSVPoint> initialPoints = loadInitialValues();
 
@@ -55,6 +56,7 @@ int main()
             point.charge);
     }
 
+    initialiseSimulationValuesFile();
     Octree final = loop(tree_ptr, 1, 0.1, 1e-10);
 
     auto stop = high_resolution_clock::now();
