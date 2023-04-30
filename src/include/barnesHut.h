@@ -17,6 +17,15 @@ constexpr float K_E = 8.9875517923e9;
 // Boltzmann constant
 constexpr float K_B = 1.380649e-23;
 
+// Mass of a proton
+constexpr float M_P = 1.67262192369e-27;
+
+// Mass of a neutron
+constexpr float M_N = 1.67492749804e-27;
+
+// Mass of an electron
+constexpr float M_E = 9.1093837015e-31;
+
 struct Point
 {
     float x;

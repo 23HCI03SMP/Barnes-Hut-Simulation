@@ -13,8 +13,6 @@ std::vector<std::array<float, 7>> generatePoints(
 {
     std::vector<std::array<float, 7>> points;
 
-    float sigma = 1.0f;  // standard deviation of gaussian distribution
-
     float rangeX = maxX - minX;
     float rangeY = maxY - minY;
     float rangeZ = maxZ - minZ;
