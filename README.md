@@ -50,6 +50,8 @@ The initial values for the particles are generated using the `initial_conditions
 
 $$f(x) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}$$
 
+where $\mu$ is the mean and $\sigma$ is the standard deviation. The particles are given a random position within the sphere, and a random velocity. The velocity is given a random direction, and a random magnitude. The magnitude of the velocity is calculated using the following equation:
+
 The number of particles is given by the following equation:
 
 $$N = \lceil \frac{4}{3}\pi r^3 \rho \rceil$$
@@ -61,8 +63,6 @@ Their initial velocities in the (x, y, z) directions are calculated using the Ma
 $$v = (\frac{kT}{m})^\frac{1}{2}$$
 
 where k is the Boltzmann constant, T is the temperature, and m is the mass of the particle.
-
-where $\mu$ is the mean and $\sigma$ is the standard deviation. The particles are given a random position within the sphere, and a random velocity. The velocity is given a random direction, and a random magnitude. The magnitude of the velocity is calculated using the following equation:
 
 ### Barnes Hut Simulation
 While summing the forces between every particle is an O(N^2) operation, the Barnes Hut Model uses the octree to reduce the number of particles that need to be considered when calculating the force between particles. [The algorithm](http://arborjs.org/docs/barnes-hut) for calculating the force between particles is as follows:
