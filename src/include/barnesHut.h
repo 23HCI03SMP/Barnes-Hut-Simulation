@@ -112,6 +112,7 @@ std::vector<CSVPoint> generateInitialPoints(float minX,
                                             float temperature);
 
 std::vector<Octree *> getChildren(Octree *&volume);
+std::vector<Octree *> getNodes(Octree *&volume);
 
 void generateInitialValuesFile(std::vector<CSVPoint> points);
 void initialiseSimulationValuesFile();

@@ -10,7 +10,7 @@ Octree loop(Octree *octree, int iterations, float theta, float timeStep)
 
     for (int i = 0; i < iterations; i++)
     {
-        std::vector<Octree *> childVect = getChildren(octree);
+        std::vector<Octree *> childVect = getNodes(octree);
         Barnes barnes;
 
         for (Octree *&child : childVect)
@@ -57,7 +57,7 @@ int main()
     }
 
     initialiseSimulationValuesFile();
-    Octree final = loop(tree_ptr, 1, 0.1, 1e-10);
+    Octree final = loop(tree_ptr, 1, 2, 1e-5);
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<microseconds>(stop - start);
