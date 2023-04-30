@@ -3,4 +3,8 @@
 *.exe
 *.csv
 
-# pycache files from running the python version
+# mp4 files as output
+*.mp4
+
+# frames
+*.png
