@@ -2,6 +2,8 @@
 #include <iostream>
 #include <chrono>
 
+#include "testing.cpp"
+
 using namespace std::chrono;
 
 Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
@@ -12,6 +14,7 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
 
     for (int i = 0; i < iterations; i++)
     {
+        auto start = high_resolution_clock::now();
         std::vector<Octree *> childVect = getNodes(octree);
         Barnes barnes;
 
@@ -23,6 +26,10 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
         Simulation sim = Simulation();
         final = sim.mainLoop(octree, 1, timeStep);
 
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(stop - start);
+        std::cout << duration.count() << " ms " << duration.count()/1000 << " s" << std::endl;
+
         generateSimulationValuesFile(&final);
     }
 
@@ -31,36 +38,35 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
 
 int main()
 {
-    // std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 1, 50, 293); // 293K = 20C
+
+    tester();
+
+    // std::cout << "Starting simulation..." << std::endl;
+    // std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 5, 1, 100, 293); // 293K = 20C
     // generateInitialValuesFile(points);
 
-    std::vector<CSVPoint> initialPoints = loadInitialValues();
+    // std::vector<CSVPoint> initialPoints = loadInitialValues();
 
-    auto start = high_resolution_clock::now();
-    Octree tree = Octree(1, 1, 1, 5, 5, 5);
-    Octree *tree_ptr = &tree;
+    // Octree tree = Octree(1, 1, 1, 5, 5, 5);
+    // Octree *tree_ptr = &tree;
 
-    for (CSVPoint point : initialPoints)
-    {
-        tree.insert(
-            tree_ptr,
-            point.x,
-            point.y,
-            point.z,
-            point.vx,
-            point.vy,
-            point.vz,
-            point.mass,
-            point.charge);
-    }
+    // for (CSVPoint point : initialPoints)
+    // {
+    //     tree.insert(
+    //         tree_ptr,
+    //         point.x,
+    //         point.y,
+    //         point.z,
+    //         point.vx,
+    //         point.vy,
+    //         point.vz,
+    //         point.mass,
+    //         point.charge);
+    // }
 
-    initialiseSimulationValuesFile(initialPoints);
-    Octree final = loop(tree, 200, 0, 1e-10);
+    // initialiseSimulationValuesFile(initialPoints);
+    // Octree final = loop(tree, 200, 1, 1e-10);
 
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(stop - start);
-    std::cout << duration.count() << " ms " << duration.count()/1000 << " s" << std::endl;
-
-    std::getchar();
-    return 0;
+    // std::getchar();
+    // return 0;
 }
