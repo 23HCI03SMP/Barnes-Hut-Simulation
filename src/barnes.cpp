@@ -56,13 +56,14 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
 
         return;
     }
+
     // calculate theta (length/distance)
     float length = abs(node->minPoints->x - node->maxPoints->x);
     float distance = sqrt(pow(dx, 2) + pow(dy, 2) + pow(dz, 2));
     float theta = length / distance;
 
     // if theta < 0.5(arbitrary number), treat as a single body
-    //  std::cout << theta;
+    // std::cout << theta << " ";
     if (theta < thetaLimit)
     {
         // std::cout << "Theta check" << std::endl;
@@ -87,14 +88,11 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
         b->forceY += forceY;
         b->forceZ += forceZ;
 
-        if (node->children.size() != 0)
+        for (Octree *child : b->children)
         {
-            for (Octree *child : b->children)
-            {
-                child->forceX += forceX;
-                child->forceY += forceY;
-                child->forceZ += forceZ;
-            }
+            child->forceX += forceX;
+            child->forceY += forceY;
+            child->forceZ += forceZ;
         }
 
         return;
