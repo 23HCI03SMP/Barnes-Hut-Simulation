@@ -10,6 +10,9 @@ OUTPUT_VIDEO = "output.mp4"
 
 FPS = 10
 
+MIN = 1
+MAX = 5
+
 # Initialize directory
 # Create a ./frames directory if it doesn't exist
 # Otherwise, delete all files in the ./frames directory
@@ -52,9 +55,9 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
         # Plot the scatter graph
         ax.scatter(xlist, ylist, zlist)
         ax.set_title(f"Time step {i}")
-        ax.set_xlim(1, 5)
-        ax.set_ylim(1, 5)
-        ax.set_zlim(1, 5)
+        ax.set_xlim(MIN, MAX)
+        ax.set_ylim(MIN, MAX)
+        ax.set_zlim(MIN, MAX)
 
         plt.savefig(os.path.join(os.path.dirname(__file__), f"frames/frame{str(i).zfill(4)}.png"))
         print(f"Saved frame {i}")

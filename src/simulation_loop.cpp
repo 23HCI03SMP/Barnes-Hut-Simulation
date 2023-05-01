@@ -59,9 +59,9 @@ Octree Simulation::mainLoop(Octree *&volume, int iterations, float timeStep)
             float sY = child->velocityY * timeStep + (0.5 * accelY * timeStep * timeStep);
             float sZ = child->velocityZ * timeStep + (0.5 * accelZ * timeStep * timeStep);
 
-            child->com->x += sX;
-            child->com->y += sY;
-            child->com->z += sZ;
+            child->point->x += sX;
+            child->point->y += sY;
+            child->point->z += sZ;
 
             // update simulation volume
             newOctree.insert(
