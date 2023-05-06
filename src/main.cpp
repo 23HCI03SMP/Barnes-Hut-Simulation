@@ -22,6 +22,7 @@ Octree loop(Octree* octree, int iterations, float theta, float timeStep)
         final = sim.mainLoop(octree, 1, timeStep);
 
         generateSimulationValuesFile(&final);
+        std::cout << "Done with time step " << i << "\n";
     }
 
     return final;
@@ -29,20 +30,21 @@ Octree loop(Octree* octree, int iterations, float theta, float timeStep)
 
 int main()
 {
-    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 10, 10, 10, 4, 5000, 293, std::vector<Particle>{}); // 293K = 20C
+    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 20, 20, 20, 4, 1000, 293, std::vector<Particle>{}); // 293K = 20C
+
     generateInitialValuesFile(points);
 
     std::vector<CSVPoint> initialPoints = loadInitialValues();
 
     auto start = high_resolution_clock::now();
-    Octree tree = Octree(1, 1, 1, 10, 10, 10);
+    Octree tree = Octree(1, 1, 1, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
     loadAndInsertInitialValues(tree_ptr);
 
     initialiseSimulationValuesFile(initialPoints);
 
-    Octree final = loop(tree_ptr, 200, 0, 1e-10); 
+    Octree final = loop(tree_ptr, 10000, 1.5, 1e-10); 
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);

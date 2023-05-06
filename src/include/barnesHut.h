@@ -41,7 +41,8 @@ struct Point
     Point(float a, float b, float c) : x(a), y(b), z(c) {}
 };
 
-struct Particle {
+struct Particle
+{
     std::string alias;
     float mass;
     float charge;
@@ -118,11 +119,17 @@ void loadAndInsertInitialValues(Octree *octree);
 std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
                                             float maxX, float maxY, float maxZ,
                                             float radius,
-                                            float density,
                                             float temperature,
+                                            float density,
                                             std::vector<Particle> particles);
+std::vector<CSVPoint> generateInitialPonts(float minX, float minY, float minZ,
+                                           float maxX, float maxY, float maxZ,
+                                           float radius,
+                                           float temperature,
+                                           int particleNumber,
+                                           std::vector<Particle> particles);
 
-std::vector<Octree *> getChildren(Octree *volume);
+    std::vector<Octree *> getChildren(Octree *volume);
 std::vector<Octree *> getNodes(Octree *volume);
 
 void generateInitialValuesFile(std::vector<CSVPoint> points);

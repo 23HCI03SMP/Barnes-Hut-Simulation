@@ -4,6 +4,19 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
+// Overload to generate a specific number of particles, rather than a specific density
+std::vector<CSVPoint> generateInitialPonts(float minX, float minY, float minZ,
+                                           float maxX, float maxY, float maxZ,
+                                           float radius,
+                                           float particleNumber,
+                                           int temperature,
+                                           std::vector<Particle> particles)
+{
+    float density = std::ceil(particleNumber / (4.0f * PI * std::pow(radius, 3.0f) / 3.0f));
+
+    return generateInitialPoints(minX, minY, minZ, maxX, maxY, maxZ, radius, density, temperature, particles);
+}
+
 std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
                                             float maxX, float maxY, float maxZ,
                                             float radius,
