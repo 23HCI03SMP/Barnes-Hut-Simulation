@@ -23,7 +23,7 @@ The Barnes Hut Model is a method for calculating the gravitational force between
 - [x] Create initial values csv file
 - [ ] Utilise OpenMP/CUDA to parallelise the code
 - [ ] Different types of particles
-- [ ] Optimise Insertion
+- [x] Optimise Insertion
 - [ ] Logging
 - [ ] Visualisation
 
