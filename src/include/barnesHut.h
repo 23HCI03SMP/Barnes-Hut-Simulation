@@ -122,14 +122,14 @@ std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
                                             float density,
                                             float temperature,                            
                                             std::vector<Particle> particles);
-std::vector<CSVPoint> generateInitialPonts(float minX, float minY, float minZ,
+std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
                                            float maxX, float maxY, float maxZ,
                                            float radius,
                                            int particleNumber,
                                            float temperature,
                                            std::vector<Particle> particles);
 
-    std::vector<Octree *> getChildren(Octree *volume);
+std::vector<Octree *> getChildren(Octree *volume);
 std::vector<Octree *> getNodes(Octree *volume);
 
 void generateInitialValuesFile(std::vector<CSVPoint> points);
