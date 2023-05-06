@@ -38,7 +38,7 @@ struct Point
     float y;
     float z;
     Point() : x(-1), y(-1), z(-1) {}
-    Point(float a, float b, float c) : x(a), y(b), z(c) {}
+    Point(float x, float y, float z) : x(x), y(y), z(z) {}
 };
 
 struct CSVPoint
@@ -64,28 +64,44 @@ struct CSVPoint
 
 class Octree
 {
-private:
-    void recalculateCenterOfMass(Octree *&octree);
+    Point* point;
+
+    Point* minPoints, *maxPoints;
+    std::vector<Octree*> children;
 
 public:
-    Point *point;
-    Point *minPoints, *maxPoints;
-    Point *com;
-
-    float forceX = 0, forceY = 0, forceZ = 0;
-
-    float charge = 0; // Need to set charge to zero because default value of floating point is some random negative number
-    float mass = 0;
-    float velocityX = 0, velocityY = 0, velocityZ = 0;
-    std::vector<Octree *> children;
-
     Octree();
-    Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
+    Octree(float x, float y, float z);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
-    void insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
+    void insert(float x, float y, float z);
     bool find(float x, float y, float z);
 };
+
+// class Octree
+// {
+// private:
+//     void recalculateCenterOfMass(Octree *&octree);
+
+// public:
+//     Point *point;
+//     Point *minPoints, *maxPoints;
+//     Point *com;
+
+//     float forceX = 0, forceY = 0, forceZ = 0;
+
+//     float charge = 0; // Need to set charge to zero because default value of floating point is some random negative number
+//     float mass = 0;
+//     float velocityX = 0, velocityY = 0, velocityZ = 0;
+//     std::vector<Octree *> children;
+
+//     Octree();
+//     Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
+//     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
+
+//     void insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
+//     bool find(float x, float y, float z);
+// };
 
 class Barnes
 {

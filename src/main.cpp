@@ -1,66 +1,59 @@
 #include "include/barnesHut.h"
 #include <iostream>
 #include <chrono>
+#include <gsl/gsl_randist.h>
 
 using namespace std::chrono;
 
-Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
-{
-    Octree *octree = &octreeM;
+// Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
+// {
+//     Octree *octree = &octreeM;
 
-    Octree final = Octree(0, 0, 0, 0, 0, 0);
+//     Octree final = Octree(0, 0, 0, 0, 0, 0);
 
-    for (int i = 0; i < iterations; i++)
-    {
-        std::vector<Octree *> childVect = getNodes(octree);
-        Barnes barnes;
+//     for (int i = 0; i < iterations; i++)
+//     {
+//         std::vector<Octree *> childVect = getNodes(octree);
+//         Barnes barnes;
 
-        for (Octree *&child : childVect)
-        {
-            barnes.calcForce(octree, child, theta);
-        }
+//         for (Octree *&child : childVect)
+//         {
+//             barnes.calcForce(octree, child, theta);
+//         }
 
-        Simulation sim = Simulation();
-        final = sim.mainLoop(octree, 1, timeStep);
+//         Simulation sim = Simulation();
+//         final = sim.mainLoop(octree, 1, timeStep);
 
-        generateSimulationValuesFile(&final);
-    }
+//         generateSimulationValuesFile(&final);
+//     }
 
-    return final;
-}
+//     return final;
+// }
 
 int main()
 {
-    // std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 1, 50, 293); // 293K = 20C
-    // generateInitialValuesFile(points);
+    Octree tree(1, 1, 1, 5, 5, 5);
 
-    std::vector<CSVPoint> initialPoints = loadInitialValues();
+    const int N = 5000;            // Number of coordinates
+    const double lower_bound = 1.0; // Lower bound for coordinates
+    const double upper_bound = 5.0; // Upper bound for coordinates
 
-    auto start = high_resolution_clock::now();
-    Octree tree = Octree(1, 1, 1, 5, 5, 5);
-    Octree *tree_ptr = &tree;
+    // Initialize random number generator
+    gsl_rng *rng = gsl_rng_alloc(gsl_rng_default);
 
-    for (CSVPoint point : initialPoints)
+    // Seed the random number generator with the current time
+    gsl_rng_set(rng, time(NULL));
+
+    // Generate random coordinates within the given range
+    for (int i = 0; i < N; i++)
     {
-        tree.insert(
-            tree_ptr,
-            point.x,
-            point.y,
-            point.z,
-            point.vx,
-            point.vy,
-            point.vz,
-            point.mass,
-            point.charge);
+        float x = gsl_ran_flat(rng, lower_bound, upper_bound); // x coordinate
+        float y = gsl_ran_flat(rng, lower_bound, upper_bound); // y coordinate
+        float z = gsl_ran_flat(rng, lower_bound, upper_bound); // z coordinate
+    
+        tree.insert(x, y, z);
+        std::cout << i << "\n";
     }
-
-    initialiseSimulationValuesFile(initialPoints);
-    Octree final = loop(tree, 200, 0, 1e-10);
-
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(stop - start);
-    std::cout << duration.count() << " ms " << duration.count()/1000 << " s" << std::endl;
-
-    std::getchar();
+    
     return 0;
 }
