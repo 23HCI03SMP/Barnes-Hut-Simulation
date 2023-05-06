@@ -125,8 +125,8 @@ std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
 std::vector<CSVPoint> generateInitialPonts(float minX, float minY, float minZ,
                                            float maxX, float maxY, float maxZ,
                                            float radius,
-                                           float temperature,
                                            int particleNumber,
+                                           float temperature,
                                            std::vector<Particle> particles);
 
     std::vector<Octree *> getChildren(Octree *volume);

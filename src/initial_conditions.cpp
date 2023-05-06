@@ -8,8 +8,8 @@
 std::vector<CSVPoint> generateInitialPonts(float minX, float minY, float minZ,
                                            float maxX, float maxY, float maxZ,
                                            float radius,
-                                           float particleNumber,
-                                           int temperature,
+                                           int particleNumber,
+                                           float temperature,
                                            std::vector<Particle> particles)
 {
     float density = std::ceil(particleNumber / (4.0f * PI * std::pow(radius, 3.0f) / 3.0f));
