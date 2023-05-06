@@ -41,6 +41,15 @@ struct Point
     Point(float a, float b, float c) : x(a), y(b), z(c) {}
 };
 
+struct Particle {
+    std::string alias;
+    float mass;
+    float charge;
+
+    Particle() : alias(""), mass(-1), charge(-1) {}
+    Particle(std::string alias, float mass, float charge) : alias(alias), mass(mass), charge(charge) {}
+};
+
 struct CSVPoint
 {
     float x;
