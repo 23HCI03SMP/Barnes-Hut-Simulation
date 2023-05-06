@@ -119,8 +119,8 @@ void loadAndInsertInitialValues(Octree *octree);
 std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
                                             float maxX, float maxY, float maxZ,
                                             float radius,
-                                            float temperature,
                                             float density,
+                                            float temperature,                            
                                             std::vector<Particle> particles);
 std::vector<CSVPoint> generateInitialPonts(float minX, float minY, float minZ,
                                            float maxX, float maxY, float maxZ,
