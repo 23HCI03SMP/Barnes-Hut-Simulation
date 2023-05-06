@@ -251,8 +251,6 @@ void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy,
         children[pos]->insert(root, x_, y_, z_, vx_, vy_, vz_, mass_, charge_);
         children[pos]->insert(root, x, y, z, vx, vy, vz, mass, charge);
     }
-
-    recalculateCenterOfMass(root);
 }
 
 void Octree::recalculateCenterOfMass(Octree *octree)
