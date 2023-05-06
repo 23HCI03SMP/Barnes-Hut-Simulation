@@ -37,7 +37,7 @@ int main()
 
     std::cout << "Timer Started\n";
     auto start = high_resolution_clock::now();
-    Octree tree = Octree(1, 1, 1, 10, 10, 10);
+    Octree tree = Octree(1, 1, 1, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
     loadAndInsertInitialValues(tree_ptr);
