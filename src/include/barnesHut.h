@@ -45,6 +45,7 @@ struct Particle {
     std::string alias;
     float mass;
     float charge;
+    float percentage;
 
     Particle() : alias(""), mass(-1), charge(-1) {}
     Particle(std::string alias, float mass, float charge) : alias(alias), mass(mass), charge(charge) {}
@@ -74,8 +75,6 @@ struct CSVPoint
 class Octree
 {
 private:
-    void recalculateCenterOfMass(Octree *octree);
-
 public:
     Point *point;
     Point *minPoints, *maxPoints;
@@ -94,6 +93,8 @@ public:
 
     void insert(Octree *root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     bool find(float x, float y, float z);
+
+    void recalculateCenterOfMass(Octree *octree);
 };
 
 class Barnes
@@ -117,9 +118,9 @@ void loadAndInsertInitialValues(Octree *octree);
 std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
                                             float maxX, float maxY, float maxZ,
                                             float radius,
-                                            float mass,
                                             float density,
-                                            float temperature);
+                                            float temperature,
+                                            std::vector<Particle> particles);
 
 std::vector<Octree *> getChildren(Octree *volume);
 std::vector<Octree *> getNodes(Octree *volume);

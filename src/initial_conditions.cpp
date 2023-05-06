@@ -4,15 +4,16 @@
 #include <gsl/gsl_rng.h>
 #include <gsl/gsl_randist.h>
 
-std::vector<CSVPoint> generateInitialPoints(
-    float minX, float minY, float minZ, 
-    float maxX, float maxY, float maxZ, 
-    float radius,
-    float mass, 
-    float density,
-    float temperature)
+std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
+                                            float maxX, float maxY, float maxZ,
+                                            float radius,
+                                            float density,
+                                            float temperature,
+                                            std::vector<Particle> particles)
 {
     std::vector<CSVPoint> points;
+
+    float mass = 1;
 
     float rangeX = maxX - minX;
     float rangeY = maxY - minY;
@@ -21,13 +22,14 @@ std::vector<CSVPoint> generateInitialPoints(
 
     int n = std::ceil(density * 4.0f * PI * std::pow(radius, 3.0f) / 3.0f);
 
-    gsl_rng* rng = gsl_rng_alloc(gsl_rng_default);
+    gsl_rng *rng = gsl_rng_alloc(gsl_rng_default);
     gsl_rng_set(rng, time(NULL));
 
     for (int i = 0; i < n; ++i)
     {
         float x, y, z, vx, vy, vz;
-        do {
+        do
+        {
             // generate random coordinates within the sphere
             x = gsl_ran_gaussian(rng, radius) + maxX / 2.0;
             y = gsl_ran_gaussian(rng, radius) + maxY / 2.0;
