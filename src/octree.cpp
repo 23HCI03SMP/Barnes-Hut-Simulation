@@ -5,6 +5,7 @@
 #include <vector>
 #include <iostream>
 #include "include/barnesHut.h"
+#include <fstream>
 
 // o represents octet
 #define o1 0
@@ -131,7 +132,7 @@ void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy
 
     if (x < minPoints->x || x > maxPoints->x || y < minPoints->y || y > maxPoints->y || z < minPoints->z || z > maxPoints->z)
     {
-        //std::cout << "Out of bound" << std::endl;
+        std::cout << "Out of bound" << std::endl;
         return;
     }
 
@@ -211,7 +212,6 @@ void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy
         float charge_ = children[pos]->charge;
         float mass_ = children[pos]->mass;
 
-
         delete children[pos];
         children[pos] = nullptr;
 
@@ -253,7 +253,6 @@ void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy
     }
 
     recalculateCenterOfMass(root);
-
 }
 
 void Octree::recalculateCenterOfMass(Octree *&octree)

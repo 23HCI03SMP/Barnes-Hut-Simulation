@@ -44,9 +44,9 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
 int main()
 {
 
-    // std::cout << "Starting simulation..." << std::endl;
-    // std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 5, 1, 5, 293); // 293K = 20C
-    // generateInitialValuesFile(points);
+    std::cout << "Starting simulation..." << std::endl;
+    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 5, 1, 5, 293); // 293K = 20C
+    generateInitialValuesFile(points);
 
     std::vector<CSVPoint> initialPoints = loadInitialValues();
 
@@ -71,8 +71,8 @@ int main()
     }
 
 
-    initialiseSimulationValuesFile(initialPoints);
-    Octree final = loop(tree, 200, 3, 1e-10);
+    //initialiseSimulationValuesFile(initialPoints);
+    //Octree final = loop(tree, 200, 3, 1e-10);
 
     std::getchar();
     return 0;
