@@ -121,7 +121,7 @@ bool Octree::find(float x, float y, float z)
     return false;
 }
 
-void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
+void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
 {
     if (find(x, y, z))
     {
@@ -255,7 +255,7 @@ void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy
     recalculateCenterOfMass(root);
 }
 
-void Octree::recalculateCenterOfMass(Octree *&octree)
+void Octree::recalculateCenterOfMass(Octree *octree)
 {
     if (octree->children.size() == 0)
     {

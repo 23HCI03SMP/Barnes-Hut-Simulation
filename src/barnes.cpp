@@ -5,12 +5,12 @@
 // Otherwise, calculate the ratio s/d. If s/d < θ, treat this internal node as a single body, and calculate the force it exerts on body b, and add this amount to b’s net force.
 // Otherwise, run the procedure recursively on each of the current node’s children.
 
-bool Barnes::isExternalNode(Octree *&octree)
+bool Barnes::isExternalNode(Octree *octree)
 {
     return octree->children.size() == 0;
 }
 
-void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
+void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
 {
     // if negative, force on b is in the negative direction
     float dx = node->com->x - b->com->x;

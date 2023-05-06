@@ -3,6 +3,43 @@
 #include <fstream>
 #include <filesystem>
 
+void loadAndInsertInitialValues(Octree *octree)
+{
+    std::ifstream ValueString(std::filesystem::current_path() / INITIAL_VALUES_PATH);
+
+    // Read the first line to get the headers before starting to read values
+    std::string headers;
+    std::getline(ValueString, headers);
+
+    // Loop through each line, and then float parse each value in the line
+    std::string line;
+    std::array<float, 8> values;
+    while (std::getline(ValueString, line))
+    {
+        std::istringstream s(line);
+        std::string field;
+
+        int i = 0;
+        while (std::getline(s, field, ','))
+        {
+            values[i] = std::stof(field);
+            i++;
+        }
+
+        // Insert values into octree
+        float x = values[0];
+        float y = values[1];
+        float z = values[2];
+        float vx = values[3];
+        float vy = values[4];
+        float vz = values[5];
+        float mass = values[6];
+        float charge = values[7];
+
+        octree->insert(octree, x, y, z, vx, vy, vz, mass, charge);
+    }
+}
+
 std::vector<CSVPoint> loadInitialValues()
 {
     std::vector<CSVPoint> valuesVect;

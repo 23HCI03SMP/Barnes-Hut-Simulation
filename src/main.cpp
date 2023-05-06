@@ -4,10 +4,8 @@
 
 using namespace std::chrono;
 
-Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
+Octree loop(Octree* octree, int iterations, float theta, float timeStep)
 {
-    Octree *octree = &octreeM;
-
     Octree final = Octree(0, 0, 0, 0, 0, 0);
 
     for (int i = 0; i < iterations; i++)
@@ -15,7 +13,7 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
         std::vector<Octree *> childVect = getNodes(octree);
         Barnes barnes;
 
-        for (Octree *&child : childVect)
+        for (Octree *child : childVect)
         {
             barnes.calcForce(octree, child, theta);
         }
@@ -31,31 +29,20 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
 
 int main()
 {
-    // std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 1, 50, 293); // 293K = 20C
-    // generateInitialValuesFile(points);
+    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 1, 200, 293); // 293K = 20C
+    generateInitialValuesFile(points);
 
     std::vector<CSVPoint> initialPoints = loadInitialValues();
 
-    auto start = high_resolution_clock::now();
     Octree tree = Octree(1, 1, 1, 5, 5, 5);
     Octree *tree_ptr = &tree;
 
-    for (CSVPoint point : initialPoints)
-    {
-        tree.insert(
-            tree_ptr,
-            point.x,
-            point.y,
-            point.z,
-            point.vx,
-            point.vy,
-            point.vz,
-            point.mass,
-            point.charge);
-    }
+    loadAndInsertInitialValues(tree_ptr);
 
     initialiseSimulationValuesFile(initialPoints);
-    Octree final = loop(tree, 200, 0, 1e-10);
+
+    auto start = high_resolution_clock::now();
+    Octree final = loop(tree_ptr, 200, 0, 1e-10); 
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);

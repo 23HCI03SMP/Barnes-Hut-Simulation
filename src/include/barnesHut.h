@@ -65,7 +65,7 @@ struct CSVPoint
 class Octree
 {
 private:
-    void recalculateCenterOfMass(Octree *&octree);
+    void recalculateCenterOfMass(Octree *octree);
 
 public:
     Point *point;
@@ -83,27 +83,28 @@ public:
     Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
-    void insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
+    void insert(Octree *root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     bool find(float x, float y, float z);
 };
 
 class Barnes
 {
 private:
-    bool isExternalNode(Octree *&octree);
+    bool isExternalNode(Octree *octree);
 
 public:
-    void calcForce(Octree *&node, Octree *&b, float thetaLimit);
+    void calcForce(Octree *node, Octree *b, float thetaLimit);
 };
 
 class Simulation
 {
 private:
 public:
-    Octree mainLoop(Octree *&volume, int iterations, float timeStep);
+    Octree mainLoop(Octree *volume, int iterations, float timeStep);
 };
 
 std::vector<CSVPoint> loadInitialValues();
+void loadAndInsertInitialValues(Octree *octree);
 std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
                                             float maxX, float maxY, float maxZ,
                                             float radius,
@@ -111,8 +112,8 @@ std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
                                             float density,
                                             float temperature);
 
-std::vector<Octree *> getChildren(Octree *&volume);
-std::vector<Octree *> getNodes(Octree *&volume);
+std::vector<Octree *> getChildren(Octree *volume);
+std::vector<Octree *> getNodes(Octree *volume);
 
 void generateInitialValuesFile(std::vector<CSVPoint> points);
 void initialiseSimulationValuesFile(std::vector<CSVPoint> initialPoints);
