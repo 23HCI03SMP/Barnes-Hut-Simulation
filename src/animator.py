@@ -11,7 +11,7 @@ OUTPUT_VIDEO = "output.mp4"
 FPS = 10
 
 MIN = 1
-MAX = 5
+MAX = 10
 
 # Initialize directory
 # Create a ./frames directory if it doesn't exist
