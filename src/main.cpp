@@ -2,6 +2,8 @@
 #include <iostream>
 #include <chrono>
 
+#include "testing.cpp"
+
 using namespace std::chrono;
 
 Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
@@ -10,15 +12,23 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
 
     Octree final = Octree(0, 0, 0, 0, 0, 0);
 
+    float totalDur = 0;
+
     for (int i = 0; i < iterations; i++)
     {
-        std::vector<Octree *> childVect = getNodes(octree);
+        auto start = high_resolution_clock::now();
+        std::vector<Octree *> childVect = getChildren(octree);
         Barnes barnes;
 
         for (Octree *&child : childVect)
         {
-            barnes.calcForce(octree, child, theta);
+                barnes.calcForce(octree, child, theta);
         }
+
+        auto stop = high_resolution_clock::now();
+        auto duration = duration_cast<milliseconds>(stop - start);
+        totalDur += duration.count();
+        std::cout << duration.count() << " ms " << duration.count()/1000 << " s" << std::endl;
 
         Simulation sim = Simulation();
         final = sim.mainLoop(octree, 1, timeStep);
@@ -26,20 +36,24 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
         generateSimulationValuesFile(&final);
     }
 
+    std::cout << "Average time: " << totalDur/iterations << " ms" << std::endl;
+
     return final;
 }
 
 int main()
 {
-    // std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 1, 50, 293); // 293K = 20C
-    // generateInitialValuesFile(points);
+
+    std::cout << "Starting simulation..." << std::endl;
+    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 2, 1, 10, 293); // 293K = 20C
+    generateInitialValuesFile(points);
 
     std::vector<CSVPoint> initialPoints = loadInitialValues();
 
-    auto start = high_resolution_clock::now();
     Octree tree = Octree(1, 1, 1, 5, 5, 5);
     Octree *tree_ptr = &tree;
 
+    int i = 0;
     for (CSVPoint point : initialPoints)
     {
         tree.insert(
@@ -52,14 +66,13 @@ int main()
             point.vz,
             point.mass,
             point.charge);
+        std::cout << "Inserted " << i << " points\n";
+        i++;
     }
 
-    initialiseSimulationValuesFile(initialPoints);
-    Octree final = loop(tree, 200, 0, 1e-10);
 
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(stop - start);
-    std::cout << duration.count() << " ms " << duration.count()/1000 << " s" << std::endl;
+    initialiseSimulationValuesFile(initialPoints);
+    Octree final = loop(tree, 200, 3, 1e-10);
 
     std::getchar();
     return 0;

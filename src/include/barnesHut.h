@@ -5,6 +5,8 @@
 #include <vector>
 #include <iostream>
 
+#pragma once
+
 // Path to initial conditions csv file
 constexpr char INITIAL_VALUES_PATH[] = "initial_values.csv";
 
@@ -89,10 +91,8 @@ public:
 
 class Barnes
 {
-private:
-    bool isExternalNode(Octree *&octree);
-
 public:
+    bool isExternalNode(Octree *&octree);
     void calcForce(Octree *&node, Octree *&b, float thetaLimit);
 };
 
