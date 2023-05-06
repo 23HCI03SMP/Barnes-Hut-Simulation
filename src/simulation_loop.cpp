@@ -54,7 +54,6 @@ Octree Simulation::mainLoop(Octree *&volume, int iterations, float timeStep)
             child->point->y += child->velocityY * timeStep;
             child->point->z += child->velocityZ * timeStep;
 
-            // calculate displacement using suvat
             child->velocityX += child->forceX / child->mass * timeStep;
             child->velocityY += child->forceY / child->mass * timeStep;
             child->velocityZ += child->forceZ / child->mass * timeStep;

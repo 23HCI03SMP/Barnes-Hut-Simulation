@@ -22,7 +22,7 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
 
         for (Octree *&child : childVect)
         {
-            barnes.calcForce(octree, child, theta);
+                barnes.calcForce(octree, child, theta);
         }
 
         Simulation sim = Simulation();
@@ -72,7 +72,7 @@ int main()
 
 
     initialiseSimulationValuesFile(initialPoints);
-    Octree final = loop(tree, 200, 0.5, 1e-10);
+    Octree final = loop(tree, 200, 3, 1e-10);
 
     std::getchar();
     return 0;

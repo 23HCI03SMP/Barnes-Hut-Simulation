@@ -32,15 +32,15 @@ void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
         //Coulomb's Law
         if (dx != 0)
         {
-            forceX = K_E * ((node->point->charge * b->point->charge) / (dx * dx));
+            forceX = K_E * ((node->charge * b->charge) / (dx * dx));
         }
         if (dy != 0)
         {
-            forceY = K_E * ((node->point->charge * b->point->charge) / (dy * dy));
+            forceY = K_E * ((node->charge * b->charge) / (dy * dy));
         }
         if (dz != 0)
         {
-            forceZ = K_E * ((node->point->charge * b->point->charge) / (dz * dz));
+            forceZ = K_E * ((node->charge * b->charge) / (dz * dz));
         }
 
         if (dx < 0)
@@ -69,14 +69,16 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
     float dz = node->com->z - b->com->z;
 
     //check if node is empty or whether it contains b
-    if (!cell_contains_position(node, b->point) || node->point->mass == 0 || !isExternalNode(node))
+    if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)))
     {
+        //std::cout << "bad" << std::endl;
         return;
     }
 
     if (isExternalNode(node))
     {
         addForce(node, b, dx, dy, dz);
+        //std::cout << "external" << std::endl;
         return;
     }
 
@@ -85,12 +87,17 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
     float distance = sqrt(pow(dx, 2) + pow(dy, 2) + pow(dz, 2));
     float theta = length/distance;
 
+    //std::cout << "theta: " << theta << std::endl;
+
     // if theta < 0.5(arbitrary number), treat as a single body
     if (theta < thetaLimit)
     {
+        std::cout << "less\n";
         addForce(node, b, dx, dy, dz);
         return;
     }
+
+    std::cout << "more\n";
 
     for (Octree *child : node->children)
     {
