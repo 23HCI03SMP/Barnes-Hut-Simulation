@@ -92,12 +92,12 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
     // if theta < 0.5(arbitrary number), treat as a single body
     if (theta < thetaLimit)
     {
-        std::cout << "less\n";
+        //std::cout << "less\n";
         addForce(node, b, dx, dy, dz);
         return;
     }
 
-    std::cout << "more\n";
+    //std::cout << "more\n";
 
     for (Octree *child : node->children)
     {

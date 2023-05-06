@@ -25,13 +25,13 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
                 barnes.calcForce(octree, child, theta);
         }
 
-        Simulation sim = Simulation();
-        final = sim.mainLoop(octree, 1, timeStep);
-
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<milliseconds>(stop - start);
         totalDur += duration.count();
         std::cout << duration.count() << " ms " << duration.count()/1000 << " s" << std::endl;
+
+        Simulation sim = Simulation();
+        final = sim.mainLoop(octree, 1, timeStep);
 
         generateSimulationValuesFile(&final);
     }
