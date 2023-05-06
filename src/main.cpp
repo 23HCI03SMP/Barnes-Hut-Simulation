@@ -12,10 +12,12 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
 
     Octree final = Octree(0, 0, 0, 0, 0, 0);
 
+    float totalDur = 0;
+
     for (int i = 0; i < iterations; i++)
     {
         auto start = high_resolution_clock::now();
-        std::vector<Octree *> childVect = getNodes(octree);
+        std::vector<Octree *> childVect = getChildren(octree);
         Barnes barnes;
 
         for (Octree *&child : childVect)
@@ -28,10 +30,13 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
 
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<milliseconds>(stop - start);
+        totalDur += duration.count();
         std::cout << duration.count() << " ms " << duration.count()/1000 << " s" << std::endl;
 
         generateSimulationValuesFile(&final);
     }
+
+    std::cout << "Average time: " << totalDur/iterations << " ms" << std::endl;
 
     return final;
 }
@@ -39,34 +44,36 @@ Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
 int main()
 {
 
-    tester();
-
     // std::cout << "Starting simulation..." << std::endl;
-    // std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 5, 1, 100, 293); // 293K = 20C
+    // std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 5, 1, 5, 293); // 293K = 20C
     // generateInitialValuesFile(points);
 
-    // std::vector<CSVPoint> initialPoints = loadInitialValues();
+    std::vector<CSVPoint> initialPoints = loadInitialValues();
 
-    // Octree tree = Octree(1, 1, 1, 5, 5, 5);
-    // Octree *tree_ptr = &tree;
+    Octree tree = Octree(1, 1, 1, 5, 5, 5);
+    Octree *tree_ptr = &tree;
 
-    // for (CSVPoint point : initialPoints)
-    // {
-    //     tree.insert(
-    //         tree_ptr,
-    //         point.x,
-    //         point.y,
-    //         point.z,
-    //         point.vx,
-    //         point.vy,
-    //         point.vz,
-    //         point.mass,
-    //         point.charge);
-    // }
+    int i = 0;
+    for (CSVPoint point : initialPoints)
+    {
+        tree.insert(
+            tree_ptr,
+            point.x,
+            point.y,
+            point.z,
+            point.vx,
+            point.vy,
+            point.vz,
+            point.mass,
+            point.charge);
+        std::cout << "Inserted " << i << " points\n";
+        i++;
+    }
 
-    // initialiseSimulationValuesFile(initialPoints);
-    // Octree final = loop(tree, 200, 1, 1e-10);
 
-    // std::getchar();
-    // return 0;
+    initialiseSimulationValuesFile(initialPoints);
+    Octree final = loop(tree, 200, 0.5, 1e-10);
+
+    std::getchar();
+    return 0;
 }
