@@ -29,19 +29,19 @@ Octree loop(Octree* octree, int iterations, float theta, float timeStep)
 
 int main()
 {
-    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 1, 1, 200, 293); // 293K = 20C
+    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 10, 10, 10, 4, 5000, 293, std::vector<Particle>{}); // 293K = 20C
     generateInitialValuesFile(points);
 
     std::vector<CSVPoint> initialPoints = loadInitialValues();
 
-    Octree tree = Octree(1, 1, 1, 5, 5, 5);
+    auto start = high_resolution_clock::now();
+    Octree tree = Octree(1, 1, 1, 10, 10, 10);
     Octree *tree_ptr = &tree;
 
     loadAndInsertInitialValues(tree_ptr);
 
     initialiseSimulationValuesFile(initialPoints);
 
-    auto start = high_resolution_clock::now();
     Octree final = loop(tree_ptr, 200, 0, 1e-10); 
 
     auto stop = high_resolution_clock::now();
