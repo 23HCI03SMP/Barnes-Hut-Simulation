@@ -6,11 +6,11 @@
 
 // Overload to generate a specific number of particles, rather than a specific density
 std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
-                                           float maxX, float maxY, float maxZ,
-                                           float radius,
-                                           int particleNumber,
-                                           float temperature,
-                                           std::vector<Particle> particles)
+                                            float maxX, float maxY, float maxZ,
+                                            float radius,
+                                            int particleNumber,
+                                            float temperature,
+                                            std::vector<Particle> particles)
 {
     float density = std::ceil(particleNumber / (4.0f * PI * std::pow(radius, 3.0f) / 3.0f));
 
@@ -38,6 +38,7 @@ std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
     gsl_rng *rng = gsl_rng_alloc(gsl_rng_default);
     gsl_rng_set(rng, time(NULL));
 
+#pragma omp parallel for
     for (int i = 0; i < n; ++i)
     {
         float x, y, z, vx, vy, vz;
@@ -54,7 +55,10 @@ std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
         vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
         vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
 
-        points.push_back(CSVPoint(x, y, z, vx, vy, vz, mass, 1.0f));
+#pragma omp critical
+        {
+            points.push_back(CSVPoint(x, y, z, vx, vy, vz, mass, 1.0f));
+        }
     }
 
     gsl_rng_free(rng);

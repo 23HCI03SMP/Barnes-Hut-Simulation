@@ -9,8 +9,10 @@ void generateInitialValuesFile(std::vector<CSVPoint> points)
 
     ValueFile << "x,y,z,vx,vy,vz,mass,charge"; // Insert headers into csv file
 
-    for (CSVPoint point : points)
+    for (int i = 0; i < points.size(); i++)
     {
+        CSVPoint point = points[i];
+        
         ValueFile
             << "\n"
             << point.x << ","
