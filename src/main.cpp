@@ -31,8 +31,8 @@ Octree loop(Octree* octree, int iterations, float theta, float timeStep)
 int main()
 {
     std::vector<Particle> particles = {
-        Particle("Deutron", M_PROTON + M_NEUTRON, 1, 0.5),
-        Particle("Electron", M_ELECTRON, -1, 0.5),
+        Particle("Deutron", 2, 1, 0.5),
+        Particle("Electron", 0.00054f, -1, 0.5),
     };
 
     auto start = high_resolution_clock::now();
@@ -49,7 +49,7 @@ int main()
 
     std::cout << "Initial Values File Created\n";
 
-    Octree final = loop(tree_ptr, 10, 1, 1e-10); 
+    Octree final = loop(tree_ptr, 100, 1, 1e-10); 
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);

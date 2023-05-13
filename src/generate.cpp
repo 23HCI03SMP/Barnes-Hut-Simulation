@@ -11,7 +11,7 @@ void generateFiles(std::vector<CSVPoint> points)
 {
     std::ofstream ValueFile(std::filesystem::current_path() / INITIAL_VALUES_PATH);
 
-    ValueFile << "x,y,z,vx,vy,vz,mass,charge"; // Insert headers into csv file
+    ValueFile << "x,y,z,vx,vy,vz,mass,charge,alias"; // Insert headers into csv file
 
     for (int i = 0; i < points.size(); i++)
     {
