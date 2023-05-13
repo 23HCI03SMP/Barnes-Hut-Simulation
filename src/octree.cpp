@@ -21,7 +21,7 @@ Octree::Octree()
     point = new Point();
 }
 
-Octree::Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
+Octree::Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge, std::string alias)
 {
     point = new Point(x, y, z);
 
@@ -30,6 +30,7 @@ Octree::Octree(float x, float y, float z, float vx, float vy, float vz, float ma
     velocityX = vx;
     velocityY = vy;
     velocityZ = vz;
+    this->alias = alias;
 }
 
 // Initializing a base octree
@@ -121,7 +122,7 @@ bool Octree::find(float x, float y, float z)
     return false;
 }
 
-void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
+void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge, std::string alias)
 {
     if (find(x, y, z))
     {
@@ -193,12 +194,12 @@ void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy,
 
     if (children[pos]->point == nullptr)
     {
-        children[pos]->insert(root, x, y, z, vx, vy, vz, mass, charge);
+        children[pos]->insert(root, x, y, z, vx, vy, vz, mass, charge, alias);
     }
     else if (children[pos]->point->x == -1)
     {
         delete children[pos];
-        children[pos] = new Octree(x, y, z, vx, vy, vz, mass, charge);
+        children[pos] = new Octree(x, y, z, vx, vy, vz, mass, charge, alias);
     }
     else
     {
@@ -210,6 +211,7 @@ void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy,
         float vz_ = children[pos]->velocityZ;
         float charge_ = children[pos]->charge;
         float mass_ = children[pos]->mass;
+        std::string alias_ = children[pos]->alias;
 
 
         delete children[pos];
@@ -248,8 +250,8 @@ void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy,
             children[pos] = new Octree(midX, midY, midZ, maxPoints->x, maxPoints->y, maxPoints->z);
         }
 
-        children[pos]->insert(root, x_, y_, z_, vx_, vy_, vz_, mass_, charge_);
-        children[pos]->insert(root, x, y, z, vx, vy, vz, mass, charge);
+        children[pos]->insert(root, x_, y_, z_, vx_, vy_, vz_, mass_, charge_, alias_);
+        children[pos]->insert(root, x, y, z, vx, vy, vz, mass, charge, alias);
     }
 }
 

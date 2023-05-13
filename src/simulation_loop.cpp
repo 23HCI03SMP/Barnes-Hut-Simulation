@@ -73,7 +73,8 @@ Octree Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
                 child->velocityY,
                 child->velocityZ,
                 child->mass,
-                child->charge);
+                child->charge,
+                child->alias);
         }
     }
     return newOctree;

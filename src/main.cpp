@@ -30,24 +30,26 @@ Octree loop(Octree* octree, int iterations, float theta, float timeStep)
 
 int main()
 {
+    std::vector<Particle> particles = {
+        Particle("Deutron", M_PROTON + M_NEUTRON, 1, 0.5),
+        Particle("Electron", M_ELECTRON, -1, 0.5),
+    };
+
     auto start = high_resolution_clock::now();
-    std::vector<CSVPoint> points = generateInitialPoints(1.0f, 1.0f, 1.0f, 10.0f, 10.0, 10.0f, 4.0f, 10000.0f, 293.0f, std::vector<Particle>{}); // 293K = 20C
-    generateInitialValuesFile(points);
-    
-    // std::vector<CSVPoint> initialPoints = loadInitialValues();
+    std::vector<CSVPoint> points = generateInitialPoints(1.0f, 1.0f, 1.0f, 10.0f, 10.0, 10.0f, 4.0f, 20.0f, 293.0f, particles); // 293K = 20C
+    generateFiles(points);
 
-    // std::cout << "Timer Started\n";
-    // auto start = high_resolution_clock::now();
-    // Octree tree = Octree(1, 1, 1, 20, 20, 20);
-    // Octree *tree_ptr = &tree;
+    std::cout << "Timer Started\n";
 
-    // loadAndInsertInitialValues(tree_ptr);
-    // std::cout << "Initial Values Loaded\n";
+    Octree tree = Octree(1, 1, 1, 20, 20, 20);
+    Octree *tree_ptr = &tree;
 
-    // initialiseSimulationValuesFile(initialPoints);
-    // std::cout << "Initial Values File Created\n";
+    loadAndInsertInitialValues(tree_ptr);
+    std::cout << "Initial Values Loaded\n";
 
-    // Octree final = loop(tree_ptr, 10, 3, 1e-10); 
+    std::cout << "Initial Values File Created\n";
+
+    Octree final = loop(tree_ptr, 10, 1, 1e-10); 
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);

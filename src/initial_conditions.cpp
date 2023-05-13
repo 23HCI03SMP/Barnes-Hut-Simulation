@@ -12,7 +12,7 @@ std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
                                             float temperature,
                                             std::vector<Particle> particles)
 {
-    float density = std::ceil(particleNumber / (4.0f * PI * std::pow(radius, 3.0f) / 3.0f));
+    float density = std::floor(particleNumber / (4.0f * PI * std::pow(radius, 3.0f) / 3.0f));
 
     return generateInitialPoints(minX, minY, minZ, maxX, maxY, maxZ, radius, density, temperature, particles);
 }
@@ -26,38 +26,40 @@ std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
 {
     std::vector<CSVPoint> points;
 
-    float mass = 1;
-
     float rangeX = maxX - minX;
     float rangeY = maxY - minY;
     float rangeZ = maxZ - minZ;
     float maxRange = std::max(rangeX, std::max(rangeY, rangeZ));
 
-    int n = std::ceil(density * 4.0f * PI * std::pow(radius, 3.0f) / 3.0f);
-
     gsl_rng *rng = gsl_rng_alloc(gsl_rng_default);
     gsl_rng_set(rng, time(NULL));
 
-#pragma omp parallel for
-    for (int i = 0; i < n; ++i)
+    for (int i = 0; i < particles.size(); i++)
     {
-        float x, y, z, vx, vy, vz;
-        do
-        {
-            // generate random coordinates within the sphere
-            x = gsl_ran_gaussian(rng, radius) + maxX / 2.0;
-            y = gsl_ran_gaussian(rng, radius) + maxY / 2.0;
-            z = gsl_ran_gaussian(rng, radius) + maxZ / 2.0;
-        } while (pow(x - (minX + maxX) / 2, 2) + pow(y - (minY + maxY) / 2, 2) + pow(z - (minZ + maxZ) / 2, 2) > pow(radius, 2)); // ensure coordinates are within range
+        Particle particle = particles[i];
+        float mass = particle.mass;
+        float charge = particle.charge;
+        std::string alias = particle.alias;
 
-        // generate random velocities for the point using Maxwell-Boltzmann distribution
-        vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
-        vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
-        vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
+        int n = std::ceil(density * particle.percentage * 4.0f * PI * std::pow(radius, 3.0f) / 3.0f);
 
-#pragma omp critical
+        for (int j = 0; j < n; ++j)
         {
-            points.push_back(CSVPoint(x, y, z, vx, vy, vz, mass, 1.0f));
+            float x, y, z, vx, vy, vz;
+            do
+            {
+                // generate random coordinates within the sphere
+                x = gsl_ran_gaussian(rng, radius) + maxX / 2.0;
+                y = gsl_ran_gaussian(rng, radius) + maxY / 2.0;
+                z = gsl_ran_gaussian(rng, radius) + maxZ / 2.0;
+            } while (pow(x - (minX + maxX) / 2, 2) + pow(y - (minY + maxY) / 2, 2) + pow(z - (minZ + maxZ) / 2, 2) > pow(radius, 2)); // ensure coordinates are within range
+
+            // generate random velocities for the point using Maxwell-Boltzmann distribution
+            vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
+            vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
+            vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
+
+            points.push_back(CSVPoint(x, y, z, vx, vy, vz, mass, charge, alias));
         }
     }
 
