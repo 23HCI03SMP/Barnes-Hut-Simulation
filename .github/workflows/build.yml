@@ -4,24 +4,13 @@ on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    
+    runs-on: windows-latest
     steps:
-    - uses: actions/checkout@v2
-    
-    - name: Install MSYS2 and Mingw Toolchain
-      run: |
-        pacman -Syu --noconfirm
-        pacman -S --noconfirm mingw-w64-x86_64-toolchain
-        
-    - name: Install required packages with MSYS2
-      run: |
-        packman --noconfirm -S mingw-w64-x86_64-gcc mingw-w64-x86_64-gsl mingw-w64-x86_64-openmp
-    
-    - name: Build C++ program with g++
-      run: |
-        g++ -g ./src/*.cpp -o main.exe -lgsl -lgslcblas -lm -fopenmp
-        
-    - name: Run C++ program
-      run: |
-        ./main.exe
+      - name: Install MSYS2
+        uses: msys2/setup-msys2@v2
+        with:
+          update: true
+      - name: Install packages
+        run: |
+          pacman -S mingw-w64-x86_64-gcc
+          pacman -S mingw-w64-x86_64-make
