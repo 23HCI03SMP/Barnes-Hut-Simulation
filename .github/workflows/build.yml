@@ -11,8 +11,14 @@ jobs:
     
     - name: Install Chocolatey
       run: |
-        Set-ExecutionPolicy Bypass -Scope Process -Force
-        iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))
+        sudo apt-get install -y dirmngr gnupg apt-transport-https software-properties-common
+        sudo apt-key adv --keyserver hkps://keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
+        echo "deb https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list
+        sudo apt-get update
+        sudo apt-get install -y gh
+        gh auth login --web
+        gh config set prompt disabled
+        sudo apt-get install -y chocolatey
     
     - name: Install MSYS2
       run: |
