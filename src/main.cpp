@@ -26,13 +26,12 @@ Octree loop(Octree* octree, int iterations, float theta, float timeStep)
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<milliseconds>(stop - start);
         totalDur += duration.count();
-        std::cout << duration.count() << " ms " << duration.count()/1000 << " s" << std::endl;
+        std::cout << "Timestep complete in " << duration.count() << " ms\n";;
 
         Simulation sim = Simulation();
         final = sim.mainLoop(octree, 1, timeStep);
 
         generateSimulationValuesFile(&final);
-        std::cout << "Timestep Finished\n";
     }
 
     std::cout << "Average time: " << totalDur/iterations << " ms" << std::endl;
@@ -61,7 +60,7 @@ int main()
 
     std::cout << "Initial Values File Created\n";
 
-    Octree final = loop(tree_ptr, 100, 1, 1e-10); 
+    Octree final = loop(tree_ptr, 100, 1, 1); 
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);
