@@ -1,6 +1,6 @@
 name: Build C++ Program
 
-on: [push, pull_request]
+on: [push, pull_request, workflow_dispatch]
 
 jobs:
   build:
@@ -9,21 +9,10 @@ jobs:
     steps:
     - uses: actions/checkout@v2
     
-    - name: Install Chocolatey
+    - name: Install MSYS2 and Mingw Toolchain
       run: |
-        sudo apt-get install -y dirmngr gnupg apt-transport-https software-properties-common
-        sudo apt-key adv --keyserver hkps://keyserver.ubuntu.com --recv-keys E298A3A825C0D65DFD57CBB651716619E084DAB9
-        echo "deb https://cli.github.com/packages stable main" | sudo tee /etc/apt/sources.list.d/github-cli.list
-        sudo apt-get update
-        sudo apt-get install -y gh
-        gh auth login --web
-        gh config set prompt disabled
-        sudo apt-get install -y chocolatey
-    
-    - name: Install MSYS2
-      run: |
-        choco install msys2 -y
-        refreshenv
+        pacman -Syu --noconfirm
+        pacman -S --noconfirm mingw-w64-x86_64-toolchain
         
     - name: Install required packages with MSYS2
       run: |
