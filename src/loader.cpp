@@ -40,7 +40,7 @@ void loadAndInsertInitialValues(Octree *octree)
         octree->insert(octree, x, y, z, vx, vy, vz, mass, charge, alias);
     }
 
-    octree->recalculateCenterOfMass(octree);
+    octree->recalculateCenterOfCharge(octree);
 }
 
 // std::vector<CSVPoint> loadInitialValues()

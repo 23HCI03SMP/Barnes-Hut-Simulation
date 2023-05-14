@@ -91,7 +91,7 @@ private:
 public:
     Point *point;
     Point *minPoints, *maxPoints;
-    Point *com;
+    Point *coc;
 
     std::string alias;
     float forceX = 0;
@@ -109,7 +109,7 @@ public:
     void insert(Octree *root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge, std::string alias);
     bool find(float x, float y, float z);
 
-    void recalculateCenterOfMass(Octree *octree);
+    void recalculateCenterOfCharge(Octree *octree);
 };
 
 class Barnes

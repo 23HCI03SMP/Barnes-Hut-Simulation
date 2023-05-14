@@ -6,7 +6,7 @@
 
 using namespace std::chrono;
 
-Octree loop(Octree* octree, int iterations, float theta, float timeStep)
+Octree loop(Octree *octree, int iterations, float theta, float timeStep)
 {
     Octree final = Octree(0, 0, 0, 0, 0, 0);
 
@@ -20,13 +20,13 @@ Octree loop(Octree* octree, int iterations, float theta, float timeStep)
 
         for (Octree *child : childVect)
         {
-                barnes.calcForce(octree, child, theta);
+            barnes.calcForce(octree, child, theta);
         }
 
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<milliseconds>(stop - start);
         totalDur += duration.count();
-        std::cout << "Timestep complete in " << duration.count() << " ms\n";;
+        std::cout << "Timestep complete in " << duration.count() << " ms\n";
 
         Simulation sim = Simulation();
         final = sim.mainLoop(octree, 1, timeStep);
@@ -34,7 +34,7 @@ Octree loop(Octree* octree, int iterations, float theta, float timeStep)
         generateSimulationValuesFile(&final);
     }
 
-    std::cout << "Average time: " << totalDur/iterations << " ms" << std::endl;
+    std::cout << "Average time: " << totalDur / iterations << " ms" << std::endl;
 
     return final;
 }
@@ -52,19 +52,20 @@ int main()
 
     std::cout << "Timer Started\n";
 
-    Octree tree = Octree(1, 1, 1, 20, 20, 20);
+    Octree tree = Octree(1, 1, 1, 10, 10, 10);
     Octree *tree_ptr = &tree;
 
     loadAndInsertInitialValues(tree_ptr);
+    std::cout << getChildren(tree_ptr).size() << std::endl;
     std::cout << "Initial Values Loaded\n";
 
     std::cout << "Initial Values File Created\n";
 
-    Octree final = loop(tree_ptr, 100, 1, 1); 
+    Octree final = loop(tree_ptr, 100, 1, 1);
 
     auto stop = high_resolution_clock::now();
     auto duration = duration_cast<milliseconds>(stop - start);
-    std::cout << duration.count() << " ms " << duration.count()/1000 << " s" << std::endl;
+    std::cout << duration.count() << " ms " << duration.count() / 1000 << " s" << std::endl;
 
     std::getchar();
     return 0;
