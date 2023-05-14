@@ -10,20 +10,26 @@ bool Barnes::isExternalNode(Octree *octree)
     return octree->children.size() == 0;
 }
 
-void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
-{
-    // if negative, force on b is in the negative direction
-    float dx = node->com->x - b->com->x;
-    float dy = node->com->y - b->com->y;
-    float dz = node->com->z - b->com->z;
+bool cell_contains_position(Octree *&cell, Point *&pos) {
+    if (pos->x < cell->minPoints->x || pos->x > cell->maxPoints->x) {
+        return false;
+    }
+    if (pos->y < cell->minPoints->y || pos->y > cell->maxPoints->y) {
+        return false;
+    }
+    if (pos->z < cell->minPoints->z || pos->z > cell->maxPoints->z) {
+        return false;
+    }
+    return true;
+}
 
-    if (isExternalNode(node))
-    {
-        // Coulomb's law
-        // std::cout << "External" << std::endl;
+void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
+{
         float forceX = 0;
         float forceY = 0;
         float forceZ = 0;
+
+        //Coulomb's Law
         if (dx != 0)
         {
             forceX = K_E * ((node->charge * b->charge) / (dx * dx));
@@ -53,76 +59,46 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
         b->forceX += forceX;
         b->forceY += forceY;
         b->forceZ += forceZ;
+}
 
+void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
+{
+    // if negative, force on b is in the negative direction
+    float dx = node->com->x - b->com->x;
+    float dy = node->com->y - b->com->y;
+    float dz = node->com->z - b->com->z;
+
+    //check if node is empty or whether it contains b
+    if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)))
+    {
+        //std::cout << "bad" << std::endl;
+        return;
+    }
+
+    if (isExternalNode(node))
+    {
+        addForce(node, b, dx, dy, dz);
+        //std::cout << "external" << std::endl;
         return;
     }
 
     // calculate theta (length/distance)
     float length = abs(node->minPoints->x - node->maxPoints->x);
     float distance = sqrt(pow(dx, 2) + pow(dy, 2) + pow(dz, 2));
-    float theta = length / distance;
+    float theta = length/distance;
+
+    //std::cout << "theta: " << theta << std::endl;
 
     // if theta < 0.5(arbitrary number), treat as a single body
-    // std::cout << theta << " ";
     if (theta < thetaLimit)
     {
-        // std::cout << "Theta check" << std::endl;
-        float forceX = K_E * ((node->charge * b->charge) / (dx * dx));
-        float forceY = K_E * ((node->charge * b->charge) / (dy * dy));
-        float forceZ = K_E * ((node->charge * b->charge) / (dz * dz));
-
-        if (dx < 0)
-        {
-            forceX = -forceX;
-        }
-        if (dy < 0)
-        {
-            forceY = -forceY;
-        }
-        if (dz < 0)
-        {
-            forceZ = -forceZ;
-        }
-
-        b->forceX += forceX;
-        b->forceY += forceY;
-        b->forceZ += forceZ;
-
-        for (Octree *child : b->children)
-        {
-            child->forceX += forceX;
-            child->forceY += forceY;
-            child->forceZ += forceZ;
-        }
-
+        //std::cout << "less\n";
+        addForce(node, b, dx, dy, dz);
         return;
     }
 
-    // else, run recursively on children
-    //  for(Octree* child : node->children) {
-    //      // std::cout << "child recursion" << std::endl;
-    //      float dx = child->com->x - b->com->x;
-    //      float dy = child->com->y - b->com->y;
-    //      float dz = child->com->z - b->com->z;
+    //std::cout << "more\n";
 
-    //     float forceX = K_E*((child->charge * b->charge)/(dx * dx));
-    //     float forceY = K_E*((child->charge * b->charge)/(dy * dy));
-    //     float forceZ = K_E*((child->charge * b->charge)/(dz * dz));
-
-    //     if (dx < 0) {
-    //         forceX = -forceX;
-    //     }
-    //     if (dy < 0) {
-    //         forceY = -forceY;
-    //     }
-    //     if (dz < 0) {
-    //         forceZ = -forceZ;
-    //     }
-
-    //     b->forceX += forceX;
-    //     b->forceY += forceY;
-    //     b->forceZ += forceZ;
-    // }
     for (Octree *child : node->children)
     {
         calcForce(child, b, thetaLimit);

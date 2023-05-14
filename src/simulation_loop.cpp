@@ -34,6 +34,7 @@ std::vector<Octree *> getNodes(Octree *volume)
 Octree Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
 { // simulation volume + iterations (-1 for infinite iterations) + time step (i.e how many seconds are in each iteration)
     // simulation loop
+
     Octree newOctree = Octree(
         volume->minPoints->x,
         volume->minPoints->y,
@@ -49,19 +50,13 @@ Octree Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
         std::vector<Octree *> childrenList = getChildren(volume);
         for (Octree *child : childrenList)
         {
-            // update accelerations
-            float accelX = child->forceX / child->mass;
-            float accelY = child->forceY / child->mass;
-            float accelZ = child->forceZ / child->mass;
+            child->point->x += child->velocityX * timeStep;
+            child->point->y += child->velocityY * timeStep;
+            child->point->z += child->velocityZ * timeStep;
 
-            // calculate displacement using suvat
-            float sX = child->velocityX * timeStep + (0.5 * accelX * timeStep * timeStep);
-            float sY = child->velocityY * timeStep + (0.5 * accelY * timeStep * timeStep);
-            float sZ = child->velocityZ * timeStep + (0.5 * accelZ * timeStep * timeStep);
-
-            child->point->x += sX;
-            child->point->y += sY;
-            child->point->z += sZ;
+            child->velocityX += child->forceX / child->mass * timeStep;
+            child->velocityY += child->forceY / child->mass * timeStep;
+            child->velocityZ += child->forceZ / child->mass * timeStep;
 
             // update simulation volume
             newOctree.insert(
