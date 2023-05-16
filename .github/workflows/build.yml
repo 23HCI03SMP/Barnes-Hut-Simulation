@@ -10,8 +10,8 @@ jobs:
       - uses: msys2/setup-msys2@v2
       - name: Print working directory
         run: |
-          # print the working directory
-          pwd
+          # print the files and folders in the working directory
+          ls -a 
       - name: Install Dependencies
         run: |
           # install GCC, GSL and OpenMP
