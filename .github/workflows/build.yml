@@ -14,5 +14,11 @@ jobs:
           msys2 -c "pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-gsl mingw-w64-x86_64-openmp" 
       - name: Build
         run: |
-          # build main.cpp in the ./src folder
-          g++ -std=c++17 -o ./src/*.cpp -o ./src/main.exe -lgsl -lgslcblas -lm -fopenmp
+          # make a bin directory 
+          # and build main.cpp in the ./src folder
+          mkdir bin
+          g++ -std=c++17 -o ./src/*.cpp -o ./bin/main.exe -lgsl -lgslcblas -lm -fopenmp
+      - name: Run
+        run: |
+          # run the program
+          ./bin/main.exe
