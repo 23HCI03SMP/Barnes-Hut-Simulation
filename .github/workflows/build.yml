@@ -10,8 +10,11 @@ jobs:
       - uses: msys2/setup-msys2@v2
       - name: Print working directory
         run: |
-          # print the files and folders in the working directory
-          Get-ChildItem -Force -Recurse | Select-Object FullName
+          if (Test-Path ./src/) {
+            Write-Host "./src/ directory exists"
+          } else {
+            Write-Host "./src/ directory does not exist"
+          }
       - name: Install Dependencies
         run: |
           # install GCC, GSL and OpenMP
