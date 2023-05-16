@@ -11,6 +11,8 @@ jobs:
       #   run: g++ -o main src/main.cpp
 
       - uses: msys2/setup-msys2@v2
+        with:
+          location: ${{github.workspace}}
       - uses: actions/checkout@v2
       - name: Install Dependencies
         run: |
@@ -21,7 +23,7 @@ jobs:
           # make a bin directory 
           # and build main.cpp in the ./src folder
           mkdir bin
-          g++ -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -L/mingw64/lib -lgsl -lgslcblas -lm -fopenmp
+          g++ -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -l ${{github.workspace}}/mingw64/lib -lgsl -lgslcblas -lm -fopenmp
       - name: Run
         run: |
           # run the program
