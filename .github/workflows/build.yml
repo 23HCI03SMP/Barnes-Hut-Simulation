@@ -10,4 +10,5 @@ jobs:
       - uses: msys2/setup-msys2@v2
       - name: Install Dependencies
         run: |
-          msys2 -c "pacman -Qe"
+          # install GCC, GSL and OpenMP
+          msys2 -c "pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-gsl mingw-w64-x86_64-openmp" 
