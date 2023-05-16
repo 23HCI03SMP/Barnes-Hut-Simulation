@@ -56,9 +56,9 @@ void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
             forceZ = -forceZ;
         }
 
-        b->forceX += forceX;
-        b->forceY += forceY;
-        b->forceZ += forceZ;
+        b->forceX = forceX;
+        b->forceY = forceY;
+        b->forceZ = forceZ;
 }
 
 void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
@@ -69,7 +69,7 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
     float dz = node->com->z - b->com->z;
 
     //check if node is empty or whether it contains b
-    if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)))
+    if (node->mass == 0 || (b->point == node->point))
     {
         //std::cout << "bad" << std::endl;
         return;
