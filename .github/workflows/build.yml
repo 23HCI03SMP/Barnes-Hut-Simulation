@@ -8,6 +8,11 @@ jobs:
     
     steps:
       - uses: msys2/setup-msys2@v2
+      - name: check directory
+        run: |
+          # check the directory
+          cd ${{github.workspace}}
+          ls
       - name: Install Dependencies
         run: |
           # install GCC, GSL and OpenMP
