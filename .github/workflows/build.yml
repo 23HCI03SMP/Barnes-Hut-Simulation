@@ -17,7 +17,7 @@ jobs:
           # make a bin directory 
           # and build main.cpp in the ./src folder
           mkdir bin
-          g++ -std=c++17 -o ./src/*.cpp -o ./bin/main.exe -lgsl -lgslcblas -lm -fopenmp
+          g++ -std=c++17 -o ./src/*.cpp -o ./bin/main.exe -L/mingw64/lib -lgsl -lgslcblas -lm -fopenmp
       - name: Run
         run: |
           # run the program
