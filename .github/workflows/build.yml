@@ -11,8 +11,7 @@ jobs:
       - name: check directory
         run: |
           # check the directory
-          cd ${{github.workspace}}
-          ls
+          echo ${{github.workspace}}
       - name: Install Dependencies
         run: |
           # install GCC, GSL and OpenMP
