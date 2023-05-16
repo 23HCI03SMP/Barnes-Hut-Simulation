@@ -11,7 +11,7 @@ jobs:
       - name: Print working directory
         run: |
           # print the files and folders in the working directory
-          ls -a 
+          dir /ad
       - name: Install Dependencies
         run: |
           # install GCC, GSL and OpenMP
