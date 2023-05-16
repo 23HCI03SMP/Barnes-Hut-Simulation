@@ -10,10 +10,10 @@ jobs:
       - uses: msys2/setup-msys2@v2
       - name: Print working directory
         run: |
-          if (Test-Path ./src/) {
-            Write-Host "./src/ directory exists"
+          if (Test-Path ../../src/) {
+            Write-Host "src/ directory exists"
           } else {
-            Write-Host "./src/ directory does not exist"
+            Write-Host "src/ directory does not exist"
           }
       - name: Install Dependencies
         run: |
