@@ -6,11 +6,8 @@ jobs:
   build:
     runs-on: windows-latest
     
-    defaults:
-      run:
-        shell: bash
-    
     steps:
-      - name: "Setup"
+      - uses: msys2/setup-msys2@v2
+      - name: Install Dependencies
         run: |
-          gcc --version
+          msys2 -c "pacman -Qe"
