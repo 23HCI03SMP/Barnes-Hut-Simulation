@@ -12,10 +12,6 @@ jobs:
 
       - uses: msys2/setup-msys2@v2
       - uses: actions/checkout@v2
-      - name: check directory
-        run: |
-          # check the directory
-          echo $GITHUB_WORKSPACE
       - name: Install Dependencies
         run: |
           # install GCC, GSL and OpenMP
@@ -25,7 +21,7 @@ jobs:
           # make a bin directory 
           # and build main.cpp in the ./src folder
           mkdir bin
-          g++ -std=c++17 -v ${{github.workspace}}/src/main.cpp -o ${{github.workspace}}/bin/main.exe -lgsl -lgslcblas -lm -fopenmp
+          g++ -std=c++17 -v ${{github.workspace}}/src/main.cpp -o ${{github.workspace}}/bin/main.exe -L/mingw64/lib -lgsl -lgslcblas -lm -fopenmp
       - name: Run
         run: |
           # run the program
