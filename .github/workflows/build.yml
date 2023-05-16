@@ -11,7 +11,7 @@ jobs:
       - name: check directory
         run: |
           # check the directory
-          echo ${{github.workspace}}
+          echo $GITHUB_WORKSPACE
       - name: Install Dependencies
         run: |
           # install GCC, GSL and OpenMP
