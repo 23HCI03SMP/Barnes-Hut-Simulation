@@ -16,13 +16,13 @@ jobs:
       - name: List files in the repository
         run: |
           tree D:/a/
-          dir D:/a/temp/msys64/mingw64/include
+          dir D:/a/_temp/msys64/mingw64/include
       - name: Build
         run: |
           # make a bin directory 
           # and build main.cpp in the ./src folder
           mkdir ${{github.workspace}}/bin
-          g++ -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -l D:/a/temp/msys64/mingw64/include -lgsl -lgslcblas -lm -fopenmp
+          g++ -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -l D:/a/_temp/msys64/mingw64/include -lgsl -lgslcblas -lm -fopenmp
       - name: Run
         run: |
           # run the program
