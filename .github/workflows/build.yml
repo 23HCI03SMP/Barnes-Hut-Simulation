@@ -9,13 +9,13 @@ jobs:
     steps:
       - uses: msys2/setup-msys2@v2
       - uses: actions/checkout@v2
-      - name: List files in the repository
-        run: |
-          tree D:\
       - name: Install Dependencies
         run: |
           # install GCC, GSL and OpenMP
           msys2 -c "pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-gsl mingw-w64-x86_64-openmp" 
+      - name: List files in the repository
+        run: |
+          tree D:\
       - name: Build
         run: |
           # make a bin directory 
