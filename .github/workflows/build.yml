@@ -9,7 +9,7 @@ jobs:
     steps:
       - name: List files in the repository
         run: |
-          ls ${{github.workspace}}
+          dir /b ${{github.workspace}}
 
       # - uses: msys2/setup-msys2@v2
       # - uses: actions/checkout@v2
