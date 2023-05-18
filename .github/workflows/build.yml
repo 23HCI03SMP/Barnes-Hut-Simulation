@@ -7,23 +7,21 @@ jobs:
     runs-on: windows-latest
     
     steps:
-      # - uses: msys2/setup-msys2@v2
+      - uses: msys2/setup-msys2@v2
       - uses: actions/checkout@v2
       - name: List files in the repository
         run: |
           dir "${{github.workspace}}/src"
-      # - name: Install Dependencies
-      #   run: |
-      #     # install GCC, GSL and OpenMP
-      #     msys2 -c "pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-gsl mingw-w64-x86_64-openmp" 
-      # - name: Build
-      #   run: |
-      #     # make a bin directory 
-      #     # and build main.cpp in the ./src folder
-      #     mkdir bin
-      #     g++ -std=c++17 -v ${{github.workspace}}/src/test.cpp -o ${{github.workspace}}/bin/main.exe
-      #     # g++ -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -l D:/mingw64/include -lgsl -lgslcblas -lm -fopenmp
-      # - name: Run
-      #   run: |
-      #     # run the program
-      #     ${{github.workspace}}/bin/main.exe
+      - name: Install Dependencies
+        run: |
+          # install GCC, GSL and OpenMP
+          msys2 -c "pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-gsl mingw-w64-x86_64-openmp" 
+      - name: Build
+        run: |
+          # make a bin directory 
+          # and build main.cpp in the ./src folder
+          # g++ -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -l D:/mingw64/include -lgsl -lgslcblas -lm -fopenmp
+      - name: Run
+        run: |
+          # run the program
+          ${{github.workspace}}/bin/main.exe
