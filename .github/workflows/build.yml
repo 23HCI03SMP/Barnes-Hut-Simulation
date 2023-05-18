@@ -8,6 +8,8 @@ jobs:
     
     steps:
       - uses: msys2/setup-msys2@v2
+        with:
+          location: ${{github.workspace}}/
       - uses: actions/checkout@v2
       - name: List files in the repository
         run: |
@@ -21,7 +23,7 @@ jobs:
           # make a bin directory 
           # and build main.cpp in the ./src folder
           mkdir ${{github.workspace}}/bin
-          g++ -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -l D:/mingw64/include -lgsl -lgslcblas -lm -fopenmp
+          g++ -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -l ${{github.workspace}}/mingw/include -lgsl -lgslcblas -lm -fopenmp
       - name: Run
         run: |
           # run the program
