@@ -21,7 +21,7 @@ jobs:
           # make a bin directory 
           # and build main.cpp in the ./src folder
           mkdir ${{github.workspace}}/bin
-          g++ -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -I D:/a/_temp/msys64/mingw64/include -l D:/a/_temp/msys64/mingw64/include -lgsl -lgslcblas -lm -fopenmp
+          g++ -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -I D:/a/_temp/msys64/mingw64/include -L D:/a/_temp/msys64/mingw64/include -lgsl -lgslcblas -lm -fopenmp
       - name: Run
         run: |
           # run the program
