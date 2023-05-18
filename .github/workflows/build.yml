@@ -15,7 +15,7 @@ jobs:
           msys2 -c "pacman -S --noconfirm mingw-w64-x86_64-gcc mingw-w64-x86_64-gsl mingw-w64-x86_64-openmp" 
       - name: List files in the repository
         run: |
-          dir D:/a/_temp/msys64/mingw64/include
+          dir D:/a/_temp/msys64/mingw64/include/gsl
       - name: Build
         run: |
           # make a bin directory 
