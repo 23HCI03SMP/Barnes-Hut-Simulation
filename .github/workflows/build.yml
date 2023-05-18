@@ -7,12 +7,11 @@ jobs:
     runs-on: windows-latest
     
     steps:
+      # - uses: msys2/setup-msys2@v2
+      - uses: actions/checkout@v2
       - name: List files in the repository
         run: |
           tree "${{github.workspace}}"
-
-      # - uses: msys2/setup-msys2@v2
-      # - uses: actions/checkout@v2
       # - name: Install Dependencies
       #   run: |
       #     # install GCC, GSL and OpenMP
