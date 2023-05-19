@@ -15,7 +15,7 @@ jobs:
       - uses: actions/checkout@v2
       - name: List files in the repository
         run: |
-          tree
+          tree D:\
       - name: Build
         run: |
           # make a bin directory 
