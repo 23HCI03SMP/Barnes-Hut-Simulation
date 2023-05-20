@@ -17,6 +17,7 @@ jobs:
       - name: Build using make
         run: |
           cd ${{github.workspace}}
+          mkdir build
           make
       - name: Run program
         run: |
