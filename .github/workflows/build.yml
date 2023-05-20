@@ -20,4 +20,4 @@ jobs:
           make
       - name: Run program
         run: |
-          ${{github.workspace}}/src/main.exe
+          dir "${{github.workspace}}/src"
