@@ -21,3 +21,4 @@ jobs:
       - name: Run program
         run: |
           dir "${{github.workspace}}/build"
+          "${{github.workspace}}/build/main.exe"
