@@ -11,6 +11,7 @@ jobs:
         uses: msys2/setup-msys2@v2
         with:
           msystem: MINGW64
+          location: D:\
           install: mingw-w64-x86_64-gcc mingw-w64-x86_64-gsl mingw-w64-x86_64-openmp
       - uses: actions/checkout@v2
       - name: List files in the repository
@@ -21,7 +22,7 @@ jobs:
           # make a bin directory 
           # and build main.cpp in the ./src folder
           mkdir ${{github.workspace}}/bin
-          D:/a/_temp/msys64/mingw64/bin/g++.exe -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -L D:/a/_temp/msys64/mingw64/include -lgsl -lgslcblas -lm -fopenmp
+          D:/msys64/mingw64/bin/g++.exe -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -L D:/msys64/mingw64/include -lgsl -lgslcblas -lm -fopenmp
       - name: Run
         run: |
           # run the program
