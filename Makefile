@@ -9,6 +9,9 @@ LDLIBS := -lgsl -lgslcblas -lm
 SRCS := $(wildcard $(SRCDIR)/*.cpp)
 OBJS := $(patsubst $(SRCDIR)/%.cpp, $(BUILDDIR)/%.o, $(SRCS))
 
+$(BUILDDIR):
+	mkdir $(BUILDDIR)
+
 main.exe: $(OBJS)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) -o $@ $^ $(LDLIBS)
 
