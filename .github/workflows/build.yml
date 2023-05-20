@@ -14,8 +14,6 @@ jobs:
           install: mingw-w64-x86_64-gcc mingw-w64-x86_64-gsl mingw-w64-x86_64-openmp
           release: true
       - uses: actions/checkout@v2
-      - name: Create build directory
-        run: mkdir $${{github.workspace}}/build
       - name: Build using make
         run: |
           cd ${{github.workspace}}
