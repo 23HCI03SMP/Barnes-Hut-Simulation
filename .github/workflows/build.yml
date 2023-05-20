@@ -12,6 +12,7 @@ jobs:
         with:
           msystem: MINGW64
           install: mingw-w64-x86_64-gcc mingw-w64-x86_64-gsl mingw-w64-x86_64-openmp
+          location: C:\ 
       - uses: actions/checkout@v2
       - name: Create build directory
         run: mkdir $${{github.workspace}}/build
