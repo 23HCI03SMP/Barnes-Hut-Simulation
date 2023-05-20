@@ -19,10 +19,7 @@ jobs:
           tree D:\
       - name: Build
         run: |
-          # make a bin directory 
-          # and build main.cpp in the ./src folder
-          mkdir ${{github.workspace}}/bin
-          D:/msys64/mingw64/bin/g++.exe -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/bin/main.exe -L D:/msys64/mingw64/include -lgsl -lgslcblas -lm -fopenmp
+          D:/msys64/mingw64/bin/g++.exe -std=c++17 -v ${{github.workspace}}/src/*.cpp -o ${{github.workspace}}/main.exe -L D:/msys64/mingw64/include -lgsl -lgslcblas -lm -fopenmp
       - name: Run
         run: |
           # run the program
