@@ -20,4 +20,4 @@ jobs:
           make
       - name: Run program
         run: |
-          dir "${{github.workspace}}/src"
+          dir "${{github.workspace}}/build"
