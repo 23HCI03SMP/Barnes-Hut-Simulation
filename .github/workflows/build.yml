@@ -6,11 +6,23 @@ jobs:
   build:
     runs-on: windows-latest
     
-    defaults:
-      run:
-        shell: bash
-    
     steps:
-      - name: "Setup"
+      - name: Set up MSYS2 and install dependencies
+        uses: msys2/setup-msys2@v2
+        with:
+          msystem: MINGW64
+          install: mingw-w64-x86_64-gcc mingw-w64-x86_64-gsl mingw-w64-x86_64-openmp
+          release: true
+      - uses: actions/checkout@v2
+      - name: ok
         run: |
-          gcc --version
+          dir C:/msys64/mingw64/include
+      - name: Build using make
+        run: |
+          cd ${{github.workspace}}
+          mkdir build
+          make
+      - name: Run program
+        run: |
+          dir "${{github.workspace}}/build"
+          "${{github.workspace}}/build/main.exe"
