@@ -80,7 +80,10 @@ public:
     float mass = 0;
     float velocityX = 0, velocityY = 0, velocityZ = 0;
     std::vector<Octree *> children;
-
+    float magneticFieldX = 0;
+    float magneticFieldY = 0;
+    float magneticFieldZ = 0;
+    
     Octree();
     Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
