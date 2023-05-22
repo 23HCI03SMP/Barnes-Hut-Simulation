@@ -277,14 +277,25 @@ void Octree::recalculateCenterOfMass(Octree *&octree)
 
         float massSum = 0;
 
+        float xVelSum = 0;
+        float yVelSum = 0;
+        float zVelSum = 0;
+
         for (Octree *child : octree->children)
         {
             if (child != nullptr || child->point->x != -1)
             {
                 recalculateCenterOfMass(child);
 
-                massSum += child->charge;
+                //calculate total mass
+                massSum += child->mass;
 
+                //calculate total velocity
+                xVelSum += child->velocityX;
+                yVelSum += child->velocityY;
+                zVelSum += child->velocityZ;
+                
+                //calculate "centre of charge"
                 xPosSum += child->com->x * child->charge;
                 yPosSum += child->com->y * child->charge;
                 zPosSum += child->com->z * child->charge;
@@ -294,5 +305,8 @@ void Octree::recalculateCenterOfMass(Octree *&octree)
         octree->charge = massSum;
         octree->mass = massSum;
         octree->com = new Point(xPosSum / massSum, yPosSum / massSum, zPosSum / massSum);
+        octree->velocityX = xVelSum;
+        octree->velocityY = yVelSum;
+        octree->velocityZ = zVelSum;
     }
 }

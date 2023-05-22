@@ -59,12 +59,18 @@ void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
         //Lorentz's force
         //qvx * BX = qvY * BY = qvZ * BZ = F = 0
 
-        float qvX = b->charge * b->velocityX;
-        float qvY = b->charge * b->velocityY;
-        float qvZ = b->charge * b->velocityZ;
-        float BX = b->magneticFieldX;
-        float BY = b->magneticFieldY;
-        float BZ = b->magneticFieldZ;
+        float q1 = b->charge;
+        float q2 = node->charge;
+
+        float v1x = b->velocityX;
+        float v1y = b->velocityY;
+        float v1z = b->velocityZ;
+
+        float v2x = node->velocityX;
+        float v2y = node->velocityY;
+        float v2z = node->velocityZ;
+
+        float bX = K_BS*()
 
         forceX += qvZ * BY;
         forceX += -qvY * BZ;

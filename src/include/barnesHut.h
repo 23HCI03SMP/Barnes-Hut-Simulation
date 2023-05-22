@@ -34,6 +34,9 @@ constexpr float M_NEUTRON = 1.67492749804e-27;
 // Mass of an electron
 constexpr float M_ELECTRON = 9.1093837015e-31;
 
+//µ_0/4π
+constexpr float K_BS = 10e-7;
+
 struct Point
 {
     float x;
