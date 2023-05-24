@@ -133,7 +133,7 @@ void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy,
 
     if (x < minPoints->x || x > maxPoints->x || y < minPoints->y || y > maxPoints->y || z < minPoints->z || z > maxPoints->z)
     {
-        std::cout << "Out of bound" << std::endl;
+        //std::cout << "Out of bound" << std::endl;
         return;
     }
 
@@ -278,6 +278,10 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
         float massSum = 0;
         float chargeSum = 0;
 
+        float xVelSum = 0;
+        float yVelSum = 0;
+        float zVelSum = 0;
+
         for (Octree *child : octree->children)
         {
             if (child != nullptr || child->point->x != -1)
@@ -286,6 +290,11 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
 
                 massSum += child->mass;
                 chargeSum += child->charge;
+              
+                //calculate total velocity
+                xVelSum += child->velocityX;
+                yVelSum += child->velocityY;
+                zVelSum += child->velocityZ;
 
                 xPosSum += child->coc->x * child->mass;
                 yPosSum += child->coc->y * child->mass;
@@ -306,5 +315,9 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
 
         octree->charge = chargeSum;
         octree->mass = massSum;
+        octree->com = new Point(xPosSum / massSum, yPosSum / massSum, zPosSum / massSum);
+        octree->velocityX = xVelSum;
+        octree->velocityY = yVelSum;
+        octree->velocityZ = zVelSum;
     }
 }

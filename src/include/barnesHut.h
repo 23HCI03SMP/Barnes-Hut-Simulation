@@ -34,6 +34,9 @@ constexpr float M_NEUTRON = 1.67492749804e-27;
 // Mass of an electron
 constexpr float M_ELECTRON = 9.1093837015e-31;
 
+//µ_0/4π
+constexpr float K_BS = 10e-7;
+
 struct Point
 {
     float x;
@@ -101,7 +104,10 @@ public:
     float mass = 0;
     float velocityX = 0, velocityY = 0, velocityZ = 0;
     std::vector<Octree *> children;
-
+    float magneticFieldX = 0;
+    float magneticFieldY = 0;
+    float magneticFieldZ = 0;
+    
     Octree();
     Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge, std::string alias);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);

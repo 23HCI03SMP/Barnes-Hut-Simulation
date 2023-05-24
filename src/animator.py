@@ -8,7 +8,7 @@ import matplotlib.animation
 SIMULATION_VALUES = "simulation_values.csv"
 OUTPUT_VIDEO = "output.mp4"
 
-FPS = 10
+FPS = 30
 
 MIN = 1
 MAX = 10

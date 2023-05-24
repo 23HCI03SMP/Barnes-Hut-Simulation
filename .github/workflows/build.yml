@@ -1,0 +1,16 @@
+name: Build C++ Program
+
+on: [push, pull_request, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: windows-latest
+    
+    defaults:
+      run:
+        shell: bash
+    
+    steps:
+      - name: "Setup"
+        run: |
+          gcc --version
