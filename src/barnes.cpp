@@ -5,7 +5,7 @@
 // Otherwise, calculate the ratio s/d. If s/d < θ, treat this internal node as a single body, and calculate the force it exerts on body b, and add this amount to b’s net force.
 // Otherwise, run the procedure recursively on each of the current node’s children.
 
-bool Barnes::isExternalNode(Octree *&octree)
+bool Barnes::isExternalNode(Octree *octree)
 {
     return octree->children.size() == 0;
 }
@@ -90,27 +90,12 @@ void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
         b->forceZ += forceZ;
 }
 
-void addMagForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
-{
-        float BforceX = 0;
-        float BforceY = 0;
-        float BforceZ = 0;
-
-        //biot savart law
-        float theta = 0;
-
-        BforceX = K_BS * (b->charge * b->velocityX * sin(theta))/(dx*dx);
-        BforceY = K_BS * (b->charge * b->velocityY * sin(theta))/(dy*dy);
-
-
-}
-
-void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
+void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
 {
     // if negative, force on b is in the negative direction
-    float dx = node->com->x - b->com->x;
-    float dy = node->com->y - b->com->y;
-    float dz = node->com->z - b->com->z;
+    float dx = node->coc->x - b->coc->x;
+    float dy = node->coc->y - b->coc->y;
+    float dz = node->coc->z - b->coc->z;
 
     //check if node is empty or whether it contains b
     if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)))

@@ -8,3 +8,6 @@
 
 # frames
 *.png
+
+# logs
+*.txt

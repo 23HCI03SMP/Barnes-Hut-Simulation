@@ -1,7 +1,7 @@
 #include <iostream>
 #include "include/barnesHut.h"
 
-std::vector<Octree *> getChildren(Octree *&volume)
+std::vector<Octree *> getChildren(Octree *volume)
 {
     std::vector<Octree *> childrenList;
     for (Octree *child : volume->children)
@@ -16,7 +16,7 @@ std::vector<Octree *> getChildren(Octree *&volume)
     return childrenList;
 }
 
-std::vector<Octree *> getNodes(Octree *&volume)
+std::vector<Octree *> getNodes(Octree *volume)
 {
     std::vector<Octree *> childrenList;
     for (Octree *child : volume->children)
@@ -31,7 +31,7 @@ std::vector<Octree *> getNodes(Octree *&volume)
     return childrenList;
 }
 
-Octree Simulation::mainLoop(Octree *&volume, int iterations, float timeStep)
+Octree Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
 { // simulation volume + iterations (-1 for infinite iterations) + time step (i.e how many seconds are in each iteration)
     // simulation loop
 
@@ -68,7 +68,8 @@ Octree Simulation::mainLoop(Octree *&volume, int iterations, float timeStep)
                 child->velocityY,
                 child->velocityZ,
                 child->mass,
-                child->charge);
+                child->charge,
+                child->alias);
         }
     }
     return newOctree;
