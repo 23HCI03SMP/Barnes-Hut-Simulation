@@ -5,7 +5,7 @@
 // Otherwise, calculate the ratio s/d. If s/d < θ, treat this internal node as a single body, and calculate the force it exerts on body b, and add this amount to b’s net force.
 // Otherwise, run the procedure recursively on each of the current node’s children.
 
-bool Barnes::isExternalNode(Octree *&octree)
+bool Barnes::isExternalNode(Octree *octree)
 {
     return octree->children.size() == 0;
 }
@@ -29,18 +29,47 @@ void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
         float forceY = 0;
         float forceZ = 0;
 
+        //Lorentz's force
+        //qvx * BX = qvY * BY = qvZ * BZ = F = 0
+
+        float vx1 = b->velocityX;
+        float vx2 = node->velocityX;
+        float vy1 = b->velocityY;
+        float vy2 = node->velocityY;
+        float vz1 = b->velocityZ;
+        float vz2 = node->velocityZ;
+
+        float crossVelX = 0;
+        float crossVelY = 0;
+        float crossVelZ = 0;
+
+        crossVelX = vz1 * vy2;
+        crossVelX += -vy1 * vz2;
+
+        crossVelY += vz1 * vx2;
+        crossVelY += -vx1 * vz2;
+
+        crossVelZ += vx1 * vy2;
+        crossVelZ += -vy1 * vx2;
+
         //Coulomb's Law
         if (dx != 0)
         {
-            forceX = K_E * ((node->charge * b->charge) / (dx * dx));
+            forceX += K_E * ((node->charge * b->charge) / (dx * dx));
+            forceY += K_BS * (node->charge * b->charge * crossVelZ * dx)/(abs(dx*dx*dx));
+            forceZ += K_BS * (node->charge * b->charge * -crossVelY * dx)/(abs(dx*dx*dx));
         }
         if (dy != 0)
         {
-            forceY = K_E * ((node->charge * b->charge) / (dy * dy));
+            forceX += K_BS * (node->charge * b->charge * crossVelZ * dy)/(abs(dy*dy*dy));
+            forceY += K_E * ((node->charge * b->charge) / (dy * dy));
+            forceZ += K_BS * (node->charge * b->charge * crossVelX * dy)/(abs(dy*dy*dy));
         }
         if (dz != 0)
         {
-            forceZ = K_E * ((node->charge * b->charge) / (dz * dz));
+            forceX += K_BS * (node->charge * b->charge * -crossVelY * dz)/(abs(dz*dz*dz));
+            forceY += K_BS * (node->charge * b->charge * -crossVelX * dz)/(abs(dz*dz*dz));
+            forceZ += K_E * ((node->charge * b->charge) / (dz * dz));
         }
 
         if (dx < 0)
@@ -56,36 +85,17 @@ void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
             forceZ = -forceZ;
         }
 
-        //Lorentz's force
-        //qvx * BX = qvY * BY = qvZ * BZ = F = 0
-
-        float qvX = b->charge * b->velocityX;
-        float qvY = b->charge * b->velocityY;
-        float qvZ = b->charge * b->velocityZ;
-        float BX = b->magneticFieldX;
-        float BY = b->magneticFieldY;
-        float BZ = b->magneticFieldZ;
-
-        forceX += qvZ * BY;
-        forceX += -qvY * BZ;
-
-        forceY += qvZ * BX;
-        forceY += -qvX * BZ;
-
-        forceZ += qvX * BY;
-        forceZ += -qvY * BX;
-
         b->forceX += forceX;
         b->forceY += forceY;
         b->forceZ += forceZ;
 }
 
-void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
+void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
 {
     // if negative, force on b is in the negative direction
-    float dx = node->com->x - b->com->x;
-    float dy = node->com->y - b->com->y;
-    float dz = node->com->z - b->com->z;
+    float dx = node->coc->x - b->coc->x;
+    float dy = node->coc->y - b->coc->y;
+    float dz = node->coc->z - b->coc->z;
 
     //check if node is empty or whether it contains b
     if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)))
