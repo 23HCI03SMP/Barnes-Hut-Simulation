@@ -3,20 +3,14 @@
 #include <fstream>
 #include <filesystem>
 
-/*
-This generates both the initial values files as well as initialises the simulation values file.
-That way, we do not need to load and inset the initial values separately.
-*/
-void generateFiles(std::vector<CSVPoint> points)
+void generateInitialValuesFile(std::vector<CSVPoint> points)
 {
     std::ofstream ValueFile(std::filesystem::current_path() / INITIAL_VALUES_PATH);
 
-    ValueFile << "x,y,z,vx,vy,vz,mass,charge,alias"; // Insert headers into csv file
+    ValueFile << "x,y,z,vx,vy,vz,mass,charge"; // Insert headers into csv file
 
-    for (int i = 0; i < points.size(); i++)
+    for (CSVPoint point : points)
     {
-        CSVPoint point = points[i];
-        
         ValueFile
             << "\n"
             << point.x << ","
@@ -26,20 +20,17 @@ void generateFiles(std::vector<CSVPoint> points)
             << point.vy << ","
             << point.vz << ","
             << point.mass << ","
-            << point.charge << ","
-            << point.alias;
+            << point.charge;
     }
 
     ValueFile.close();
-
-    initialiseSimulationValuesFile(points);
 }
 
 void initialiseSimulationValuesFile(std::vector<CSVPoint> initialPoints)
 {
     std::ofstream ValueFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH);
 
-    ValueFile << "x,y,z,vx,vy,vz,mass,charge,alias"; // Insert headers into csv file
+    ValueFile << "x,y,z,vx,vy,vz,mass,charge"; // Insert headers into csv file
     
     for (CSVPoint point : initialPoints) {
         ValueFile
@@ -51,8 +42,7 @@ void initialiseSimulationValuesFile(std::vector<CSVPoint> initialPoints)
             << point.vy << ","
             << point.vz << ","
             << point.mass << ","
-            << point.charge << ","
-            << point.alias;
+            << point.charge;
     }
 
     ValueFile << "\n";
@@ -75,7 +65,6 @@ void generateSimulationValuesFile(Octree *octree)
         float vz = child->velocityZ;
         float mass = child->mass;
         float charge = child->charge;
-        std::string alias = child->alias;
 
         ValueFile
             << "\n"
@@ -86,8 +75,7 @@ void generateSimulationValuesFile(Octree *octree)
             << vy << ","
             << vz << ","
             << mass << ","
-            << charge << ","
-            << alias;
+            << charge;
     }
 
     ValueFile << "\n";

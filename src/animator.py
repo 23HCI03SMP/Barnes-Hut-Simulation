@@ -8,10 +8,10 @@ import matplotlib.animation
 SIMULATION_VALUES = "simulation_values.csv"
 OUTPUT_VIDEO = "output.mp4"
 
-FPS = 30
+FPS = 10
 
 MIN = 1
-MAX = 10
+MAX = 5
 
 # Initialize directory
 # Create a ./frames directory if it doesn't exist
@@ -42,17 +42,7 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
             groups.append(values)
             values = []
         else:
-            line_values = line.split(",")
-
-            particle_alias = line_values[8].strip()
-            color = ""
-
-            if particle_alias == "Deutron":
-                color = "red"
-            elif particle_alias == "Electron":
-                color = "blue"
-
-            values.append([float(line_values[0]), float(line_values[1]), float(line_values[2]), color])
+            values.append([float(value) for value in line.split(",")])
 
     for value in groups:
         ax.clear()
@@ -61,10 +51,9 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
         xlist = [x[0] for x in value]
         ylist = [y[1] for y in value]
         zlist = [z[2] for z in value]
-        colorList = [c[3] for c in value]
 
         # Plot the scatter graph
-        ax.scatter(xlist, ylist, zlist, c=colorList)
+        ax.scatter(xlist, ylist, zlist)
         ax.set_title(f"Time step {i}")
         ax.set_xlim(MIN, MAX)
         ax.set_ylim(MIN, MAX)

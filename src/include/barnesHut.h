@@ -34,9 +34,6 @@ constexpr float M_NEUTRON = 1.67492749804e-27;
 // Mass of an electron
 constexpr float M_ELECTRON = 9.1093837015e-31;
 
-//µ_0/4π
-constexpr float K_BS = 10e-7;
-
 struct Point
 {
     float x;
@@ -44,17 +41,6 @@ struct Point
     float z;
     Point() : x(-1), y(-1), z(-1) {}
     Point(float a, float b, float c) : x(a), y(b), z(c) {}
-};
-
-struct Particle
-{
-    std::string alias;
-    float mass;
-    float charge;
-    float percentage;
-
-    Particle() : alias(""), mass(-1), charge(-1), percentage(-1) {}
-    Particle(std::string alias, float mass, float charge, float percentage) : alias(alias), mass(mass), charge(charge), percentage(percentage) {}
 };
 
 struct CSVPoint
@@ -67,40 +53,30 @@ struct CSVPoint
     float vz;
     float mass;
     float charge;
-    std::string alias;
-    CSVPoint() : x(-1), y(-1), z(-1), vx(-1), vy(-1), vz(-1), mass(-1), charge(-1), alias("") {}
-    CSVPoint(float x,
-             float y,
-             float z,
-             float vx,
-             float vy,
-             float vz,
-             float mass,
-             float charge,
-             std::string alias) : x(x),
-                                  y(y),
-                                  z(z),
-                                  vx(vx),
-                                  vy(vy),
-                                  vz(vz),
-                                  mass(mass),
-                                  charge(charge),
-                                  alias(alias) {}
+    CSVPoint() : x(-1), y(-1), z(-1), vx(-1), vy(-1), vz(-1), mass(-1) {}
+    CSVPoint(float x, float y, float z, float vx, float vy, float vz, float mass, float charge) : x(x),
+                                                                                                  y(y),
+                                                                                                  z(z),
+                                                                                                  vx(vx),
+                                                                                                  vy(vy),
+                                                                                                  vz(vz),
+                                                                                                  mass(mass),
+                                                                                                  charge(charge) {}
 };
 
 class Octree
 {
 private:
+    void recalculateCenterOfMass(Octree *&octree);
+
 public:
     Point *point;
     Point *minPoints, *maxPoints;
-    Point *coc;
+    Point *com;
 
-    std::string alias;
-    float forceX = 0;
-    float forceY = 0;
-    float forceZ = 0;
-    float charge = 0;
+    float forceX = 0, forceY = 0, forceZ = 0;
+
+    float charge = 0; // Need to set charge to zero because default value of floating point is some random negative number
     float mass = 0;
     float velocityX = 0, velocityY = 0, velocityZ = 0;
     std::vector<Octree *> children;
@@ -109,49 +85,38 @@ public:
     float magneticFieldZ = 0;
     
     Octree();
-    Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge, std::string alias);
+    Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
-    void insert(Octree *root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge, std::string alias);
+    void insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     bool find(float x, float y, float z);
-
-    void recalculateCenterOfCharge(Octree *octree);
 };
 
 class Barnes
 {
-private:
-    bool isExternalNode(Octree *octree);
-
 public:
-    void calcForce(Octree *node, Octree *b, float thetaLimit);
+    bool isExternalNode(Octree *&octree);
+    void calcForce(Octree *&node, Octree *&b, float thetaLimit);
 };
 
 class Simulation
 {
 private:
 public:
-    Octree mainLoop(Octree *volume, int iterations, float timeStep);
+    Octree mainLoop(Octree *&volume, int iterations, float timeStep);
 };
 
 std::vector<CSVPoint> loadInitialValues();
-void loadAndInsertInitialValues(Octree *octree);
 std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
                                             float maxX, float maxY, float maxZ,
                                             float radius,
+                                            float mass,
                                             float density,
-                                            float temperature,
-                                            std::vector<Particle> particles);
-std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
-                                            float maxX, float maxY, float maxZ,
-                                            float radius,
-                                            int particleNumber,
-                                            float temperature,
-                                            std::vector<Particle> particles);
+                                            float temperature);
 
-std::vector<Octree *> getChildren(Octree *volume);
-std::vector<Octree *> getNodes(Octree *volume);
+std::vector<Octree *> getChildren(Octree *&volume);
+std::vector<Octree *> getNodes(Octree *&volume);
 
-void generateFiles(std::vector<CSVPoint> points);
+void generateInitialValuesFile(std::vector<CSVPoint> points);
 void initialiseSimulationValuesFile(std::vector<CSVPoint> initialPoints);
 void generateSimulationValuesFile(Octree *octree);
