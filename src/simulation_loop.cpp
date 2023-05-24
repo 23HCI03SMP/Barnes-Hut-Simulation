@@ -50,7 +50,7 @@ Octree Simulation::mainLoop(Octree *&volume, int iterations, float timeStep)
         std::vector<Octree *> childrenList = getChildren(volume);
         for (Octree *child : childrenList)
         {
-            child->point->x += child->velocityX * timeStep;
+            (*child->point).x += child->velocityX * timeStep;
             child->point->y += child->velocityY * timeStep;
             child->point->z += child->velocityZ * timeStep;
 

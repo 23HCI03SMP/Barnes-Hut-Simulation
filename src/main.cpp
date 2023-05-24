@@ -72,7 +72,7 @@ int main()
 
 
     initialiseSimulationValuesFile(initialPoints);
-    Octree final = loop(tree, 200, 3, 1e-10);
+    Octree final = loop(tree, 50, 3, 3);
 
     std::getchar();
     return 0;
