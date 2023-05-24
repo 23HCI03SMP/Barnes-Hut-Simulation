@@ -55,21 +55,21 @@ void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
         //Coulomb's Law
         if (dx != 0)
         {
-            //forceX += K_E * ((node->charge * b->charge) / (dx * dx));
+            forceX += K_E * ((node->charge * b->charge) / (dx * dx));
             forceY += K_BS * (node->charge * b->charge * crossVelZ * dx)/(abs(dx*dx*dx));
             forceZ += K_BS * (node->charge * b->charge * -crossVelY * dx)/(abs(dx*dx*dx));
         }
         if (dy != 0)
         {
             forceX += K_BS * (node->charge * b->charge * crossVelZ * dy)/(abs(dy*dy*dy));
-            //forceY += K_E * ((node->charge * b->charge) / (dy * dy));
+            forceY += K_E * ((node->charge * b->charge) / (dy * dy));
             forceZ += K_BS * (node->charge * b->charge * crossVelX * dy)/(abs(dy*dy*dy));
         }
         if (dz != 0)
         {
             forceX += K_BS * (node->charge * b->charge * -crossVelY * dz)/(abs(dz*dz*dz));
             forceY += K_BS * (node->charge * b->charge * -crossVelX * dz)/(abs(dz*dz*dz));
-            //forceZ += K_E * ((node->charge * b->charge) / (dz * dz));
+            forceZ += K_E * ((node->charge * b->charge) / (dz * dz));
         }
 
         if (dx < 0)
