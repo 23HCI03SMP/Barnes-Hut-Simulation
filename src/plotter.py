@@ -5,7 +5,7 @@ import pandas as pd
 import os
 
 # Load the CSV file into a DataFrame
-df = pd.read_csv(os.path.join(os.path.dirname(__file__), 'simulation_values.csv'))
+df = pd.read_csv(os.path.join(os.path.dirname(__file__), 'initial_values.csv'))
 
 # Extract the x, y, and z values
 x = df['x']
