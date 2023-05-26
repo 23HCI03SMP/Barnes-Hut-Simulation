@@ -56,28 +56,9 @@ void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
             forceZ = -forceZ;
         }
 
-        //Lorentz's force
-        //qvx * BX = qvY * BY = qvZ * BZ = F = 0
-
-        float qvX = b->charge * b->velocityX;
-        float qvY = b->charge * b->velocityY;
-        float qvZ = b->charge * b->velocityZ;
-        float BX = b->magneticFieldX;
-        float BY = b->magneticFieldY;
-        float BZ = b->magneticFieldZ;
-
-        forceX += qvZ * BY;
-        forceX += -qvY * BZ;
-
-        forceY += qvZ * BX;
-        forceY += -qvX * BZ;
-
-        forceZ += qvX * BY;
-        forceZ += -qvY * BX;
-
-        b->forceX += forceX;
-        b->forceY += forceY;
-        b->forceZ += forceZ;
+        b->forceX = forceX;
+        b->forceY = forceY;
+        b->forceZ = forceZ;
 }
 
 void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
@@ -88,7 +69,7 @@ void Barnes::calcForce(Octree *&node, Octree *&b, float thetaLimit)
     float dz = node->com->z - b->com->z;
 
     //check if node is empty or whether it contains b
-    if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)))
+    if (node->mass == 0 || (b->point == node->point))
     {
         //std::cout << "bad" << std::endl;
         return;

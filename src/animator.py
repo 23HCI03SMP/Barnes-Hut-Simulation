@@ -87,3 +87,6 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
 
     # release the video writer object
     video_writer.release()
+
+    print("\nAnimation Complete")
+    os.startfile(OUTPUT_VIDEO)
