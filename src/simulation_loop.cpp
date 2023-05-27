@@ -6,7 +6,7 @@ std::vector<Octree *> getChildren(Octree *volume)
     std::vector<Octree *> childrenList;
     for (Octree *child : volume->children)
     {
-        if (child->children.size() == 0 && child->point != nullptr && child->point->x != -1)
+        if (child->mass != 0 && child->charge != 0 && child->point != nullptr)
         {
             childrenList.push_back(child);
         }
@@ -71,6 +71,7 @@ Octree Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
                 child->charge,
                 child->alias);
         }
+        newOctree.recalculateCenterOfCharge(newOctreePtr);
     }
     return newOctree;
 }

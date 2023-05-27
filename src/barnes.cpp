@@ -85,9 +85,14 @@ void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
             forceZ = -forceZ;
         }
 
-        b->forceX += forceX;
-        b->forceY += forceY;
-        b->forceZ += forceZ;
+        b->forceX = forceX;
+        b->forceY = forceY;
+        b->forceZ = forceZ;
+
+        // if (((forceX == 0 || forceY == 0 || forceZ == 0) && node != b) || forceX < 1e-8 || forceY < 1e-8 || forceZ < 1e-8)
+        // {
+        //     __asm__("int $3");
+        // }
 }
 
 void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)

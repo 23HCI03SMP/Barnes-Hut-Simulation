@@ -315,7 +315,7 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
 
         octree->charge = chargeSum;
         octree->mass = massSum;
-        octree->com = new Point(xPosSum / massSum, yPosSum / massSum, zPosSum / massSum);
+        octree->coc = new Point(xPosSum / massSum, yPosSum / massSum, zPosSum / massSum);
         octree->velocityX = xVelSum;
         octree->velocityY = yVelSum;
         octree->velocityZ = zVelSum;
