@@ -108,8 +108,8 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
         else:
             line_values = line.split(",")
 
-            particle_alias = line_values[8].strip()
-            color = COLORS[particle_alias]
+            # particle_alias = line_values[8].strip()
+            # color = COLORS[particle_alias]
 
             # values.append([float(line_values[0]), float(line_values[1]), float(line_values[2]), color])
             values.append([float(line_values[0]), float(line_values[1]), float(line_values[2])])
