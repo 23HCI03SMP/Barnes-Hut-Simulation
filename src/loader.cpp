@@ -3,8 +3,9 @@
 #include <fstream>
 #include <filesystem>
 
-void loadAndInsertInitialValues(Octree *octree)
+std::vector<CSVPoint> loadInitialValues()
 {
+    std::vector<CSVPoint> valuesVect;
     std::ifstream ValueString(std::filesystem::current_path() / INITIAL_VALUES_PATH);
 
     // Read the first line to get the headers before starting to read values
@@ -13,74 +14,23 @@ void loadAndInsertInitialValues(Octree *octree)
 
     // Loop through each line, and then float parse each value in the line
     std::string line;
-    std::array<std::string, 9> values;
+    std::array<float, 8> values;
     while (std::getline(ValueString, line))
     {
         std::istringstream s(line);
         std::string field;
-
         int i = 0;
+
         while (std::getline(s, field, ','))
         {
-            values[i] = field;
+            values[i] = std::stof(field);
             i++;
         }
 
-        // Insert values into octree
-        float x = std::stof(values[0]);
-        float y = std::stof(values[1]);
-        float z = std::stof(values[2]);
-        float vx = std::stof(values[3]);
-        float vy = std::stof(values[4]);
-        float vz = std::stof(values[5]);
-        float mass = std::stof(values[6]);
-        float charge = std::stof(values[7]);
-        std::string alias = values[8];
-
-        octree->insert(octree, x, y, z, vx, vy, vz, mass, charge, alias);
+        valuesVect.push_back(CSVPoint(values[0], values[1], values[2], values[3], values[4], values[5], values[6], values[7]));
     }
 
-    octree->recalculateCenterOfCharge(octree);
+    ValueString.close();
+
+    return valuesVect;
 }
-
-// std::vector<CSVPoint> loadInitialValues()
-// {
-//     std::vector<CSVPoint> valuesVect;
-//     std::ifstream ValueString(std::filesystem::current_path() / INITIAL_VALUES_PATH);
-
-//     // Read the first line to get the headers before starting to read values
-//     std::string headers;
-//     std::getline(ValueString, headers);
-
-//     // Loop through each line, and then float parse each value in the line
-//     std::string line;
-//     std::array<std::string, 9> values;
-//     while (std::getline(ValueString, line))
-//     {
-//         std::istringstream s(line);
-//         std::string field;
-//         int i = 0;
-
-//         while (std::getline(s, field, ','))
-//         {
-//             values[i] = field;
-//             i++;
-//         }
-
-//         float x = std::stof(values[0]);
-//         float y = std::stof(values[1]);
-//         float z = std::stof(values[2]);
-//         float vx = std::stof(values[3]);
-//         float vy = std::stof(values[4]);
-//         float vz = std::stof(values[5]);
-//         float mass = std::stof(values[6]);
-//         float charge = std::stof(values[7]);
-//         std::string alias = values[8];
-
-//         valuesVect.push_back(CSVPoint(x, y, z, vx, vy, vz, mass, charge, alias));
-//     }
-
-//     ValueString.close();
-
-//     return valuesVect;
-// }
