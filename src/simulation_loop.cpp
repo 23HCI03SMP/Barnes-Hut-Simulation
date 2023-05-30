@@ -72,5 +72,8 @@ Octree Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
                 child->alias);
         }
     }
+
+    newOctree.recalculateCenterOfCharge(newOctreePtr);
+
     return newOctree;
 }

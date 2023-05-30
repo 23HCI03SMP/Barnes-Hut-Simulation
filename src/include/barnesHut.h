@@ -107,6 +107,9 @@ public:
     float magneticFieldX = 0;
     float magneticFieldY = 0;
     float magneticFieldZ = 0;
+
+    float positiveCharge = 0;
+    float negativeCharge = 0;
     
     Octree();
     Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge, std::string alias);
