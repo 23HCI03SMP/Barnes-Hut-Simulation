@@ -4,6 +4,8 @@ import os
 import threading
 import time
 
+import matplotlib
+# matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.animation
 
@@ -13,7 +15,7 @@ OUTPUT_VIDEO = "output.mp4"
 FPS = 10
 
 MIN = 1
-MAX = 10
+MAX = 5
 
 COLORS = {
     "Deutron": "red",
@@ -45,38 +47,6 @@ def generate_frames(value, i):
         print(f"Saved frame {i}")
     except:
         print(f"Error saving frame {i}. Trying again...")
-        generate_frames(value, i)
-
-COLORS = {
-    "Deutron": "red",
-    "Electron": "blue"
-}
-
-fig = plt.figure()
-ax = fig.add_subplot(projection="3d")
-ax.set_box_aspect((1, 1, 1))
-
-def generate_frames(value, i):
-    ax.clear()
-
-    xlist = [x[0] for x in value]
-    ylist = [y[1] for y in value]
-    zlist = [z[2] for z in value]
-    # colorList = [c[3] for c in value]
-
-    # Plot the scatter graph
-    # ax.scatter(xlist, ylist, zlist, c=colorList)
-    ax.scatter(xlist, ylist, zlist)
-    ax.set_title(f"Time step {i}")
-    ax.set_xlim(MIN, MAX)
-    ax.set_ylim(MIN, MAX)
-    ax.set_zlim(MIN, MAX)
-
-    try:
-        plt.savefig(os.path.join(os.path.dirname(__file__), f"frames/frame{str(i).zfill(4)}.png"))
-        print(f"Saved frame {i}")
-    except Exception as e:
-        print(f"Error saving frame {i}. Trying again... Error: {e}")
         generate_frames(value, i)
 
 # Initialize directory
@@ -121,8 +91,12 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
     for i, value in enumerate(groups):
         t = threading.Thread(target=generate_frames, args=(value, i))
 
+        lock.acquire()
+
         t.start()
         threads.append(t)
+
+        lock.release()
     
     for t in threads:
         t.join()
