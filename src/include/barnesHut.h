@@ -72,7 +72,8 @@ private:
 public:
     Point *point;
     Point *minPoints, *maxPoints;
-    Point *com;
+    Point *positiveCoc;
+    Point *negativeCoc;
 
     float forceX = 0, forceY = 0, forceZ = 0;
 

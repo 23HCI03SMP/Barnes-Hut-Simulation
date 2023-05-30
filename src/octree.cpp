@@ -260,8 +260,17 @@ void Octree::recalculateCenterOfCharge(Octree *&octree)
     if (octree->children.size() == 0)
     {
         // if the size of the children is 0, then we have reached a leaf node
-        // com is the center of mass of the particle at the leaf node
+        // coc is the centre of charge of the point
+
         // octree->coc = octree->point;
+        if (octree->charge >= 0)
+        {
+            octree->positiveCoc = octree->point;
+        }
+        else
+        {
+            octree->negativeCoc = octree->point;
+        }
 
         return;
     }
@@ -271,9 +280,13 @@ void Octree::recalculateCenterOfCharge(Octree *&octree)
         // using the formula for center of mass, where
         // coordinate = m1x1 + m2x2 + ... / m1 + m2 + ...
 
-        float xPosSum = 0;
-        float yPosSum = 0;
-        float zPosSum = 0;
+        float xPosPositiveChargeSum = 0;
+        float yPosPositiveChargeSum = 0;
+        float zPosPositiveChargeSum = 0;
+
+        float xPosNegativeChargeSum = 0;
+        float yPosNegativeChargeSum = 0;
+        float zPosNegativeChargeSum = 0;
 
         float massSum = 0;
         float chargeSum = 0;
@@ -293,19 +306,27 @@ void Octree::recalculateCenterOfCharge(Octree *&octree)
                 massSum += child->mass;
 
                 chargeSum += child->charge;
-                if(child->charge >= 0)
+                if (child->charge >= 0)
+                {
                     positiveChargeSum += child->charge;
+
+                    xPosPositiveChargeSum += child->positiveCoc->x * child->charge;
+                    yPosPositiveChargeSum += child->positiveCoc->y * child->charge;
+                    zPosPositiveChargeSum += child->positiveCoc->z * child->charge;
+                }
                 else
+                {
                     negativeChargeSum += child->charge;
-              
-                //calculate total velocity
+
+                    xPosNegativeChargeSum += child->negativeCoc->x * child->charge;
+                    yPosNegativeChargeSum += child->negativeCoc->y * child->charge;
+                    zPosNegativeChargeSum += child->negativeCoc->z * child->charge;
+                }
+
+                // calculate total velocity
                 xVelSum += child->velocityX;
                 yVelSum += child->velocityY;
                 zVelSum += child->velocityZ;
-
-                // xPosSum += child->coc->x * child->mass;
-                // yPosSum += child->coc->y * child->mass;
-                // zPosSum += child->coc->z * child->mass;
             }
         }
 
@@ -318,22 +339,7 @@ void Octree::recalculateCenterOfCharge(Octree *&octree)
         octree->velocityY = yVelSum;
         octree->velocityZ = zVelSum;
 
-        // if (chargeSum == 0)
-        // {
-        //     octree->coc = new Point();
-        // }
-        // else
-        // {
-        //     float absChargeSum = abs(chargeSum);
-
-        //     octree->coc = new Point(xPosSum / absChargeSum, yPosSum / absChargeSum, zPosSum / absChargeSum);
-        // }
-
-        // octree->charge = chargeSum;
-        // octree->mass = massSum;
-        // octree->coc = new Point(xPosSum / massSum, yPosSum / massSum, zPosSum / massSum);
-        // octree->velocityX = xVelSum;
-        // octree->velocityY = yVelSum;
-        // octree->velocityZ = zVelSum;
+        octree->positiveCoc = new Point(xPosPositiveChargeSum / positiveChargeSum, yPosPositiveChargeSum / positiveChargeSum, zPosPositiveChargeSum / positiveChargeSum);
+        octree->negativeCoc = new Point(xPosNegativeChargeSum / negativeChargeSum, yPosNegativeChargeSum / negativeChargeSum, zPosNegativeChargeSum / negativeChargeSum);
     }
 }
