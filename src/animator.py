@@ -15,6 +15,11 @@ FPS = 30
 MIN = 1
 MAX = 10
 
+COLORS = {
+    "Deutron": "red",
+    "Electron": "blue"
+}
+
 fig = plt.figure()
 ax = fig.add_subplot(projection="3d")
 ax.set_box_aspect((1, 1, 1))
@@ -71,13 +76,8 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
         else:
             line_values = line.split(",")
 
-            # particle_alias = line_values[8].strip()
-            # color = ""
-
-            # if particle_alias == "Deutron":
-            #     color = "red"
-            # elif particle_alias == "Electron":
-            #     color = "blue"
+            particle_alias = line_values[8].strip()
+            color = COLORS[particle_alias]
 
             # values.append([float(line_values[0]), float(line_values[1]), float(line_values[2]), color])
             values.append([float(line_values[0]), float(line_values[1]), float(line_values[2])])
