@@ -6,8 +6,10 @@
 
 using namespace std::chrono;
 
-Octree loop(Octree *octree, int iterations, float theta, float timeStep)
+Octree loop(Octree octreeM, int iterations, float theta, float timeStep)
 {
+    Octree *octree = &octreeM;
+
     Octree final = Octree(0, 0, 0, 0, 0, 0);
 
     float totalDur = 0;
@@ -18,7 +20,7 @@ Octree loop(Octree *octree, int iterations, float theta, float timeStep)
         std::vector<Octree *> childVect = getChildren(octree);
         Barnes barnes;
 
-        for (Octree *child : childVect)
+        for (Octree *&child : childVect)
         {
             barnes.calcForce(octree, child, theta);
         }
@@ -26,7 +28,7 @@ Octree loop(Octree *octree, int iterations, float theta, float timeStep)
         auto stop = high_resolution_clock::now();
         auto duration = duration_cast<milliseconds>(stop - start);
         totalDur += duration.count();
-        std::cout << "Timestep complete in " << duration.count() << " ms\n";
+        std::cout << duration.count() << " ms " << duration.count() / 1000 << " s" << std::endl;
 
         Simulation sim = Simulation();
         final = sim.mainLoop(octree, 1, timeStep);
@@ -41,31 +43,34 @@ Octree loop(Octree *octree, int iterations, float theta, float timeStep)
 
 int main()
 {
-    std::vector<Particle> particles = {
-        Particle("Deutron", 2, 1, 0.5),
-        //Particle("Electron", 0.00054f, -1, 0.5),
-    };
+    std::cout << "Starting simulation..." << std::endl;
+    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 2, 1, 10, 293); // 293K = 20C
+    generateInitialValuesFile(points);
 
-    auto start = high_resolution_clock::now();
-    std::vector<CSVPoint> points = generateInitialPoints(1.0f, 1.0f, 1.0f, 10.0f, 10.0, 10.0f, 4.0f, 20.0f, 293.0f, particles); // 293K = 20C
-    generateFiles(points);
+    std::vector<CSVPoint> initialPoints = loadInitialValues();
 
-    std::cout << "Timer Started\n";
-
-    Octree tree = Octree(1, 1, 1, 10, 10, 10);
+    Octree tree = Octree(1, 1, 1, 5, 5, 5);
     Octree *tree_ptr = &tree;
 
-    loadAndInsertInitialValues(tree_ptr);
-    std::cout << getChildren(tree_ptr).size() << std::endl;
-    std::cout << "Initial Values Loaded\n";
+    int i = 0;
+    for (CSVPoint point : initialPoints)
+    {
+        tree.insert(
+            tree_ptr,
+            point.x,
+            point.y,
+            point.z,
+            point.vx,
+            point.vy,
+            point.vz,
+            point.mass,
+            point.charge);
+        std::cout << "Inserted " << i << " points\n";
+        i++;
+    }
 
-    std::cout << "Initial Values File Created\n";
-
-    Octree final = loop(tree_ptr, 5, 1, 1e-4);
-
-    auto stop = high_resolution_clock::now();
-    auto duration = duration_cast<milliseconds>(stop - start);
-    std::cout << duration.count() << " ms " << duration.count() / 1000 << " s" << std::endl;
+    initialiseSimulationValuesFile(initialPoints);
+    Octree final = loop(tree, 200, 3, 1e-10);
 
     std::cout << "\nAnimator Starting...\n";
     system("py ./animator.py");

@@ -22,7 +22,7 @@ Octree::Octree()
     point = new Point();
 }
 
-Octree::Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge, std::string alias)
+Octree::Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
 {
     point = new Point(x, y, z);
 
@@ -31,7 +31,6 @@ Octree::Octree(float x, float y, float z, float vx, float vy, float vz, float ma
     velocityX = vx;
     velocityY = vy;
     velocityZ = vz;
-    this->alias = alias;
 }
 
 // Initializing a base octree
@@ -123,7 +122,7 @@ bool Octree::find(float x, float y, float z)
     return false;
 }
 
-void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge, std::string alias)
+void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
 {
     if (find(x, y, z))
     {
@@ -133,7 +132,7 @@ void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy,
 
     if (x < minPoints->x || x > maxPoints->x || y < minPoints->y || y > maxPoints->y || z < minPoints->z || z > maxPoints->z)
     {
-        //std::cout << "Out of bound" << std::endl;
+        std::cout << "Out of bound" << std::endl;
         return;
     }
 
@@ -195,12 +194,12 @@ void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy,
 
     if (children[pos]->point == nullptr)
     {
-        children[pos]->insert(root, x, y, z, vx, vy, vz, mass, charge, alias);
+        children[pos]->insert(root, x, y, z, vx, vy, vz, mass, charge);
     }
     else if (children[pos]->point->x == -1)
     {
         delete children[pos];
-        children[pos] = new Octree(x, y, z, vx, vy, vz, mass, charge, alias);
+        children[pos] = new Octree(x, y, z, vx, vy, vz, mass, charge);
     }
     else
     {
@@ -212,7 +211,6 @@ void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy,
         float vz_ = children[pos]->velocityZ;
         float charge_ = children[pos]->charge;
         float mass_ = children[pos]->mass;
-        std::string alias_ = children[pos]->alias;
 
         delete children[pos];
         children[pos] = nullptr;
@@ -250,18 +248,29 @@ void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy,
             children[pos] = new Octree(midX, midY, midZ, maxPoints->x, maxPoints->y, maxPoints->z);
         }
 
-        children[pos]->insert(root, x_, y_, z_, vx_, vy_, vz_, mass_, charge_, alias_);
-        children[pos]->insert(root, x, y, z, vx, vy, vz, mass, charge, alias);
+        children[pos]->insert(root, x_, y_, z_, vx_, vy_, vz_, mass_, charge_);
+        children[pos]->insert(root, x, y, z, vx, vy, vz, mass, charge);
     }
+
+    recalculateCenterOfCharge(root);
 }
 
-void Octree::recalculateCenterOfCharge(Octree *octree)
+void Octree::recalculateCenterOfCharge(Octree *&octree)
 {
     if (octree->children.size() == 0)
     {
         // if the size of the children is 0, then we have reached a leaf node
-        // com is the center of mass of the particle at the leaf node
-        octree->coc = octree->point;
+        // coc is the centre of charge of the point
+
+        // octree->coc = octree->point;
+        if (octree->charge >= 0)
+        {
+            octree->positiveCoc = octree->point;
+        }
+        else
+        {
+            octree->negativeCoc = octree->point;
+        }
 
         return;
     }
@@ -271,12 +280,18 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
         // using the formula for center of mass, where
         // coordinate = m1x1 + m2x2 + ... / m1 + m2 + ...
 
-        float xPosSum = 0;
-        float yPosSum = 0;
-        float zPosSum = 0;
+        float xPosPositiveChargeSum = 0;
+        float yPosPositiveChargeSum = 0;
+        float zPosPositiveChargeSum = 0;
+
+        float xPosNegativeChargeSum = 0;
+        float yPosNegativeChargeSum = 0;
+        float zPosNegativeChargeSum = 0;
 
         float massSum = 0;
         float chargeSum = 0;
+        float positiveChargeSum = 0;
+        float negativeChargeSum = 0;
 
         float xVelSum = 0;
         float yVelSum = 0;
@@ -289,35 +304,42 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
                 recalculateCenterOfCharge(child);
 
                 massSum += child->mass;
+
                 chargeSum += child->charge;
-              
-                //calculate total velocity
+                if (child->charge >= 0)
+                {
+                    positiveChargeSum += child->charge;
+
+                    xPosPositiveChargeSum += child->positiveCoc->x * child->charge;
+                    yPosPositiveChargeSum += child->positiveCoc->y * child->charge;
+                    zPosPositiveChargeSum += child->positiveCoc->z * child->charge;
+                }
+                else
+                {
+                    negativeChargeSum += child->charge;
+
+                    xPosNegativeChargeSum += child->negativeCoc->x * child->charge;
+                    yPosNegativeChargeSum += child->negativeCoc->y * child->charge;
+                    zPosNegativeChargeSum += child->negativeCoc->z * child->charge;
+                }
+
+                // calculate total velocity
                 xVelSum += child->velocityX;
                 yVelSum += child->velocityY;
                 zVelSum += child->velocityZ;
-
-                xPosSum += child->coc->x * child->mass;
-                yPosSum += child->coc->y * child->mass;
-                zPosSum += child->coc->z * child->mass;
             }
         }
 
-        if (chargeSum == 0)
-        {
-            octree->coc = new Point();
-        }
-        else
-        {
-            float absChargeSum = abs(chargeSum);
-
-            octree->coc = new Point(xPosSum / absChargeSum, yPosSum / absChargeSum, zPosSum / absChargeSum);
-        }
-
         octree->charge = chargeSum;
+        octree->negativeCharge = negativeChargeSum;
+        octree->positiveCharge = positiveChargeSum;
+
         octree->mass = massSum;
-        octree->coc = new Point(xPosSum / massSum, yPosSum / massSum, zPosSum / massSum);
         octree->velocityX = xVelSum;
         octree->velocityY = yVelSum;
         octree->velocityZ = zVelSum;
+
+        octree->positiveCoc = new Point(xPosPositiveChargeSum / positiveChargeSum, yPosPositiveChargeSum / positiveChargeSum, zPosPositiveChargeSum / positiveChargeSum);
+        octree->negativeCoc = new Point(xPosNegativeChargeSum / negativeChargeSum, yPosNegativeChargeSum / negativeChargeSum, zPosNegativeChargeSum / negativeChargeSum);
     }
 }

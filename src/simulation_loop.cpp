@@ -1,7 +1,7 @@
 #include <iostream>
 #include "include/barnesHut.h"
 
-std::vector<Octree *> getChildren(Octree *volume)
+std::vector<Octree *> getChildren(Octree *&volume)
 {
     std::vector<Octree *> childrenList;
     for (Octree *child : volume->children)
@@ -16,7 +16,7 @@ std::vector<Octree *> getChildren(Octree *volume)
     return childrenList;
 }
 
-std::vector<Octree *> getNodes(Octree *volume)
+std::vector<Octree *> getNodes(Octree *&volume)
 {
     std::vector<Octree *> childrenList;
     for (Octree *child : volume->children)
@@ -31,7 +31,7 @@ std::vector<Octree *> getNodes(Octree *volume)
     return childrenList;
 }
 
-Octree Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
+Octree Simulation::mainLoop(Octree *&volume, int iterations, float timeStep)
 { // simulation volume + iterations (-1 for infinite iterations) + time step (i.e how many seconds are in each iteration)
     // simulation loop
 
@@ -50,13 +50,13 @@ Octree Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
         std::vector<Octree *> childrenList = getChildren(volume);
         for (Octree *child : childrenList)
         {
-            child->point->x = child->point->x + child->velocityX * timeStep;
-            child->point->y = child->point->y + child->velocityY * timeStep;
-            child->point->z = child->point->z + child->velocityZ * timeStep;
+            child->point->x += child->velocityX * timeStep;
+            child->point->y += child->velocityY * timeStep;
+            child->point->z += child->velocityZ * timeStep;
 
-            child->velocityX = child->velocityX + child->forceX / child->mass * timeStep;
-            child->velocityY = child->velocityY + child->forceY / child->mass * timeStep;
-            child->velocityZ = child->velocityZ + child->forceZ / child->mass * timeStep;
+            child->velocityX += child->forceX / child->mass * timeStep;
+            child->velocityY += child->forceY / child->mass * timeStep;
+            child->velocityZ += child->forceZ / child->mass * timeStep;
 
             // update simulation volume
             newOctree.insert(
@@ -68,10 +68,12 @@ Octree Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
                 child->velocityY,
                 child->velocityZ,
                 child->mass,
-                child->charge,
-                child->alias);
+                child->charge);
         }
         newOctree.recalculateCenterOfCharge(newOctreePtr);
     }
+
+    newOctree.recalculateCenterOfCharge(newOctreePtr);
+
     return newOctree;
 }
