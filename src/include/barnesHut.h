@@ -25,6 +25,9 @@ constexpr float K_E = 8.9875517923e9;
 // Boltzmann constant
 constexpr float K_B = 1.380649e-23;
 
+// Biot Savart constant
+constexpr float K_BS = 1e-7;
+
 // Mass of a proton
 constexpr float M_PROTON = 1.67262192369e-27;
 
@@ -92,24 +95,24 @@ public:
     Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
-    void recalculateCenterOfCharge(Octree *&octree);
+    void recalculateCenterOfCharge(Octree *octree);
 
-    void insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
+    void insert(Octree *root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     bool find(float x, float y, float z);
 };
 
 class Barnes
 {
 public:
-    bool isExternalNode(Octree *&octree);
-    void calcForce(Octree *&node, Octree *&b, float thetaLimit);
+    bool isExternalNode(Octree *octree);
+    void calcForce(Octree *node, Octree *b, float thetaLimit);
 };
 
 class Simulation
 {
 private:
 public:
-    Octree mainLoop(Octree *&volume, int iterations, float timeStep);
+    Octree mainLoop(Octree *volume, int iterations, float timeStep);
 };
 
 std::vector<CSVPoint> loadInitialValues();
@@ -120,8 +123,8 @@ std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
                                             float density,
                                             float temperature);
 
-std::vector<Octree *> getChildren(Octree *&volume);
-std::vector<Octree *> getNodes(Octree *&volume);
+std::vector<Octree *> getChildren(Octree *volume);
+std::vector<Octree *> getNodes(Octree *volume);
 
 void generateInitialValuesFile(std::vector<CSVPoint> points);
 void initialiseSimulationValuesFile(std::vector<CSVPoint> initialPoints);

@@ -75,8 +75,8 @@ def generate_frames(value, i):
     try:
         plt.savefig(os.path.join(os.path.dirname(__file__), f"frames/frame{str(i).zfill(4)}.png"))
         print(f"Saved frame {i}")
-    except:
-        print(f"Error saving frame {i}. Trying again...")
+    except Exception as e:
+        print(f"Error saving frame {i}. Trying again... Error: {e}")
         generate_frames(value, i)
 
 # Initialize directory
@@ -108,8 +108,8 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
         else:
             line_values = line.split(",")
 
-            particle_alias = line_values[8].strip()
-            color = COLORS[particle_alias]
+            # particle_alias = line_values[8].strip()
+            # color = COLORS[particle_alias]
 
             # values.append([float(line_values[0]), float(line_values[1]), float(line_values[2]), color])
             values.append([float(line_values[0]), float(line_values[1]), float(line_values[2])])

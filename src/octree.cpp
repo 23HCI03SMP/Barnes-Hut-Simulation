@@ -122,7 +122,7 @@ bool Octree::find(float x, float y, float z)
     return false;
 }
 
-void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
+void Octree::insert(Octree *root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
 {
     if (find(x, y, z))
     {
@@ -132,7 +132,7 @@ void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy
 
     if (x < minPoints->x || x > maxPoints->x || y < minPoints->y || y > maxPoints->y || z < minPoints->z || z > maxPoints->z)
     {
-        std::cout << "Out of bound" << std::endl;
+        //std::cout << "Out of bound" << std::endl;
         return;
     }
 
@@ -255,7 +255,7 @@ void Octree::insert(Octree *&root, float x, float y, float z, float vx, float vy
     recalculateCenterOfCharge(root);
 }
 
-void Octree::recalculateCenterOfCharge(Octree *&octree)
+void Octree::recalculateCenterOfCharge(Octree *octree)
 {
     if (octree->children.size() == 0)
     {
