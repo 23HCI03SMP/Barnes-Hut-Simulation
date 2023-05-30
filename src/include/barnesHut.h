@@ -67,7 +67,7 @@ struct CSVPoint
 class Octree
 {
 private:
-    void recalculateCenterOfMass(Octree *&octree);
+    
 
 public:
     Point *point;
@@ -90,6 +90,8 @@ public:
     Octree();
     Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
+
+    void recalculateCenterOfCharge(Octree *&octree);
 
     void insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     bool find(float x, float y, float z);
