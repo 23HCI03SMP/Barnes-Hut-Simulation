@@ -47,38 +47,6 @@ def generate_frames(value, i):
         print(f"Error saving frame {i}. Trying again...")
         generate_frames(value, i)
 
-COLORS = {
-    "Deutron": "red",
-    "Electron": "blue"
-}
-
-fig = plt.figure()
-ax = fig.add_subplot(projection="3d")
-ax.set_box_aspect((1, 1, 1))
-
-def generate_frames(value, i):
-    ax.clear()
-
-    xlist = [x[0] for x in value]
-    ylist = [y[1] for y in value]
-    zlist = [z[2] for z in value]
-    # colorList = [c[3] for c in value]
-
-    # Plot the scatter graph
-    # ax.scatter(xlist, ylist, zlist, c=colorList)
-    ax.scatter(xlist, ylist, zlist)
-    ax.set_title(f"Time step {i}")
-    ax.set_xlim(MIN, MAX)
-    ax.set_ylim(MIN, MAX)
-    ax.set_zlim(MIN, MAX)
-
-    try:
-        plt.savefig(os.path.join(os.path.dirname(__file__), f"frames/frame{str(i).zfill(4)}.png"))
-        print(f"Saved frame {i}")
-    except:
-        print(f"Error saving frame {i}. Trying again...")
-        generate_frames(value, i)
-
 # Initialize directory
 # Create a ./frames directory if it doesn't exist
 # Otherwise, delete all files in the ./frames directory
