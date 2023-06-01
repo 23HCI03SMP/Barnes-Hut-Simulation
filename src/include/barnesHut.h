@@ -34,6 +34,12 @@ constexpr float M_NEUTRON = 1.67492749804e-27;
 // Mass of an electron
 constexpr float M_ELECTRON = 9.1093837015e-31;
 
+enum Shape
+{
+    SPHERE,
+    REGULAR_CYLINDER
+};
+
 struct Point
 {
     float x;
@@ -67,8 +73,6 @@ struct CSVPoint
 class Octree
 {
 private:
-    
-
 public:
     Point *point;
     Point *minPoints, *maxPoints;
@@ -87,41 +91,44 @@ public:
 
     float positiveCharge = 0;
     float negativeCharge = 0;
-    
+
     Octree();
     Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
-    void recalculateCenterOfCharge(Octree *&octree);
+    void recalculateCenterOfCharge(Octree *octree);
 
-    void insert(Octree *&root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
+    void insert(Octree *root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     bool find(float x, float y, float z);
 };
 
 class Barnes
 {
 public:
-    bool isExternalNode(Octree *&octree);
-    void calcForce(Octree *&node, Octree *&b, float thetaLimit);
+    bool isExternalNode(Octree *octree);
+    void calcForce(Octree *node, Octree *b, float thetaLimit);
 };
 
 class Simulation
 {
 private:
 public:
-    Octree mainLoop(Octree *&volume, int iterations, float timeStep);
+    Octree mainLoop(Octree *volume, int iterations, float timeStep);
 };
 
 std::vector<CSVPoint> loadInitialValues();
 std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
                                             float maxX, float maxY, float maxZ,
-                                            float radius,
+                                            float length,
+                                            float breadth,
+                                            float height,
                                             float mass,
                                             float density,
-                                            float temperature);
+                                            float temperature,
+                                            Shape shape);
 
-std::vector<Octree *> getChildren(Octree *&volume);
-std::vector<Octree *> getNodes(Octree *&volume);
+std::vector<Octree *> getChildren(Octree *volume);
+std::vector<Octree *> getNodes(Octree *volume);
 
 void generateInitialValuesFile(std::vector<CSVPoint> points);
 void initialiseSimulationValuesFile(std::vector<CSVPoint> initialPoints);
