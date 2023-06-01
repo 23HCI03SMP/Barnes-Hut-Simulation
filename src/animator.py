@@ -89,17 +89,18 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
 
     frame_timer_start = time.time()
     for i, value in enumerate(groups):
-        t = threading.Thread(target=generate_frames, args=(value, i))
+        generate_frames(value, i)
+    #     t = threading.Thread(target=generate_frames, args=(value, i))
 
-        lock.acquire()
+    #     lock.acquire()
 
-        t.start()
-        threads.append(t)
+    #     t.start()
+    #     threads.append(t)
 
-        lock.release()
+    #     lock.release()
     
-    for t in threads:
-        t.join()
+    # for t in threads:
+    #     t.join()
 
     print(f"Saved {len(groups)} frames in {time.time() - frame_timer_start}s")    
     
