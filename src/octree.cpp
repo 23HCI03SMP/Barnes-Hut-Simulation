@@ -297,6 +297,8 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
         float yVelSum = 0;
         float zVelSum = 0;
 
+        float numChildren = 0;
+
         for (Octree *child : octree->children)
         {
             if (child != nullptr || child->point->x != -1)

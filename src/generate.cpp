@@ -30,7 +30,7 @@ void initialiseSimulationValuesFile(std::vector<CSVPoint> initialPoints)
 {
     std::ofstream ValueFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH);
 
-    ValueFile << "x,y,z,vx,vy,vz,mass,charge"; // Insert headers into csv file
+    ValueFile << "x,y,z,vx,vy,vz,mass,charge,fx,fy,fz"; // Insert headers into csv file
     
     for (CSVPoint point : initialPoints) {
         ValueFile
@@ -63,6 +63,9 @@ void generateSimulationValuesFile(Octree *octree)
         float vx = child->velocityX;
         float vy = child->velocityY;
         float vz = child->velocityZ;
+        float fx = child->forceX;
+        float fy = child->forceY;
+        float fz = child->forceZ;
         float mass = child->mass;
         float charge = child->charge;
 
@@ -75,7 +78,10 @@ void generateSimulationValuesFile(Octree *octree)
             << vy << ","
             << vz << ","
             << mass << ","
-            << charge;
+            << charge << ","
+            << fx << ","
+            << fy << ","
+            << fz;
     }
 
     ValueFile << "\n";

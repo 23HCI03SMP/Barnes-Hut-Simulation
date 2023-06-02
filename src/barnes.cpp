@@ -10,7 +10,7 @@ bool Barnes::isExternalNode(Octree *octree)
     return octree->children.size() == 0;
 }
 
-bool cell_contains_position(Octree *&cell, Point *&pos) {
+bool cell_contains_position(Octree *cell, Point *pos) {
     if (pos->x < cell->minPoints->x || pos->x > cell->maxPoints->x) {
         return false;
     }
@@ -23,7 +23,7 @@ bool cell_contains_position(Octree *&cell, Point *&pos) {
     return true;
 }
 
-void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
+void addForce(Octree *node, Octree *b, float posdx, float posdy, float posdz, float negdx, float negdy, float negdz)
 {
         float forceX = 0;
         float forceY = 0;
@@ -53,34 +53,46 @@ void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
         crossVelZ += -vy1 * vx2;
 
         //Coulomb's Law
-        if (dx != 0)
+        if (posdx != 0 && negdx != 0)
         {
-            forceX += K_E * ((node->charge * b->charge) / (dx * dx));
-            forceY += K_BS * (node->charge * b->charge * crossVelZ * dx)/(abs(dx*dx*dx));
-            forceZ += K_BS * (node->charge * b->charge * -crossVelY * dx)/(abs(dx*dx*dx));
+            forceX += K_E * ((node->positiveCharge * b->positiveCharge) / (posdx * posdx));
+            forceY += K_BS * (node->positiveCharge * b->positiveCharge * crossVelZ * posdx)/(abs(posdx*posdx*posdx));
+            forceZ += K_BS * (node->positiveCharge * b->positiveCharge * -crossVelY * posdx)/(abs(posdx*posdx*posdx));
+
+            forceX -= K_E * ((node->negativeCharge * b->negativeCharge) / (negdx * negdx));
+            forceY -= K_BS * (node->negativeCharge * b->negativeCharge * crossVelZ * negdx)/(abs(negdx*negdx*negdx));
+            forceZ -= K_BS * (node->negativeCharge * b->negativeCharge * -crossVelY * negdx)/(abs(negdx*negdx*negdx));
         }
-        if (dy != 0)
+        if (posdy != 0 && negdy != 0)
         {
-            forceX += K_BS * (node->charge * b->charge * crossVelZ * dy)/(abs(dy*dy*dy));
-            forceY += K_E * ((node->charge * b->charge) / (dy * dy));
-            forceZ += K_BS * (node->charge * b->charge * crossVelX * dy)/(abs(dy*dy*dy));
+            forceX += K_BS * (node->positiveCharge * b->positiveCharge * crossVelZ * posdy)/(abs(posdy*posdy*posdy));
+            forceY += K_E * ((node->positiveCharge * b->positiveCharge) / (posdy * posdy));
+            forceZ += K_BS * (node->positiveCharge * b->positiveCharge * crossVelX * posdy)/(abs(posdy*posdy*posdy));
+
+            forceX -= K_BS * (node->negativeCharge * b->negativeCharge * crossVelZ * negdy)/(abs(negdy*negdy*negdy));
+            forceY -= K_E * ((node->negativeCharge * b->negativeCharge) / (negdy * negdy));
+            forceZ -= K_BS * (node->negativeCharge * b->negativeCharge * crossVelX * negdy)/(abs(negdy*negdy*negdy));
         }
-        if (dz != 0)
+        if (posdz != 0 && negdz != 0)
         {
-            forceX += K_BS * (node->charge * b->charge * -crossVelY * dz)/(abs(dz*dz*dz));
-            forceY += K_BS * (node->charge * b->charge * -crossVelX * dz)/(abs(dz*dz*dz));
-            forceZ += K_E * ((node->charge * b->charge) / (dz * dz));
+            forceX += K_BS * (node->positiveCharge * b->positiveCharge * -crossVelY * posdz)/(abs(posdz*posdz*posdz));
+            forceY += K_BS * (node->positiveCharge * b->positiveCharge * -crossVelX * posdz)/(abs(posdz*posdz*posdz));
+            forceZ += K_E * ((node->positiveCharge * b->positiveCharge) / (posdz * posdz));
+            
+            forceX += K_BS * (node->negativeCharge * b->negativeCharge * -crossVelY * negdz)/(abs(negdz*negdz*negdz));
+            forceY += K_BS * (node->negativeCharge * b->negativeCharge * -crossVelX * negdz)/(abs(negdz*negdz*negdz));
+            forceZ += K_E * ((node->negativeCharge * b->negativeCharge) / (negdz * negdz));
         }
 
-        if (dx < 0)
+        if (posdx < 0)
         {
             forceX = -forceX;
         }
-        if (dy < 0)
+        if (posdy < 0)
         {
             forceY = -forceY;
         }
-        if (dz < 0)
+        if (posdz < 0)
         {
             forceZ = -forceZ;
         }
@@ -89,19 +101,29 @@ void addForce(Octree *&node, Octree *&b, float dx, float dy, float dz)
         b->forceY = forceY;
         b->forceZ = forceZ;
 
-        // if (((forceX == 0 || forceY == 0 || forceZ == 0) && node != b) || forceX < 1e-8 || forceY < 1e-8 || forceZ < 1e-8)
-        // {
-        //     __asm__("int $3");
-        // }
+        if (((forceX == 0 || forceY == 0 || forceZ == 0) && node != b))
+        {
+            __asm__("int $3");
+        }
 }
 
 void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
 {
     // if negative, force on b is in the negative direction
-    float dx = node->positiveCoc->x - b->positiveCoc->x;
-    float dy = node->positiveCoc->y - b->positiveCoc->y;
-    float dz = node->positiveCoc->z - b->positiveCoc->z;
+    float posdx = node->positiveCoc->x - b->positiveCoc->x;
+    float posdy = node->positiveCoc->y - b->positiveCoc->y;
+    float posdz = node->positiveCoc->z - b->positiveCoc->z;
 
+    float negdx = 0;
+    float negdy = 0;
+    float negdz = 0;
+
+    if (node->negativeCoc != nullptr && b->negativeCoc != nullptr)
+    {
+        negdx = node->negativeCoc->x - b->negativeCoc->x;
+        negdy = node->negativeCoc->y - b->negativeCoc->y;
+        negdz = node->negativeCoc->z - b->negativeCoc->z;
+    }
     //check if node is empty or whether it contains b
     if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)))
     {
@@ -111,14 +133,14 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
 
     if (isExternalNode(node))
     {
-        addForce(node, b, dx, dy, dz);
+        addForce(node, b, posdx, posdy, posdz, negdx, negdy, negdz);
         //std::cout << "external" << std::endl;
         return;
     }
 
     // calculate theta (length/distance)
     float length = abs(node->minPoints->x - node->maxPoints->x);
-    float distance = sqrt(pow(dx, 2) + pow(dy, 2) + pow(dz, 2));
+    float distance = sqrt(pow(posdx, 2) + pow(posdy, 2) + pow(posdz, 2));
     float theta = length/distance;
 
     //std::cout << "theta: " << theta << std::endl;
@@ -127,7 +149,7 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
     if (theta < thetaLimit)
     {
         //std::cout << "less\n";
-        addForce(node, b, dx, dy, dz);
+        addForce(node, b, posdx, posdy, posdz, negdx, negdy, negdz);
         return;
     }
 

@@ -70,7 +70,7 @@ int main()
     }
 
     initialiseSimulationValuesFile(initialPoints);
-    Octree final = loop(tree, 200, 3, 1e-10);
+    Octree final = loop(tree, 200, 0.5, 1e-5);
 
     std::cout << "\nAnimator Starting...\n";
     system("py ./animator.py");
