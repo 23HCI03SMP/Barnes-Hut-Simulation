@@ -341,7 +341,22 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
         octree->velocityY = yVelSum;
         octree->velocityZ = zVelSum;
 
-        octree->positiveCoc = new Point(xPosPositiveChargeSum / positiveChargeSum, yPosPositiveChargeSum / positiveChargeSum, zPosPositiveChargeSum / positiveChargeSum);
-        octree->negativeCoc = new Point(xPosNegativeChargeSum / negativeChargeSum, yPosNegativeChargeSum / negativeChargeSum, zPosNegativeChargeSum / negativeChargeSum);
+        if (positiveChargeSum == 0)
+        {
+            octree->positiveCoc = new Point(0, 0, 0);
+        }
+        else
+        {
+            octree->positiveCoc = new Point(xPosPositiveChargeSum / positiveChargeSum, yPosPositiveChargeSum / positiveChargeSum, zPosPositiveChargeSum / positiveChargeSum);
+        }
+        
+        if (negativeChargeSum == 0)
+        {
+            octree->negativeCoc = new Point(0, 0, 0);
+        }
+        else
+        {
+            octree->negativeCoc = new Point(xPosNegativeChargeSum / negativeChargeSum, yPosNegativeChargeSum / negativeChargeSum, zPosNegativeChargeSum / negativeChargeSum);
+        }
     }
 }

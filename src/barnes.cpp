@@ -79,9 +79,9 @@ void addForce(Octree *node, Octree *b, float posdx, float posdy, float posdz, fl
             forceY += K_BS * (node->positiveCharge * b->positiveCharge * -crossVelX * posdz)/(abs(posdz*posdz*posdz));
             forceZ += K_E * ((node->positiveCharge * b->positiveCharge) / (posdz * posdz));
             
-            forceX += K_BS * (node->negativeCharge * b->negativeCharge * -crossVelY * negdz)/(abs(negdz*negdz*negdz));
-            forceY += K_BS * (node->negativeCharge * b->negativeCharge * -crossVelX * negdz)/(abs(negdz*negdz*negdz));
-            forceZ += K_E * ((node->negativeCharge * b->negativeCharge) / (negdz * negdz));
+            forceX -= K_BS * (node->negativeCharge * b->negativeCharge * -crossVelY * negdz)/(abs(negdz*negdz*negdz));
+            forceY -= K_BS * (node->negativeCharge * b->negativeCharge * -crossVelX * negdz)/(abs(negdz*negdz*negdz));
+            forceZ -= K_E * ((node->negativeCharge * b->negativeCharge) / (negdz * negdz));
         }
 
         if (posdx < 0)
@@ -101,10 +101,10 @@ void addForce(Octree *node, Octree *b, float posdx, float posdy, float posdz, fl
         b->forceY = forceY;
         b->forceZ = forceZ;
 
-        if (((forceX == 0 || forceY == 0 || forceZ == 0) && node != b))
-        {
-            __asm__("int $3");
-        }
+        // if (((forceX == 0 || forceY == 0 || forceZ == 0) && node != b))
+        // {
+        //     __asm__("int $3");
+        // }
 }
 
 void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
@@ -118,12 +118,14 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
     float negdy = 0;
     float negdz = 0;
 
-    if (node->negativeCoc != nullptr && b->negativeCoc != nullptr)
+    //This is wrong, but I don't know how to fix it b->negativeCoc != nullptr
+    if (b->negativeCoc == nullptr)
     {
         negdx = node->negativeCoc->x - b->negativeCoc->x;
         negdy = node->negativeCoc->y - b->negativeCoc->y;
         negdz = node->negativeCoc->z - b->negativeCoc->z;
     }
+
     //check if node is empty or whether it contains b
     if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)))
     {
