@@ -63,9 +63,6 @@ void generateSimulationValuesFile(Octree *octree)
         float vx = child->velocityX;
         float vy = child->velocityY;
         float vz = child->velocityZ;
-        float fx = child->forceX;
-        float fy = child->forceY;
-        float fz = child->forceZ;
         float mass = child->mass;
         float charge = child->charge;
 
@@ -78,10 +75,7 @@ void generateSimulationValuesFile(Octree *octree)
             << vy << ","
             << vz << ","
             << mass << ","
-            << charge << ","
-            << fx << ","
-            << fy << ","
-            << fz;
+            << charge;
     }
 
     ValueFile << "\n";
