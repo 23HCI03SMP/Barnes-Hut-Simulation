@@ -6,7 +6,7 @@
 
 using namespace std::chrono;
 
-Octree loop(Octree *octree, int iterations, float theta, float timeStep)
+void loop(Octree *octree, int iterations, float theta, float timeStep)
 {
     // Octree *octree = &octreeM;
 
@@ -31,14 +31,12 @@ Octree loop(Octree *octree, int iterations, float theta, float timeStep)
         std::cout << duration.count() << " ms " << std::endl;
 
         Simulation sim = Simulation();
-        final = sim.mainLoop(octree, 1, timeStep);
+        sim.mainLoop(octree, 1, timeStep);
 
         generateSimulationValuesFile(&final);
     }
 
     std::cout << "Average time: " << totalDur / iterations << " ms" << std::endl;
-
-    return final;
 }
 
 int main()
