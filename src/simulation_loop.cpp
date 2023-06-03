@@ -31,9 +31,9 @@ std::vector<Octree *> getNodes(Octree *volume)
     return childrenList;
 }
 
-Octree Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
+void Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
 { // simulation volume + iterations (-1 for infinite iterations) + time step (i.e how many seconds are in each iteration)
-    // simulation loop
+  // simulation loop
 
     Octree newOctree = Octree(
         volume->minPoints->x,
@@ -43,37 +43,32 @@ Octree Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
         volume->maxPoints->y,
         volume->maxPoints->z);
 
-    Octree *newOctreePtr = &newOctree;
+    Octree *newOctree_ptr = &newOctree;
 
-    for (int i = 0; i < iterations; i++)
+    std::vector<Octree *> childrenList = getChildren(volume);
+
+    for (Octree *child : childrenList)
     {
-        std::vector<Octree *> childrenList = getChildren(volume);
-        for (Octree *child : childrenList)
-        {
-            float pointX = child->point->x + child->velocityX * timeStep;
-            float pointY = child->point->y + child->velocityY * timeStep;
-            float pointZ = child->point->z + child->velocityZ * timeStep;
+        float x = child->point->x + child->velocityX * timeStep;
+        float y = child->point->y + child->velocityY * timeStep;
+        float z = child->point->z + child->velocityZ * timeStep;
 
-            float velocityX = child->velocityX + child->forceX / child->mass * timeStep;
-            float velocityY = child->velocityY + child->forceY / child->mass * timeStep;
-            float velocityZ = child->velocityZ + child->forceZ / child->mass * timeStep;
+        float vx = child->velocityX + child->forceX / child->mass * timeStep;
+        float vy = child->velocityY + child->forceY / child->mass * timeStep;
+        float vz = child->velocityZ + child->forceZ / child->mass * timeStep;
 
-            // update simulation volume
-            newOctree.insert(
-                newOctreePtr,
-                pointX,
-                pointY,
-                pointZ,
-                velocityX,
-                velocityY,
-                velocityZ,
-                child->mass,
-                child->charge);
-            newOctree.recalculateCenterOfCharge(newOctreePtr);
-        }
+        newOctree.insert(
+            newOctree_ptr,
+            x,
+            y,
+            z,
+            vx,
+            vy,
+            vz,
+            child->mass,
+            child->charge);
     }
-
-    newOctree.recalculateCenterOfCharge(newOctreePtr);
-
-    return newOctree;
+    newOctree.recalculateCenterOfCharge(newOctree_ptr);
+    volume = newOctree_ptr;
+    float a = 1;
 }

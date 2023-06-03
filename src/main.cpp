@@ -10,19 +10,19 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
 {
     // Octree *octree = &octreeM;
 
-    Octree final = Octree(0, 0, 0, 0, 0, 0);
+    Octree *final = octree;
 
     float totalDur = 0;
 
     for (int i = 0; i < iterations; i++)
     {
         auto start = high_resolution_clock::now();
-        std::vector<Octree *> childVect = getChildren(octree);
+        std::vector<Octree *> childVect = getChildren(final);
         Barnes barnes;
 
         for (Octree *child : childVect)
         {
-            barnes.calcForce(octree, child, theta);
+            barnes.calcForce(final, child, theta);
         }
 
         auto stop = high_resolution_clock::now();
@@ -31,9 +31,9 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
         std::cout << duration.count() << " ms " << std::endl;
 
         Simulation sim = Simulation();
-        sim.mainLoop(octree, 1, timeStep);
+        sim.mainLoop(final, 1, timeStep);
 
-        generateSimulationValuesFile(&final);
+        generateSimulationValuesFile(octree);
     }
 
     std::cout << "Average time: " << totalDur / iterations << " ms" << std::endl;
@@ -79,7 +79,7 @@ int main()
     tree_ptr->recalculateCenterOfCharge(tree_ptr);
 
     // initialiseSimulationValuesFile(initialPoints);
-    Octree final = loop(tree_ptr, 100, 0, 1e-2);
+    loop(tree_ptr, 100, 0, 1e-2);
 
     std::cout << "\nAnimator Starting...\n";
     system("py ./animator.py");

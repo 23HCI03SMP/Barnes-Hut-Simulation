@@ -114,7 +114,7 @@ class Simulation
 {
 private:
 public:
-    Octree mainLoop(Octree *volume, int iterations, float timeStep);
+    void mainLoop(Octree *volume, int iterations, float timeStep);
 };
 
 std::vector<CSVPoint> loadInitialValues();
