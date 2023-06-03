@@ -16,7 +16,7 @@ std::vector<Octree *> getChildren(Octree *volume)
     return childrenList;
 }
 
-std::vector<Octree *> getNodes(Octree *&volume)
+std::vector<Octree *> getNodes(Octree *volume)
 {
     std::vector<Octree *> childrenList;
     for (Octree *child : volume->children)
