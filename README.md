@@ -59,8 +59,8 @@ where F is the electric force, $k$ is the Coulomb constant, $q_1$ and $q_2$ are 
 ### Biot-Savart Law
 
 Using the Biot-Savart Law, we can derive another equation to [calculate the magnetic forces between moving charges](https://www.phys.unsw.edu.au/einsteinlight/jw/module2_FEB.htm):
-$$F=\frac{\mu_{0}}{4\pi}\frac{q_{1}q_{2}\overrightarrow{v_{1}}\times \overrightarrow{v_{2}} \times \overrightarrow{r}}{\left| {r}^{3} \right|}
-where F is the magnetic force, $$\mu_{0} is the permitivity of free space, r is the distance between the two particles, q represents the charge and v represents the velocity where subscripts 1 and 2 represent the two interacting particles.
+$$F=\frac{\mu_{0}}{4\pi}\frac{q_{1}q_{2}\overrightarrow{v_{1}}\times \overrightarrow{v_{2}} \times \overrightarrow{r}}{\left| {r}^{3} \right|}$$
+where F is the magnetic force, $$\mu_{0}$$ is the permitivity of free space, r is the distance between the two particles, q represents the charge and v represents the velocity where subscripts 1 and 2 represent the two interacting particles.
 
 ### Centre of Charge
 
