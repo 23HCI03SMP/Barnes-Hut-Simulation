@@ -25,6 +25,9 @@ constexpr float K_E = 8.9875517923e9;
 // Boltzmann constant
 constexpr float K_B = 1.380649e-23;
 
+// Biot Savart constant
+constexpr float K_BS = 1e-7;
+
 // Mass of a proton
 constexpr float M_PROTON = 1.67262192369e-27;
 
@@ -76,12 +79,12 @@ private:
 public:
     Point *point;
     Point *minPoints, *maxPoints;
-    Point *positiveCoc;
-    Point *negativeCoc;
+    Point *positiveCoc = new Point(-1, -1, -1);
+    Point *negativeCoc = new Point(-1, -1, -1);
 
     float forceX = 0, forceY = 0, forceZ = 0;
 
-    float charge = 0; // Need to set charge to zero because default value of floating point is some random negative number
+    
     float mass = 0;
     float velocityX = 0, velocityY = 0, velocityZ = 0;
     std::vector<Octree *> children;
@@ -89,9 +92,10 @@ public:
     float magneticFieldY = 0;
     float magneticFieldZ = 0;
 
-    float positiveCharge = 0;
-    float negativeCharge = 0;
-
+    float charge = 0; // IMPORTANT: USE THIS VALUE when calculating charge of single particles!
+    float positiveCharge = 0; // IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
+    float negativeCharge = 0; // IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
+    
     Octree();
     Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
@@ -107,13 +111,14 @@ class Barnes
 public:
     bool isExternalNode(Octree *octree);
     void calcForce(Octree *node, Octree *b, float thetaLimit);
+    void addForce(Octree *node, Octree *b, float posdx, float posdy, float posdz, float negdx, float negdy, float negdz);
 };
 
 class Simulation
 {
 private:
 public:
-    Octree mainLoop(Octree *volume, int iterations, float timeStep);
+    void mainLoop(Octree *&volume, float timeStep);
 };
 
 std::vector<CSVPoint> loadInitialValues();

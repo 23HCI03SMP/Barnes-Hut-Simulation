@@ -4,6 +4,8 @@ import os
 import threading
 import time
 
+import matplotlib
+# matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.animation
 
@@ -13,6 +15,7 @@ OUTPUT_VIDEO = "output.mp4"
 FPS = 10
 
 MIN = 1
+MAX = 5
 MAX = 5
 
 COLORS = {
@@ -90,8 +93,12 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
         generate_frames(value, i)
     #     t = threading.Thread(target=generate_frames, args=(value, i))
 
+    #     lock.acquire()
+
     #     t.start()
     #     threads.append(t)
+
+    #     lock.release()
     
     # for t in threads:
     #     t.join()
