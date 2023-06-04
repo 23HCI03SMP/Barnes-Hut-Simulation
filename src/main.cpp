@@ -70,7 +70,7 @@ int main()
 
     tree_ptr->recalculateCenterOfCharge(tree_ptr);
 
-    // initialiseSimulationValuesFile(initialPoints);
+    initialiseSimulationValuesFile(initialPoints);
     loop(tree_ptr, 100, 0, 1e-7);
 
     std::cout << "\nAnimator Starting...\n";
