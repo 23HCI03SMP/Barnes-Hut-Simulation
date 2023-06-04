@@ -59,7 +59,7 @@ The Barnes Hut Model is an O(N log N) algorithm. The value of θ is a parameter 
 
 ### Centre of Charge
 
-By finding the centre of charge of each octet, we are able to treat all particles as a single particle at the point of the centre of charge. By splitting the centre of charge into its positive and negative components, (i.e different centre of charges for positive and negative charge), we are able to subtract the different values of positive and negative charge to obtain the correct resultant force. This allows us to simulate multiple particle types with different charges at the same time.
+By finding the centre of charge of each octet, we are able to treat all particles as a single particle at the point of the centre of charge. By splitting the centre of charge into its positive and negative components, (i.e different centre of charges for positive and negative charge), we are able to subtract the different values of positive and negative charge to obtain the correct resultant force. This allows us to simulate multiple particle types with different charges at the same time as well as preventing division by zeroes.
 
 ### Coulomb's Law
 
