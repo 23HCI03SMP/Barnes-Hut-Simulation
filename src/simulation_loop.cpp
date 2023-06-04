@@ -31,19 +31,15 @@ std::vector<Octree *> getNodes(Octree *volume)
     return childrenList;
 }
 
-void Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
-{ // simulation volume + iterations (-1 for infinite iterations) + time step (i.e how many seconds are in each iteration)
-  // simulation loop
-
-    Octree newOctree = Octree(
+void Simulation::mainLoop(Octree *&volume, float timeStep)
+{
+    Octree *newOctree = new Octree(
         volume->minPoints->x,
         volume->minPoints->y,
         volume->minPoints->z,
         volume->maxPoints->x,
         volume->maxPoints->y,
         volume->maxPoints->z);
-
-    Octree *newOctree_ptr = &newOctree;
 
     std::vector<Octree *> childrenList = getChildren(volume);
 
@@ -57,8 +53,8 @@ void Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
         float vy = child->velocityY + child->forceY / child->mass * timeStep;
         float vz = child->velocityZ + child->forceZ / child->mass * timeStep;
 
-        newOctree.insert(
-            newOctree_ptr,
+        newOctree->insert(
+            newOctree,
             x,
             y,
             z,
@@ -68,7 +64,8 @@ void Simulation::mainLoop(Octree *volume, int iterations, float timeStep)
             child->mass,
             child->charge);
     }
-    newOctree.recalculateCenterOfCharge(newOctree_ptr);
-    volume = newOctree_ptr;
-    float a = 1;
+
+    newOctree->recalculateCenterOfCharge(newOctree);
+
+    volume = newOctree;
 }
