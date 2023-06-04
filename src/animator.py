@@ -1,7 +1,11 @@
 import glob
 import cv2
 import os
+import threading
+import time
 
+import matplotlib
+# matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.animation
 
@@ -13,6 +17,38 @@ FPS = 10
 MIN = 1
 MAX = 5
 
+COLORS = {
+    "Deutron": "red",
+    "Electron": "blue"
+}
+
+fig = plt.figure()
+ax = fig.add_subplot(projection="3d")
+ax.set_box_aspect((1, 1, 1))
+
+def generate_frames(value, i):
+    ax.clear()
+
+    xlist = [x[0] for x in value]
+    ylist = [y[1] for y in value]
+    zlist = [z[2] for z in value]
+    # colorList = [c[3] for c in value]
+
+    # Plot the scatter graph
+    # ax.scatter(xlist, ylist, zlist, c=colorList)
+    ax.scatter(xlist, ylist, zlist)
+    ax.set_title(f"Time step {i}")
+    ax.set_xlim(MIN, MAX)
+    ax.set_ylim(MIN, MAX)
+    ax.set_zlim(MIN, MAX)
+
+    try:
+        plt.savefig(os.path.join(os.path.dirname(__file__), f"frames/frame{str(i).zfill(4)}.png"))
+        print(f"Saved frame {i}")
+    except:
+        print(f"Error saving frame {i}. Trying again...")
+        generate_frames(value, i)
+
 # Initialize directory
 # Create a ./frames directory if it doesn't exist
 # Otherwise, delete all files in the ./frames directory
@@ -22,9 +58,7 @@ else:
     for file in os.listdir(os.path.join(os.path.dirname(__file__), "frames")):
         os.remove(os.path.join(os.path.dirname(__file__), "frames", file))
 
-fig = plt.figure()
-ax = fig.add_subplot(projection="3d")
-ax.set_box_aspect((1, 1, 1))
+process_timer_start = time.time()
 
 # Open the CSV file and read its contents
 with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
@@ -42,27 +76,33 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
             groups.append(values)
             values = []
         else:
-            values.append([float(value) for value in line.split(",")])
+            line_values = line.split(",")
 
-    for value in groups:
-        ax.clear()
+            # particle_alias = line_values[8].strip()
+            # color = COLORS[particle_alias]
 
-        # Extract the x, y, and z values and place them into one array
-        xlist = [x[0] for x in value]
-        ylist = [y[1] for y in value]
-        zlist = [z[2] for z in value]
+            # values.append([float(line_values[0]), float(line_values[1]), float(line_values[2]), color])
+            values.append([float(line_values[0]), float(line_values[1]), float(line_values[2])])
 
-        # Plot the scatter graph
-        ax.scatter(xlist, ylist, zlist)
-        ax.set_title(f"Time step {i}")
-        ax.set_xlim(MIN, MAX)
-        ax.set_ylim(MIN, MAX)
-        ax.set_zlim(MIN, MAX)
+    lock = threading.Lock()
+    threads = []
 
-        plt.savefig(os.path.join(os.path.dirname(__file__), f"frames/frame{str(i).zfill(4)}.png"))
-        print(f"Saved frame {i}")
+    frame_timer_start = time.time()
+    for i, value in enumerate(groups):
+        generate_frames(value, i)
+    #     t = threading.Thread(target=generate_frames, args=(value, i))
 
-        i += 1
+    #     lock.acquire()
+
+    #     t.start()
+    #     threads.append(t)
+
+    #     lock.release()
+    
+    # for t in threads:
+    #     t.join()
+
+    print(f"Saved {len(groups)} frames in {time.time() - frame_timer_start}s")    
     
     # Create the animation by combining all the images together
     output_video = os.path.join(os.path.dirname(__file__), OUTPUT_VIDEO)
@@ -87,3 +127,5 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
 
     # release the video writer object
     video_writer.release()
+    print(f"Saved video to {output_video}")
+    print(f"Task completed in {time.time() - process_timer_start}s")

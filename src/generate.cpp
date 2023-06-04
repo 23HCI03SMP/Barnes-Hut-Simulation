@@ -30,7 +30,7 @@ void initialiseSimulationValuesFile(std::vector<CSVPoint> initialPoints)
 {
     std::ofstream ValueFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH);
 
-    ValueFile << "x,y,z,vx,vy,vz,mass,charge"; // Insert headers into csv file
+    ValueFile << "x,y,z,vx,vy,vz,mass,charge,fx,fy,fz"; // Insert headers into csv file
     
     for (CSVPoint point : initialPoints) {
         ValueFile
