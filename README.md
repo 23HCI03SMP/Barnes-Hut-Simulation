@@ -31,7 +31,7 @@ The Barnes Hut Model is a method for calculating the gravitational force between
 - [ ] Logging
 - [ ] Visualisation
 - [ ] Check Energy Conservation
-- [ ] Implement Magnetic Field
+- [x] Implement Magnetic Field
 
 ## Running the project
 ### Visualising generated points
