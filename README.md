@@ -50,6 +50,19 @@ The children of a node are only created if the node contains more than one parti
    2. If there is a particle in the root node, create 8 children for the root node (i.e split the root node into 8 3d octets) and move the particles to the appropriate children
 3. Repeat step 2 until all particles are in the tree
 
+### Barnes Hut Simulation
+While summing the forces between every particle is an O(N^2) operation, the Barnes Hut Model uses the octree to reduce the number of particles that need to be considered when calculating the force between particles. [The algorithm](http://arborjs.org/docs/barnes-hut) for calculating the force between particles is as follows:
+1. If the current node is an external node (and it is not body b), calculate the force exerted by the current node on b, and add this amount to b’s net force.
+2. Otherwise, calculate the ratio s/d, where s is the width of the region represented by the internal node, and d is the distance between the body and the node’s center-of-mass. 
+3. If s/d < θ, treat this internal node as a single body, and calculate the force it exerts on body b, and add this amount to b’s net force.
+4. Otherwise, run the procedure recursively on each of the current node’s children.
+
+The Barnes Hut Model is an O(N log N) algorithm. The value of θ is a parameter that affects the degree of approximation. The smaller the value of θ, the more accurate the simulation is. However, the smaller the value of θ, the longer the simulation takes to run.
+
+### Centre of Charge
+
+By finding the centre of charge of each octet, we are able to treat all particles as a single particle at the point of the centre of charge. By splitting the centre of charge into its positive and negative components, (i.e different centre of charges for positive and negative charge), we are able to subtract the different values of positive and negative charge to obtain the correct resultant force. This allows us to simulate multiple particle types with different charges at the same time.
+
 ### Coulomb's Law
 
 The octree allows for us to calculate the force between particles in O(N log N) time. For the calculation of the force between charged particles, we can use Coulomb's law:
@@ -61,10 +74,6 @@ where F is the electric force, $k$ is the Coulomb constant, $q_1$ and $q_2$ are 
 Using the Biot-Savart Law, we can derive another equation to [calculate the magnetic forces between moving charges](https://www.phys.unsw.edu.au/einsteinlight/jw/module2_FEB.htm):
 $$F=\frac{\mu_{0}}{4\pi}\frac{q_{1}q_{2}\overrightarrow{v_{1}}\times \overrightarrow{v_{2}} \times \overrightarrow{r}}{\left| {r}^{3} \right|}$$
 where F is the magnetic force, $\mu_{0}$ is the permitivity of free space, r is the distance between the two particles, q represents the charge and v represents the velocity where subscripts 1 and 2 represent the two interacting particles.
-
-### Centre of Charge
-
-By finding the centre of charge of each octet, we are able to treat all particles as a single particle at the point of the centre of charge. By splitting the centre of charge into its positive and negative components, (i.e different centre of charges for positive and negative charge), we are able to subtract the different values of positive and negative charge to obtain the correct resultant force. This allows us to simulate multiple particle types with different charges at the same time.
 
 ### Initial Values
 The initial values for the particles are generated using the `initial_conditions.cpp` file. The particles are generated in a sphere within the given boundaries in the octree. The particles are given a certain charge and mass (based on what particle we are simulating), as well as a certain coordinate distrubution using Gaussian Distribution:
@@ -84,12 +93,3 @@ Their initial velocities in the (x, y, z) directions are calculated using the Ma
 $$v = (\frac{kT}{m})^\frac{1}{2}$$
 
 where k is the Boltzmann constant, T is the temperature, and m is the mass of the particle.
-
-### Barnes Hut Simulation
-While summing the forces between every particle is an O(N^2) operation, the Barnes Hut Model uses the octree to reduce the number of particles that need to be considered when calculating the force between particles. [The algorithm](http://arborjs.org/docs/barnes-hut) for calculating the force between particles is as follows:
-1. If the current node is an external node (and it is not body b), calculate the force exerted by the current node on b, and add this amount to b’s net force.
-2. Otherwise, calculate the ratio s/d, where s is the width of the region represented by the internal node, and d is the distance between the body and the node’s center-of-mass. 
-3. If s/d < θ, treat this internal node as a single body, and calculate the force it exerts on body b, and add this amount to b’s net force.
-4. Otherwise, run the procedure recursively on each of the current node’s children.
-
-The Barnes Hut Model is an O(N log N) algorithm. The value of θ is a parameter that affects the degree of approximation. The smaller the value of θ, the more accurate the simulation is. However, the smaller the value of θ, the longer the simulation takes to run.
