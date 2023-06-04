@@ -65,13 +65,13 @@ By finding the centre of charge of each octet, we are able to treat all particle
 
 The octree allows for us to calculate the force between particles in O(N log N) time. For the calculation of the force between charged particles, we can use Coulomb's law:
 $$F = \frac{kq_1q_2}{r^2}$$
-where F is the electric force, $k$ is the Coulomb constant, $q_1$ and $q_2$ are the charges of the particles, and $r$ is the distance between the particles. The force between particles can be calculated by summing the forces between each particle and all other particles. This is an O(N^2) operation.
+where F is the electric force, $k$ is the Coulomb constant, $q_1$ and $q_2$ are the charges of the particles, and $r$ is the displacement between the particles. The force between particles can be calculated by summing the forces between each particle and all other particles. This is an O(N^2) operation.
 
 ### Biot-Savart Law
 
 Using the Biot-Savart Law, we can derive another equation to [calculate the magnetic forces between moving charges](https://www.phys.unsw.edu.au/einsteinlight/jw/module2_FEB.htm):
 $$F=\frac{\mu_{0}}{4\pi}\frac{q_{1}q_{2}\overrightarrow{v_{1}}\times \overrightarrow{v_{2}} \times \overrightarrow{r}}{\left| {r}^{3} \right|}$$
-where F is the magnetic force, $\mu_{0}$ is the permitivity of free space, r is the distance between the two particles, q represents the charge and v represents the velocity where subscripts 1 and 2 represent the two interacting particles.
+where F is the magnetic force, $\mu_{0}$ is the permitivity of free space, r is the displacement between the two particles, q represents the charge and v represents the velocity where subscripts 1 and 2 represent the two interacting particles.
 
 ### Initial Values
 The initial values for the particles are generated using the `initial_conditions.cpp` file. The particles are generated in a sphere within the given boundaries in the octree. The particles are given a certain charge and mass (based on what particle we are simulating), as well as a certain coordinate distrubution using Gaussian Distribution:
