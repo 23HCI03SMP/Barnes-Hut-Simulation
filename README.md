@@ -6,8 +6,6 @@ The Barnes Hut Model is a method for calculating the gravitational force between
 ## Prerequisites
 - Visual Studio Code
   - C/C++ Extension
-  - Nsight Visual Studio Code Edition Extension
-  - [Nsight Visual Studio Code Edition](https://developer.nvidia.com/nsight-visual-studio-code-edition)
 - C++
   - GSL (remember to compile with `-lgsl -lgslcblas -lm` flags)
 - Python 3
