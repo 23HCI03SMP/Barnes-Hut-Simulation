@@ -38,7 +38,7 @@ std::vector<CSVPoint> generateInitialPoints(
     {
     case Shape::SPHERE:
     {
-        if (length != breadth != height)
+        if (length != breadth || length != height || breadth != height)
             throw std::invalid_argument("Length, breadth and height must be equal for a sphere");
 
         float radius = length / 2.0f;

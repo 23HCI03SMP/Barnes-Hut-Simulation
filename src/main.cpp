@@ -43,7 +43,7 @@ int main()
     remove(fileName.c_str());
 
     std::cout << "Starting simulation..." << std::endl;
-    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 2, 1, 1, 293); // 293K = 20C
+    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 2, 2, 2, 1, 100, 293, Shape::SPHERE); // 293K = 20C
     generateInitialValuesFile(points);
 
     std::vector<CSVPoint> initialPoints = loadInitialValues();
@@ -71,7 +71,7 @@ int main()
     tree_ptr->recalculateCenterOfCharge(tree_ptr);
 
     initialiseSimulationValuesFile(initialPoints);
-    loop(tree_ptr, 100, 0, 1e-6);
+    loop(tree_ptr, 100, 0, 1e-8);
 
     std::cout << "\nAnimator Starting...\n";
     system("py ./animator.py");
