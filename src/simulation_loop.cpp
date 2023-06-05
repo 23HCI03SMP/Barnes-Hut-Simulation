@@ -55,6 +55,7 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
 
         newOctree->insert(
             newOctree,
+            child->alias,
             x,
             y,
             z,

@@ -43,6 +43,17 @@ enum Shape
     REGULAR_CYLINDER
 };
 
+struct InsertedParticle
+{
+    std::string alias;
+    float mass;
+    float charge;
+    float percentage;
+
+    InsertedParticle() : alias(""), mass(0), charge(0), percentage(0) {}
+    InsertedParticle(std::string alias, float mass, float charge, float percentage) : alias(alias), mass(mass), charge(charge), percentage(percentage) {}
+};
+
 struct Point
 {
     float x;
@@ -54,6 +65,7 @@ struct Point
 
 struct CSVPoint
 {
+    std::string alias;
     float x;
     float y;
     float z;
@@ -62,15 +74,17 @@ struct CSVPoint
     float vz;
     float mass;
     float charge;
-    CSVPoint() : x(-1), y(-1), z(-1), vx(-1), vy(-1), vz(-1), mass(-1) {}
-    CSVPoint(float x, float y, float z, float vx, float vy, float vz, float mass, float charge) : x(x),
-                                                                                                  y(y),
-                                                                                                  z(z),
-                                                                                                  vx(vx),
-                                                                                                  vy(vy),
-                                                                                                  vz(vz),
-                                                                                                  mass(mass),
-                                                                                                  charge(charge) {}
+
+    CSVPoint() : alias(""), x(-1), y(-1), z(-1), vx(-1), vy(-1), vz(-1), mass(-1), charge(-1) {}
+    CSVPoint(std::string alias, float x, float y, float z, float vx, float vy, float vz, float mass, float charge) : alias(alias),
+                                                                                                                     x(x),
+                                                                                                                     y(y),
+                                                                                                                     z(z),
+                                                                                                                     vx(vx),
+                                                                                                                     vy(vy),
+                                                                                                                     vz(vz),
+                                                                                                                     mass(mass),
+                                                                                                                     charge(charge) {}
 };
 
 class Octree
@@ -84,7 +98,6 @@ public:
 
     float forceX = 0, forceY = 0, forceZ = 0;
 
-    
     float mass = 0;
     float velocityX = 0, velocityY = 0, velocityZ = 0;
     std::vector<Octree *> children;
@@ -92,17 +105,19 @@ public:
     float magneticFieldY = 0;
     float magneticFieldZ = 0;
 
-    float charge = 0; // IMPORTANT: USE THIS VALUE when calculating charge of single particles!
+    float charge = 0;         // IMPORTANT: USE THIS VALUE when calculating charge of single particles!
     float positiveCharge = 0; // IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
     float negativeCharge = 0; // IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
-    
+
+    std::string alias;
+
     Octree();
-    Octree(float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
+    Octree(std::string alias, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
     void recalculateCenterOfCharge(Octree *octree);
 
-    void insert(Octree *root, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
+    void insert(Octree *root, std::string alias, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     bool find(float x, float y, float z);
 };
 
@@ -122,15 +137,17 @@ public:
 };
 
 std::vector<CSVPoint> loadInitialValues();
-std::vector<CSVPoint> generateInitialPoints(float minX, float minY, float minZ,
+std::vector<CSVPoint> generateInitialPoints(Octree *&octree,
+                                            float minX, float minY, float minZ,
                                             float maxX, float maxY, float maxZ,
                                             float length,
                                             float breadth,
                                             float height,
-                                            float mass,
                                             float density,
                                             float temperature,
-                                            Shape shape);
+                                            std::vector<InsertedParticle> particles,
+                                            Shape shape,
+                                            bool load = true);
 
 std::vector<Octree *> getChildren(Octree *volume);
 std::vector<Octree *> getNodes(Octree *volume);
