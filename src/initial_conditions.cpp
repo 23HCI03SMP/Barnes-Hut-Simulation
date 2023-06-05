@@ -16,8 +16,6 @@ If shape is REGULAR_CYLINDER, length is the diameter of the cylinder. Breadth is
 */
 std::vector<CSVPoint> generateInitialPoints(
     Octree *&octree,
-    float minX, float minY, float minZ,
-    float maxX, float maxY, float maxZ,
     float length,
     float breadth,
     float height,
@@ -27,6 +25,13 @@ std::vector<CSVPoint> generateInitialPoints(
     Shape shape,
     bool load)
 {
+    float minX = octree->minPoints->x;
+    float minY = octree->minPoints->y;
+    float minZ = octree->minPoints->z;
+    float maxX = octree->maxPoints->x;
+    float maxY = octree->maxPoints->y;
+    float maxZ = octree->maxPoints->z;
+
     std::vector<CSVPoint> points;
     std::ofstream ValueFile(std::filesystem::current_path() / INITIAL_VALUES_PATH);
     // std::ofstream SimulationFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH);

@@ -118,23 +118,6 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
     b->forceX = forceX;
     b->forceY = forceY;
     b->forceZ = forceZ;
-
-    // if posdx, y or z is not 0, then insert a breakpoint
-    // if (posdx != 0 || posdy != 0 || posdz != 0)
-    // {
-    //     // print posdx, y and z
-    //     std::cout << "posdx: " << posdx << std::endl;
-    //     std::cout << "posdy: " << posdy << std::endl;
-    //     std::cout << "posdz: " << posdz << std::endl;
-    //     __asm__("int $3");
-    // }
-
-    // print forcex, y and z
-
-    // if (((forceX == 0 || forceY == 0 || forceZ == 0) && node != b))
-    // {
-    //     __asm__("int $3");
-    // }
 }
 
 void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
@@ -155,20 +138,12 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
         posdz = node->positiveCoc->z - b->positiveCoc->z;
     }
 
-    // This is wrong, but I don't know how to fix it b->negativeCoc != nullptr
     if (node->negativeCoc->x != -1 && b->negativeCoc->x != -1)
     {
         negdx = node->negativeCoc->x - b->negativeCoc->x;
         negdy = node->negativeCoc->y - b->negativeCoc->y;
         negdz = node->negativeCoc->z - b->negativeCoc->z;
     }
-
-    // std::cout << "negdx: " << negdx << std::endl;
-    // if negdx or negdy or negdz is not 0, throw a breakpoint
-    // if (negdx != 0 || negdy != 0 || negdz != 0)
-    // {
-    //     __asm__("int $3");
-    // }
 
     // check if node is empty or whether it contains b
     if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)))
@@ -179,9 +154,7 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
 
     if (isExternalNode(node))
     {
-        // std::cout << "external" << std::endl;
         addForce(node, b, posdx, posdy, posdz, negdx, negdy, negdz);
-        // std::cout << "external" << std::endl;
         return;
     }
 
@@ -190,17 +163,12 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
     float distance = sqrt(pow(posdx, 2) + pow(posdy, 2) + pow(posdz, 2));
     float theta = length / distance;
 
-    // std::cout << "theta: " << theta << std::endl;
-
     // if theta < 0.5(arbitrary number), treat as a single body
     if (theta < thetaLimit)
     {
-        // std::cout << "less\n";
         addForce(node, b, posdx, posdy, posdz, negdx, negdy, negdz);
         return;
     }
-
-    // std::cout << "more\n";
 
     for (Octree *child : node->children)
     {

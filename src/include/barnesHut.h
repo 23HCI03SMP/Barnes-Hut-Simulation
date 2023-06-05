@@ -138,8 +138,6 @@ public:
 
 std::vector<CSVPoint> loadInitialValues();
 std::vector<CSVPoint> generateInitialPoints(Octree *&octree,
-                                            float minX, float minY, float minZ,
-                                            float maxX, float maxY, float maxZ,
                                             float length,
                                             float breadth,
                                             float height,

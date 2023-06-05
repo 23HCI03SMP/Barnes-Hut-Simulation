@@ -1,6 +1,8 @@
 #include <iostream>
 #include "include/barnesHut.h"
 
+
+//Gets all particles in octree
 std::vector<Octree *> getChildren(Octree *volume)
 {
     std::vector<Octree *> childrenList;
@@ -16,6 +18,7 @@ std::vector<Octree *> getChildren(Octree *volume)
     return childrenList;
 }
 
+//Gets all nodes in octree
 std::vector<Octree *> getNodes(Octree *volume)
 {
     std::vector<Octree *> childrenList;
