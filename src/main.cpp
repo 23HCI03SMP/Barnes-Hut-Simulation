@@ -39,39 +39,23 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
 
 int main()
 {
-    std::string fileName = "simulation_values.csv";
-    remove(fileName.c_str());
+    std::vector<InsertedParticle> particles = {
+        InsertedParticle("Deutron", 2, 1, 0.5),
+        InsertedParticle("Electron", 1/1823.0f, 1, 0.5),
+    };
 
     std::cout << "Starting simulation..." << std::endl;
-    std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 2, 1, 1, 293); // 293K = 20C
-    generateInitialValuesFile(points);
+    // std::vector<CSVPoint> points = generateInitialPoints(1, 1, 1, 5, 5, 5, 2, 2, 2, 1, 100, 293, particles, Shape::SPHERE); // 293K = 20C
+    // generateInitialValuesFile(points);
 
-    std::vector<CSVPoint> initialPoints = loadInitialValues();
+    // std::vector<CSVPoint> initialPoints = loadInitialValues();
 
     Octree tree = Octree(1, 1, 1, 5, 5, 5);
     Octree *tree_ptr = &tree;
 
-    int i = 0;
-    for (CSVPoint point : initialPoints)
-    {
-        tree.insert(
-            tree_ptr,
-            point.x,
-            point.y,
-            point.z,
-            point.vx,
-            point.vy,
-            point.vz,
-            point.mass,
-            point.charge);
-        // std::cout << "Inserted " << i << " points\n";
-        i++;
-    }
+    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 1, 1, 1, 5, 5, 5, 2, 2, 2, 100, 294, particles, Shape::SPHERE); // 293K = 20C
 
-    tree_ptr->recalculateCenterOfCharge(tree_ptr);
-
-    initialiseSimulationValuesFile(initialPoints);
-    loop(tree_ptr, 100, 0, 1e-6);
+    loop(tree_ptr, 200, 0, 1e-10);
 
     std::cout << "\nAnimator Starting...\n";
     system("py ./animator.py");

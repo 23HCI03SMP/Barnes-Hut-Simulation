@@ -5,7 +5,6 @@ import threading
 import time
 
 import matplotlib
-# matplotlib.use("Agg")
 import matplotlib.pyplot as plt
 import matplotlib.animation
 
@@ -15,6 +14,7 @@ OUTPUT_VIDEO = "output.mp4"
 FPS = 10
 
 MIN = 1
+MAX = 5
 MAX = 5
 
 COLORS = {
@@ -32,11 +32,10 @@ def generate_frames(value, i):
     xlist = [x[0] for x in value]
     ylist = [y[1] for y in value]
     zlist = [z[2] for z in value]
-    # colorList = [c[3] for c in value]
+    colorList = [c[3] for c in value]
 
     # Plot the scatter graph
-    # ax.scatter(xlist, ylist, zlist, c=colorList)
-    ax.scatter(xlist, ylist, zlist)
+    ax.scatter(xlist, ylist, zlist, c=colorList)
     ax.set_title(f"Time step {i}")
     ax.set_xlim(MIN, MAX)
     ax.set_ylim(MIN, MAX)
@@ -78,11 +77,10 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
         else:
             line_values = line.split(",")
 
-            # particle_alias = line_values[8].strip()
-            # color = COLORS[particle_alias]
+            particle_alias = line_values[8].strip()
+            color = COLORS[particle_alias]
 
-            # values.append([float(line_values[0]), float(line_values[1]), float(line_values[2]), color])
-            values.append([float(line_values[0]), float(line_values[1]), float(line_values[2])])
+            values.append([float(line_values[0]), float(line_values[1]), float(line_values[2]), color])
 
     lock = threading.Lock()
     threads = []
