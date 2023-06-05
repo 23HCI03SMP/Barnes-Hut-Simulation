@@ -49,11 +49,11 @@ int main()
     Octree tree = Octree(1, 1, 1, 5, 5, 5);
     Octree *tree_ptr = &tree;
 
-    //std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 10000, 294, particles, Shape::SPHERE); // 293K = 20C
-    remove(SIMULATION_VALUES_PATH);
-    tree.insert(tree_ptr, "Deutron", 3, 3, 3, 0, 0, 1, 1, 1);
+    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 500, 294, particles, Shape::SPHERE); // 293K = 20C
+    // remove(SIMULATION_VALUES_PATH);
+    // tree.insert(tree_ptr, "Deutron", 3, 3, 3, 0, 0, 1, 1, 1);
 
-    loop(tree_ptr, 50, 0.5, 1e-1);
+    loop(tree_ptr, 200, 0.5, 10);
 
     std::cout << "\nAnimator Starting...\n";
     system("py ./animator.py");

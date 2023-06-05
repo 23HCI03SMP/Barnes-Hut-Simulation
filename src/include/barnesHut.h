@@ -26,7 +26,7 @@ constexpr float K_E = 8.9875517923e9;
 constexpr float K_B = 1.380649e-23;
 
 // Biot Savart constant
-constexpr float K_BS = 1; //1e-7;
+constexpr float K_BS = 1e-7;
 
 // Mass of a proton
 constexpr float M_PROTON = 1.67262192369e-27;
