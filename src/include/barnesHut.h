@@ -26,7 +26,7 @@ constexpr float K_E = 8.9875517923e9;
 constexpr float K_B = 1.380649e-23;
 
 // Biot Savart constant
-constexpr float K_BS = 1e-7;
+constexpr float K_BS = 1; //1e-7;
 
 // Mass of a proton
 constexpr float M_PROTON = 1.67262192369e-27;
@@ -101,7 +101,7 @@ public:
     float mass = 0;
     float velocityX = 0, velocityY = 0, velocityZ = 0;
     std::vector<Octree *> children;
-    float magneticFieldX = 0;
+    float magneticFieldX = 5;
     float magneticFieldY = 0;
     float magneticFieldZ = 0;
 
