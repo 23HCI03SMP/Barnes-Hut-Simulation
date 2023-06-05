@@ -101,7 +101,7 @@ public:
     float mass = 0;
     float velocityX = 0, velocityY = 0, velocityZ = 0;
     std::vector<Octree *> children;
-    float magneticFieldX = 5;
+    float magneticFieldX = 0;
     float magneticFieldY = 0;
     float magneticFieldZ = 0;
 
