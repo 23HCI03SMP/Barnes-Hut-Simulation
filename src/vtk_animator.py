@@ -1,48 +1,86 @@
-import vtk
+import glob
+import cv2
+import os
+import threading
+import time
+import numpy as np
+import pyvista as pv
 
-def main():
-    colors = vtk.vtkNamedColors()
+SIMULATION_VALUES = "simulation_values.csv"
+OUTPUT_VIDEO = "output.mp4"
+COLORS = {
+    "Deutron": "tan",
+    "Electron": "blue"
+}
 
-    # Create the geometry of a point (the coordinate)
-    points = vtk.vtkPoints()
-    p = [1.0, 2.0, 3.0]
+FPS = 10
 
-    # Create the topology of the point (a vertex)
-    vertices = vtk.vtkCellArray()
-    # We need an an array of point id's for InsertNextCell.
-    pid = [0]
-    pid[0] = points.InsertNextPoint(p)
-    vertices.InsertNextCell(1, pid)
+if not os.path.exists(os.path.join(os.path.dirname(__file__), "frames")):
+    os.makedirs(os.path.join(os.path.dirname(__file__), "frames"))
+else:
+    for file in os.listdir(os.path.join(os.path.dirname(__file__), "frames")):
+        os.remove(os.path.join(os.path.dirname(__file__), "frames", file))
 
-    # Create a polydata object
-    point = vtk.vtkPolyData()
+with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
+    csv.readline()  # Skip the header line
 
-    # Set the points and vertices we created as the geometry and topology of the polydata
-    point.SetPoints(points)
-    point.SetVerts(vertices)
+    groups = []
+    values = []
+    i = 0
 
-    # Visualize
-    mapper = vtk.vtkPolyDataMapper()
-    mapper.SetInputData(point)
+    # Read the CSV file line by line
+    # If the line is empty, add the values to the groups list
+    # Otherwise, add the values to the values list
+    for line in csv:
+        if line.isspace():
+            groups.append(values)
+            values = []
+        else:
+            line_values = line.split(",")
 
-    actor = vtk.vtkActor()
-    actor.SetMapper(mapper)
-    actor.GetProperty().SetColor(colors.GetColor3d('Tomato'))
-    actor.GetProperty().SetPointSize(20)
+            particle_alias = line_values[8].strip()
+            color = COLORS[particle_alias]
 
-    renderer = vtk.vtkRenderer()
-    renderWindow = vtk.vtkRenderWindow()
-    renderWindow.SetWindowName('Point')
-    renderWindow.AddRenderer(renderer)
-    renderWindowInteractor = vtk.vtkRenderWindowInteractor()
-    renderWindowInteractor.SetRenderWindow(renderWindow)
+            values.append([float(line_values[0]), float(
+                line_values[1]), float(line_values[2]), color])
 
-    renderer.AddActor(actor)
-    renderer.SetBackground(colors.GetColor3d('DarkGreen'))
+i = 0
+for values in groups:
+    points = []
+    colors = []
+    for arr in values:
+        points.append([arr[0], arr[1], arr[2]])
+        colors.append(arr[3])
+    # Set the scalars on the point cloud to the color values
+    mesh = pv.PolyData(points)
+    mesh.point_data["Colors"] = colors
+    print("plotter starting")
+    plotter = pv.Plotter(off_screen=True)
+    plotter.camera.position = (13.562428421039028, 13.58590842103903, 13.63003842103903)
+    plotter.add_mesh(mesh, render_points_as_spheres=True, scalars="Colors")
+    plotter.show(screenshot="src/frames/test%i.png"%(i))
+    i += 1
 
-    renderWindow.Render()
-    renderWindowInteractor.Start()
+# points = np.random.rand(100, 3)
+# mesh = pv.PolyData(points)
+# mesh.plot(point_size=10, style='points', color='tan')
 
+output_video = os.path.join(os.path.dirname(__file__), OUTPUT_VIDEO)
+images = glob.glob(os.path.join(os.path.dirname(__file__), "frames", "*.png"))
 
-if __name__ == '__main__':
-    main()
+frames = []
+for image in images:
+    frame = cv2.imread(image)
+    frames.append(frame)
+
+# get the height and width of frames
+height, width, _ = frames[0].shape
+
+# create the video writer object
+fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+video_writer = cv2.VideoWriter(output_video, fourcc, FPS, (width, height))
+# write frames to video
+for frame in frames:
+    video_writer.write(frame)
+# release the video writer object
+video_writer.release()

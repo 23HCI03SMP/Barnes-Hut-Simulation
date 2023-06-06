@@ -3,6 +3,7 @@
 #include <chrono>
 
 #include "testing.cpp"
+#include "animator.cpp"
 
 using namespace std::chrono;
 
@@ -39,24 +40,25 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
 
 int main()
 {
-    std::vector<InsertedParticle> particles = {
-        InsertedParticle("Deutron", 2, 1, 0.5),
-        InsertedParticle("Electron", 1/1823.0f, 1, 0.5),
-    };
+    
+    // std::vector<InsertedParticle> particles = {
+    //     InsertedParticle("Deutron", 2, 1, 0.5),
+    //     InsertedParticle("Electron", 1/1823.0f, 1, 0.5),
+    // };
 
-    std::cout << "Starting simulation..." << std::endl;
+    // std::cout << "Starting simulation..." << std::endl;
 
-    Octree tree = Octree(1, 1, 1, 5, 5, 5);
-    Octree *tree_ptr = &tree;
+    // Octree tree = Octree(1, 1, 1, 5, 5, 5);
+    // Octree *tree_ptr = &tree;
 
-    //std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 10000, 294, particles, Shape::SPHERE); // 293K = 20C
-    remove(SIMULATION_VALUES_PATH);
-    tree.insert(tree_ptr, "Deutron", 3, 3, 3, 0, 0, 1, 1, 1);
+    // //std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 10000, 294, particles, Shape::SPHERE); // 293K = 20C
+    // remove(SIMULATION_VALUES_PATH);
+    // tree.insert(tree_ptr, "Deutron", 3, 3, 3, 0, 0, 1, 1, 1);
 
-    loop(tree_ptr, 50, 0.5, 1e-1);
+    // loop(tree_ptr, 50, 0.5, 1e-1);
 
-    std::cout << "\nAnimator Starting...\n";
-    system("py ./animator.py");
+    // std::cout << "\nAnimator Starting...\n";
+    // system("py ./animator.py");
 
-    return 0;
+    // return 0;
 }
