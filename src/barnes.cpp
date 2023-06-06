@@ -115,9 +115,9 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
         forceZ = -forceZ;
     }
 
-    b->forceX = forceX;
-    b->forceY = forceY;
-    b->forceZ = forceZ;
+    b->forceX = b->forceX + forceX;
+    b->forceY = b->forceY + forceY;
+    b->forceZ = b->forceZ + forceZ;
 }
 
 void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
@@ -132,11 +132,11 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
     float negdz = 0;
 
     //External Magnetic Field
-    b->forceX = b->charge*(b->velocityZ * b->magneticFieldY);
+    b->forceX = b->forceX + b->charge*(b->velocityZ * b->magneticFieldY);
     b->forceX = b->forceX + b->charge*(-b->velocityY * b->magneticFieldZ);
-    b->forceY = b->charge*(b->velocityX * b->magneticFieldZ);
+    b->forceY = b->forceY + b->charge*(b->velocityX * b->magneticFieldZ);
     b->forceY = b->forceY + b->charge*(-b->velocityZ * b->magneticFieldX);
-    b->forceZ = b->charge*(b->velocityY * b->magneticFieldX);
+    b->forceZ = b->forceZ + b->charge*(b->velocityY * b->magneticFieldX);
     b->forceZ = b->forceZ + b->charge*(-b->velocityX * b->magneticFieldY);
 
     if (node->positiveCoc->x != -1 || b->positiveCoc->x != -1)

@@ -15,11 +15,21 @@ COLORS = {
 
 FPS = 10
 
+# Create/empty the frames directory
 if not os.path.exists(os.path.join(os.path.dirname(__file__), "frames")):
     os.makedirs(os.path.join(os.path.dirname(__file__), "frames"))
 else:
     for file in os.listdir(os.path.join(os.path.dirname(__file__), "frames")):
         os.remove(os.path.join(os.path.dirname(__file__), "frames", file))
+
+# Create/empty the vtk directory
+if not os.path.exists(os.path.join(os.path.dirname(__file__), "vtk")):
+    os.makedirs(os.path.join(os.path.dirname(__file__), "vtk"))
+else:
+    for file in os.listdir(os.path.join(os.path.dirname(__file__), "vtk")):
+        os.remove(os.path.join(os.path.dirname(__file__), "vtk", file))
+
+
 
 with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
     csv.readline()  # Skip the header line
@@ -48,22 +58,33 @@ i = 0
 for values in groups:
     points = []
     colors = []
+
     for arr in values:
         points.append([arr[0], arr[1], arr[2]])
         colors.append(arr[3])
-    # Set the scalars on the point cloud to the color values
+
+    # Creates a mesh of all points and sets each point's color
     mesh = pv.PolyData(points)
     mesh.point_data["Colors"] = colors
-    print("plotter starting")
+
+    print("Rendering frame %i"%(i+1))
+
+    # Create, view and save the frame
     plotter = pv.Plotter(off_screen=True)
+
+    # Changes depending on the radius and other factors (change manually)
     plotter.camera.position = (13.562428421039028, 13.58590842103903, 13.63003842103903)
-    plotter.add_mesh(mesh, render_points_as_spheres=True, scalars="Colors")
-    plotter.show(screenshot="src/frames/test%i.png"%(i))
+
+    try:
+        #plotter.show_bounds(axes_range=[1,1,1,5,5,5])
+        plotter.add_mesh(mesh, render_points_as_spheres=True, scalars="Colors")
+        plotter.show(screenshot="src/frames/test%s.png"%(str(i).zfill(4)))
+        mesh.save("src/vtk/test%s.vtk"%(str(i).zfill(4)), binary=False)
+    except Exception as e:
+        print(e)
     i += 1
 
-# points = np.random.rand(100, 3)
-# mesh = pv.PolyData(points)
-# mesh.plot(point_size=10, style='points', color='tan')
+# Animate the frames
 
 output_video = os.path.join(os.path.dirname(__file__), OUTPUT_VIDEO)
 images = glob.glob(os.path.join(os.path.dirname(__file__), "frames", "*.png"))
@@ -79,8 +100,10 @@ height, width, _ = frames[0].shape
 # create the video writer object
 fourcc = cv2.VideoWriter_fourcc(*"mp4v")
 video_writer = cv2.VideoWriter(output_video, fourcc, FPS, (width, height))
+
 # write frames to video
 for frame in frames:
     video_writer.write(frame)
+
 # release the video writer object
 video_writer.release()
