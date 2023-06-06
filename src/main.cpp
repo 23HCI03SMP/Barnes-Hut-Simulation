@@ -46,7 +46,7 @@ int main()
 
     std::cout << "Starting simulation..." << std::endl;
 
-    Octree tree = Octree(1, 1, 1, 5, 5, 5);
+    Octree tree = Octree(0, 0, 0, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
     std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 2500, 294, particles, Shape::SPHERE); // 293K = 20C
