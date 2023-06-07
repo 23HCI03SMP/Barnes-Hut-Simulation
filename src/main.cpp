@@ -51,7 +51,7 @@ int main()
     remove(SIMULATION_VALUES_PATH);
     tree.insert(tree_ptr, "Deutron", 3, 3, 3, 0, 0, 1, 1, 1);
 
-    loop(tree_ptr, 100, 0, 1);
+    loop(tree_ptr, 50, 0, 1);
 
     std::cout << "\nAnimator Starting...\n";
     system("py animator.py");
