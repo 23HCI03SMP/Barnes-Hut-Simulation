@@ -46,15 +46,15 @@ int main()
 
     std::cout << "Starting simulation..." << std::endl;
 
-    Octree tree = Octree(1, 1, 1, 20, 20, 20);
+    Octree tree = Octree(0, 0, 0, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
-    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 1, 1, 1, 20, 20, 20, 2, 2, 2, 100, 294, particles, Shape::SPHERE); // 293K = 20C
+    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 2500, 294, particles, Shape::SPHERE); // 293K = 20C
 
-    loop(tree_ptr, 50, 0, 1e-10);
+    loop(tree_ptr, 50, 0.5, 1e-10);
 
     std::cout << "\nAnimator Starting...\n";
-    system("py ./animator.py");
+    system("py ./vtk_animator.py");
 
     return 0;
 }
