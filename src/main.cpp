@@ -10,7 +10,7 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
 
     float totalDur = 0;
 
-    for (int i = 0; i < iterations; i++)
+    for (int i = 0; i <= iterations; i++)
     {
         auto start = high_resolution_clock::now();
         std::vector<Octree *> childVect = getChildren(final);
@@ -56,10 +56,10 @@ int main()
     remove(SIMULATION_VALUES_PATH);
     tree.insert(tree_ptr, "Deutron", 3, 3, 3, 0, 0, 1, 1, 1);
 
-    loop(tree_ptr, 50, 0, 1);
+    loop(tree_ptr, 50, 0, 1e-8);
 
     std::cout << "\nAnimator Starting...\n";
-    system("py ./vtk_animator.py");
+    system("py ./animator.py");
 
     //tester();
 
