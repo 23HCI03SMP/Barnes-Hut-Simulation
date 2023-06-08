@@ -36,10 +36,9 @@ std::vector<CSVPoint> generateInitialPoints(
         ValueFile << "x,y,z,vx,vy,vz,mass,charge,alias"; // Insert headers into csv file
     }
 
-    float rangeX = maxX - minX;
-    float rangeY = maxY - minY;
-    float rangeZ = maxZ - minZ;
-    float maxRange = std::max(rangeX, std::max(rangeY, rangeZ));
+    float centerX = (minX + maxX) / 2.0f;
+    float centerY = (minY + maxY) / 2.0f;
+    float centerZ = (minZ + maxZ) / 2.0f;
 
     int nTotal;
     float x, y, z, vx, vy, vz;
@@ -66,10 +65,10 @@ std::vector<CSVPoint> generateInitialPoints(
                 do
                 {
                     // generate random coordinates within the sphere
-                    x = gsl_ran_gaussian(rng, radius) + maxX / 2.0;
-                    y = gsl_ran_gaussian(rng, radius) + maxY / 2.0;
-                    z = gsl_ran_gaussian(rng, radius) + maxZ / 2.0;
-                } while (pow(x - (minX + maxX) / 2, 2) + pow(y - (minY + maxY) / 2, 2) + pow(z - (minZ + maxZ) / 2, 2) > pow(radius, 2)); // ensure coordinates are within range
+                    x = gsl_ran_gaussian(rng, radius) + centerX;
+                    y = gsl_ran_gaussian(rng, radius) + centerY;
+                    z = gsl_ran_gaussian(rng, radius) + centerZ;
+                } while (pow(x - centerX, 2) + pow(y - centerY, 2) + pow(z - centerZ, 2) > pow(radius * 2, 2)); // ensure coordinates are within range
 
                 // generate random velocities for the point using Maxwell-Boltzmann distribution
                 vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
