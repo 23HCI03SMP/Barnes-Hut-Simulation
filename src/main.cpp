@@ -41,8 +41,13 @@ int main()
 {
     std::vector<InsertedParticle> particles = {
         InsertedParticle("Deutron", 2, 1, 0.5),
-        InsertedParticle("Electron", 1/1823.0f, 1, 0.5),
+        InsertedParticle("Electron", 1/1823.0f, -1, 0.5),
     };
+
+    // std::vector<InsertedParticle> particles = {
+    //     InsertedParticle("Deutron", M_PROTON + M_NEUTRON, 1, 0.5),
+    //     InsertedParticle("Electron", M_ELECTRON, 1, 0.5),
+    // };
 
     std::cout << "Starting simulation..." << std::endl;
 
@@ -51,7 +56,7 @@ int main()
 
     std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 500, 294, particles, Shape::SPHERE); // 293K = 20C
 
-    loop(tree_ptr, 50, 0, 1e-10);
+    loop(tree_ptr, 100, 0, 1e-10);
 
     std::cout << "\nAnimator Starting...\n";
     system("py animator.py");
