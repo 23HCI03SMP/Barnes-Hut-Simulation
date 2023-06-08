@@ -7,7 +7,8 @@ The Barnes Hut Model is a method for calculating the gravitational force between
 #### Visual Studio Code
   - C/C++ Extension
 #### C++
-  - GSL (remember to compile with `-lgsl -lgslcblas -lm` flags)
+  - GSL (remember to compile with `-lgsl -lgslcblas -lm` flags) `pacman -S mingw-w64-x86_64-gsl`
+  - [Eigen3] (https://eigen.tuxfamily.org/index.php?title=Main_Page) or `pacman -S mingw-w64-x86_64-eigen3`
 #### Python 3
   - matplotlib
   - pandas
