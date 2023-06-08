@@ -73,7 +73,7 @@ std::vector<CSVPoint> generateInitialPoints(
                     x = gsl_ran_gaussian(rng, radius) + centerX;
                     y = gsl_ran_gaussian(rng, radius) + centerY;
                     z = gsl_ran_gaussian(rng, radius) + centerZ;
-                } while (pow(x - centerX, 2) + pow(y - centerY, 2) + pow(z - centerZ, 2) > pow(radius * 2, 2)); // ensure coordinates are within range
+                } while (pow(x - centerX, 2) + pow(y - centerY, 2) + pow(z - centerZ, 2) > pow(radius, 2)); // ensure coordinates are within range
 
                 // generate random velocities for the point using Maxwell-Boltzmann distribution
                 vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
@@ -106,8 +106,6 @@ std::vector<CSVPoint> generateInitialPoints(
 
     case Shape::REGULAR_CYLINDER:
     {
-        throw std::runtime_error("Regular cylinder not implemented yet");
-
         if (length != breadth)
             throw std::invalid_argument("Length and breadth must be equal for a regular cylinder");
 
@@ -125,10 +123,10 @@ std::vector<CSVPoint> generateInitialPoints(
                 do
                 {
                     // generate random coordinates within the cylinder
-                    x = gsl_ran_gaussian(rng, radius) + maxX / 2.0;
-                    y = gsl_ran_gaussian(rng, radius) + maxY / 2.0;
-                    z = gsl_ran_gaussian(rng, height) + maxZ / 2.0;
-                } while (pow(x - (minX + maxX) / 2, 2) + pow(y - (minY + maxY) / 2, 2) > pow(radius, 2) || (z < minZ || z > maxZ)); // ensure coordinates are within range
+                    x = gsl_ran_gaussian(rng, radius) + centerX;
+                    y = gsl_ran_gaussian(rng, radius) + centerY;
+                    z = gsl_ran_gaussian(rng, height) + centerZ;
+                } while (pow(x - centerX, 2) + pow(y - centerY, 2) > pow(radius * 2, 2) || pow(z - centerZ, 2) > pow(height, 2)); // ensure coordinates are within range
 
                 // generate random velocities for the point using Maxwell-Boltzmann distribution
                 vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
@@ -141,7 +139,6 @@ std::vector<CSVPoint> generateInitialPoints(
                 {
                     ValueFile
                         << "\n"
-                        << particle.alias << ","
                         << x << ","
                         << y << ","
                         << z << ","
@@ -149,7 +146,8 @@ std::vector<CSVPoint> generateInitialPoints(
                         << vy << ","
                         << vz << ","
                         << particle.mass << ","
-                        << particle.charge;
+                        << particle.charge << ","
+                        << particle.alias;
 
                     octree->insert(octree, particle.alias, x, y, z, vx, vy, vz, particle.mass, particle.charge);
                 }
