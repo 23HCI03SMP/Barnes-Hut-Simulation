@@ -34,20 +34,27 @@ with open(os.path.join(os.path.dirname(__file__), INITIAL_VALUES), 'r') as file:
 
         initial_particle_ke.setdefault(row[8], []).append(
             0.5 * mass * (vx ** 2 + vy ** 2 + vz ** 2))
-        
+
 # Read data from simulation CSV file
 with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES), 'r') as file:
-    reader = csv.reader(file)
-    reader.__next__()  # Skip header row
-    for row in reader:
-        if row:  # Skip empty rows
-            vx = float(row[3])
-            vy = float(row[4])
-            vz = float(row[5])
-            mass = float(row[6])
-            
-            final_particle_ke.setdefault(row[8], []).append(
-                0.5 * mass * (vx ** 2 + vy ** 2 + vz ** 2))
+    last_timestep = []
+
+    for line in file:
+        line = line.strip()
+        if line:  # Skip empty lines
+            last_timestep.append(line)
+        else:  # Reset the list if an empty line is encountered
+            last_timestep = []
+
+    for row in last_timestep:
+        row = row.split(",")
+        vx = float(row[3])
+        vy = float(row[4])
+        vz = float(row[5])
+        mass = float(row[6])
+
+        final_particle_ke.setdefault(row[8], []).append(
+            0.5 * mass * (vx ** 2 + vy ** 2 + vz ** 2))
 
 
 # Plotting the histogram for x positions
@@ -85,9 +92,6 @@ for i, (key, value) in enumerate(sorted(initial_particle_ke.items())):
     plt.legend()
 
 for i, (key, value) in enumerate(sorted(final_particle_ke.items())):
-    for i in value:
-        print(i)
-
     plt.subplot(337 + i)
     plt.hist(value, bins=20, label=key, color="blue")
     plt.xlabel('KE')
