@@ -39,7 +39,7 @@ int main()
 {
     std::vector<InsertedParticle> particles = {
         InsertedParticle("Deutron", 2, 1, 0.5),
-        InsertedParticle("Electron", 1/1823.0f, 1, 0.5),
+        InsertedParticle("Electron", 1/1823.0f, -1, 0.5),
     };
 
     std::cout << "Starting simulation..." << std::endl;
@@ -54,7 +54,7 @@ int main()
     loop(tree_ptr, 50, 0, 1);
 
     std::cout << "\nAnimator Starting...\n";
-    system("py animator.py");
+    system("py ./vtk_animator.py");
 
     //tester();
 
