@@ -10,7 +10,7 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
 
     float totalDur = 0;
 
-    for (int i = 0; i < iterations; i++)
+    for (int i = 0; i <= iterations; i++)
     {
         auto start = high_resolution_clock::now();
         std::vector<Octree *> childVect = getChildren(final);
