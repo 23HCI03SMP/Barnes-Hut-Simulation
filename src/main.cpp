@@ -41,7 +41,7 @@ int main()
 {
     std::vector<InsertedParticle> particles = {
         InsertedParticle("Deutron", 2, 1, 0.5),
-        InsertedParticle("Electron", 1/1823.0f, 1, 0.5),
+        InsertedParticle("Electron", 1/1823.0f, -1, 0.5),
     };
 
     std::cout << "Starting simulation..." << std::endl;
