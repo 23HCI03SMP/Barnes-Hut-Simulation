@@ -36,25 +36,17 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
     // Lorentz's force
     // qvx * BX = qvY * BY = qvZ * BZ = F = 0
 
-    float vx1 = b->velocityX;
-    float vx2 = node->velocityX;
-    float vy1 = b->velocityY;
-    float vy2 = node->velocityY;
-    float vz1 = b->velocityZ;
-    float vz2 = node->velocityZ;
+    float rvx = b->velocityX - node->velocityX; //relative velocity x
+    float rvy = b->velocityY - node->velocityY; //relative velocity y
+    float rvz = b->velocityZ - node->velocityZ; //relative velocity z
 
     float crossVelX = 0;
     float crossVelY = 0;
     float crossVelZ = 0;
 
-    crossVelX = vz1 * vy2;
-    crossVelX += -vy1 * vz2;
-
-    crossVelY += vz1 * vx2;
-    crossVelY += -vx1 * vz2;
-
-    crossVelZ += vx1 * vy2;
-    crossVelZ += -vy1 * vx2;
+    float Bx = 0;
+    float By = 0;
+    float Bz = 0;
 
     float posNodeCharge = isExternalNode(node) ? node->charge : node->positiveCharge;
     float negNodeCharge = isExternalNode(node) ? node->charge : node->negativeCharge;
@@ -63,61 +55,72 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
     if (posdx != 0)
     {
         forceX += K_E * ((posNodeCharge * b->charge) / (posdx * posdx));
-        forceY += K_BS * (posNodeCharge * b->charge * crossVelZ * posdx) / (abs(posdx * posdx * posdx));
-        forceZ += K_BS * (posNodeCharge * b->charge * -crossVelY * posdx) / (abs(posdx * posdx * posdx));
+        By += K_BS*(posNodeCharge * rvz * posdx) / (abs(posdx * posdx * posdx));
+        Bz += K_BS*(posNodeCharge * -rvy * posdx) / (abs(posdx * posdx * posdx));
+
+        
     }
 
     if (negdx != 0)
     {
         forceX -= K_E * ((negNodeCharge * b->charge) / (negdx * negdx));
-        forceY -= K_BS * (negNodeCharge * b->charge * crossVelZ * negdx) / (abs(negdx * negdx * negdx));
-        forceZ -= K_BS * (negNodeCharge * b->charge * -crossVelY * negdx) / (abs(negdx * negdx * negdx));
+        By -= K_BS*(negNodeCharge * rvz * negdx) / (abs(negdx * negdx * negdx));
+        Bz -= K_BS*(negNodeCharge * -rvy * negdx) / (abs(negdx * negdx * negdx));
     }
 
     if (posdy != 0)
     {
-        forceX += K_BS * (posNodeCharge * b->charge * crossVelZ * posdy) / (abs(posdy * posdy * posdy));
+        Bx += K_BS*(posNodeCharge * -rvz * posdy) / (abs(posdy * posdy * posdy));
         forceY += K_E * ((posNodeCharge * b->charge) / (posdy * posdy));
-        forceZ += K_BS * (posNodeCharge * b->charge * crossVelX * posdy) / (abs(posdy * posdy * posdy));
+        Bz += K_BS*(posNodeCharge * rvx * posdy) / (abs(posdy * posdy * posdy));
     }
 
     if (negdy != 0)
     {
-        forceX -= K_BS * (negNodeCharge * b->charge * crossVelZ * negdy) / (abs(negdy * negdy * negdy));
+        Bx -= K_BS*(negNodeCharge * -rvz * negdy) / (abs(negdy * negdy * negdy));
         forceY -= K_E * ((negNodeCharge * b->charge) / (negdy * negdy));
-        forceZ -= K_BS * (negNodeCharge * b->charge * crossVelX * negdy) / (abs(negdy * negdy * negdy));
+        Bz -= K_BS*(negNodeCharge * rvx * negdy) / (abs(negdy * negdy * negdy));
     }
 
     if (posdz != 0)
     {
-        forceX += K_BS * (posNodeCharge * b->charge * -crossVelY * posdz) / (abs(posdz * posdz * posdz));
-        forceY += K_BS * (posNodeCharge * b->charge * -crossVelX * posdz) / (abs(posdz * posdz * posdz));
+        Bx += K_BS*(posNodeCharge * rvy * posdz) / (abs(posdz * posdz * posdz));
+        By += K_BS*(posNodeCharge * -rvx * posdz) / (abs(posdz * posdz * posdz));
         forceZ += K_E * ((posNodeCharge * b->charge) / (posdz * posdz));
     }
 
     if (negdz != 0)
     {
-        forceX -= K_BS * (negNodeCharge * b->negativeCharge * -crossVelY * negdz) / (abs(negdz * negdz * negdz));
-        forceY -= K_BS * (negNodeCharge * b->negativeCharge * -crossVelX * negdz) / (abs(negdz * negdz * negdz));
+        Bx -= K_BS*(negNodeCharge * rvy * negdz) / (abs(negdz * negdz * negdz));
+        By -= K_BS*(negNodeCharge * -rvx * negdz) / (abs(negdz * negdz * negdz));
         forceZ -= K_E * ((negNodeCharge * b->negativeCharge) / (negdz * negdz));
     }
 
     if (posdx < 0)
     {
         forceX = -forceX;
+        Bx = -Bx;
     }
     if (posdy < 0)
     {
         forceY = -forceY;
+        By = -By;
     }
     if (posdz < 0)
     {
         forceZ = -forceZ;
+        Bz = -Bz;
     }
+
+    //need a negdx dy dz?
 
     b->forceX = b->forceX + forceX;
     b->forceY = b->forceY + forceY;
     b->forceZ = b->forceZ + forceZ;
+
+    b->magneticFieldX = b->magneticFieldX + Bx;
+    b->magneticFieldY = b->magneticFieldY + By;
+    b->magneticFieldZ = b->magneticFieldZ + Bz;
 }
 
 void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
@@ -130,14 +133,6 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
     float negdx = 0;
     float negdy = 0;
     float negdz = 0;
-
-    //External Magnetic Field
-    b->forceX = b->forceX + b->charge*(b->velocityZ * b->magneticFieldY);
-    b->forceX = b->forceX + b->charge*(-b->velocityY * b->magneticFieldZ);
-    b->forceY = b->forceY + b->charge*(b->velocityX * b->magneticFieldZ);
-    b->forceY = b->forceY + b->charge*(-b->velocityZ * b->magneticFieldX);
-    b->forceZ = b->forceZ + b->charge*(b->velocityY * b->magneticFieldX);
-    b->forceZ = b->forceZ + b->charge*(-b->velocityX * b->magneticFieldY);
 
     if (node->positiveCoc->x != -1 || b->positiveCoc->x != -1)
     {

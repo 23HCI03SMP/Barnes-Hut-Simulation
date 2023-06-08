@@ -99,7 +99,7 @@ public:
     float forceX = 0, forceY = 0, forceZ = 0;
 
     float mass = 0;
-    float velocityX = 0, velocityY = 0, velocityZ = 0;
+    float velocityX = 0, velocityY = 0, velocityZ = 0; //current velocity of the particle
     std::vector<Octree *> children;
     float magneticFieldX = 0;
     float magneticFieldY = 0;
@@ -153,3 +153,5 @@ std::vector<Octree *> getNodes(Octree *volume);
 void generateInitialValuesFile(std::vector<CSVPoint> points);
 void initialiseSimulationValuesFile(std::vector<CSVPoint> initialPoints);
 void generateSimulationValuesFile(Octree *octree);
+
+int tester();

@@ -2,8 +2,6 @@
 #include <iostream>
 #include <chrono>
 
-#include "testing.cpp"
-
 using namespace std::chrono;
 
 void loop(Octree *octree, int iterations, float theta, float timeStep)
@@ -54,12 +52,16 @@ int main()
     Octree tree = Octree(0, 0, 0, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
-    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 500, 294, particles, Shape::SPHERE); // 293K = 20C
+    //std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 50, 294, particles, Shape::SPHERE); // 293K = 20C
+    remove(SIMULATION_VALUES_PATH);
+    tree.insert(tree_ptr, "Deutron", 3, 3, 3, 0, 0, 1, 1, 1);
 
-    loop(tree_ptr, 100, 0, 1e-10);
+    loop(tree_ptr, 50, 0, 1);
 
     std::cout << "\nAnimator Starting...\n";
-    system("py animator.py");
+    system("py ./vtk_animator.py");
+
+    //tester();
 
     return 0;
 }
