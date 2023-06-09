@@ -53,7 +53,7 @@ int main()
     loop(tree_ptr, 50, 0, 1);
 
     std::cout << "\nAnimator Starting...\n";
-    system("py ./animator.py");
+    system("py ./vtk_animator.py");
 
     //tester();
 
