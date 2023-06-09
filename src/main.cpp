@@ -2,8 +2,6 @@
 #include <iostream>
 #include <chrono>
 
-#include "testing.cpp"
-
 using namespace std::chrono;
 
 void loop(Octree *octree, int iterations, float theta, float timeStep)
@@ -12,7 +10,7 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
 
     float totalDur = 0;
 
-    for (int i = 0; i < iterations; i++)
+    for (int i = 0; i <= iterations; i++)
     {
         auto start = high_resolution_clock::now();
         std::vector<Octree *> childVect = getChildren(final);
@@ -52,10 +50,12 @@ int main()
     std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 100, 294, particles, Shape::SPHERE); // 293K = 20C
     // std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 10, 100, 294, particles, Shape::REGULAR_CYLINDER); // 293K = 20C
 
-    loop(tree_ptr, 50, 0.5, 1e-10);
+    loop(tree_ptr, 50, 0, 1);
 
     std::cout << "\nAnimator Starting...\n";
     system("py ./animator.py");
+
+    //tester();
 
     return 0;
 }
