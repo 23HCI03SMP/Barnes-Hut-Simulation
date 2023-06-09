@@ -78,8 +78,8 @@ for values in groups:
     try:
         #plotter.show_bounds(axes_range=[1,1,1,5,5,5])
         plotter.add_mesh(mesh, render_points_as_spheres=True, scalars="Colors")
-        plotter.show(screenshot="src/frames/test%s.png"%(str(i).zfill(4)))
-        mesh.save("src/vtk/test%s.vtk"%(str(i).zfill(4)), binary=False)
+        plotter.show(screenshot="./frames/test%s.png"%(str(i).zfill(4)))
+        mesh.save("./vtk/test%s.vtk"%(str(i).zfill(4)), binary=False)
     except Exception as e:
         print(e)
     i += 1
