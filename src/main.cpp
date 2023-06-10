@@ -42,6 +42,11 @@ int main()
         InsertedParticle("Electron", 1/1823.0f, -1, 0.5),
     };
 
+    // std::vector<InsertedParticle> particles = {
+    //     InsertedParticle("Deutron", M_PROTON + M_NEUTRON, 1, 0.5),
+    //     InsertedParticle("Electron", M_ELECTRON, 1, 0.5),
+    // };
+
     std::cout << "Starting simulation..." << std::endl;
 
     Octree tree = Octree(0, 0, 0, 20, 20, 20);
