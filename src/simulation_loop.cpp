@@ -74,11 +74,11 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
         // std::cout << "vz: " << Vprime(2) << std::endl;
 
         float vx = child->forceX / child->mass * timeStep;
-        vx += Vprime(0);
+        //vx += Vprime(0);
         float vy = child->forceY / child->mass * timeStep;
-        vy += Vprime(1);
+        //vy += Vprime(1);
         float vz = child->forceZ / child->mass * timeStep;
-        vz += Vprime(2);
+        //vz += Vprime(2);
 
         newOctree->insert(
             newOctree,

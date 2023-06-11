@@ -55,10 +55,10 @@ int main()
     std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 100, 294, particles, Shape::SPHERE); // 293K = 20C
     // std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 10, 100, 294, particles, Shape::REGULAR_CYLINDER); // 293K = 20C
 
-    loop(tree_ptr, 50, 0, 1);
+    loop(tree_ptr, 50, 0, 1e-8);
 
     std::cout << "\nAnimator Starting...\n";
-    system("py ./vtk_animator.py");
+    system("py ./animator.py");
 
     //tester();
 
