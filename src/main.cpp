@@ -52,10 +52,11 @@ int main()
     Octree tree = Octree(0, 0, 0, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
-    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 100, 294, particles, Shape::SPHERE); // 293K = 20C
+    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 20, 294, particles, Shape::SPHERE); // 293K = 20C
+    tree_ptr->recalculateCenterOfCharge(tree_ptr);
     // std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 10, 100, 294, particles, Shape::REGULAR_CYLINDER); // 293K = 20C
 
-    loop(tree_ptr, 50, 0, 1e-8);
+    loop(tree_ptr, 100, 0, 1e-8);
 
     std::cout << "\nAnimator Starting...\n";
     system("py ./animator.py");

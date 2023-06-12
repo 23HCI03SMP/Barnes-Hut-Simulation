@@ -29,10 +29,6 @@ bool cell_contains_position(Octree *cell, Point *pos)
 
 void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float posdz, float negdx, float negdy, float negdz)
 {
-    float forceX = 0;
-    float forceY = 0;
-    float forceZ = 0;
-
     // Lorentz's force
     // qvx * BX = qvY * BY = qvZ * BZ = F = 0
 
@@ -40,13 +36,9 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
     float rvy = b->velocityY - node->velocityY; //relative velocity y
     float rvz = b->velocityZ - node->velocityZ; //relative velocity z
 
-    float crossVelX = 0;
-    float crossVelY = 0;
-    float crossVelZ = 0;
-
-    float Bx = 0;
-    float By = 0;
-    float Bz = 0;
+    float crossVelX = 0, crossVelY = 0, crossVelZ = 0;
+    float Bx = 0, By = 0, Bz = 0;
+    float Ex = 0, Ey = 0, Ez = 0;
 
     float posNodeCharge = isExternalNode(node) ? node->charge : node->positiveCharge;
     float negNodeCharge = isExternalNode(node) ? node->charge : node->negativeCharge;
@@ -54,16 +46,14 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
     // Coulomb's Law
     if (posdx != 0)
     {
-        forceX += K_E * ((posNodeCharge * b->charge) / (posdx * posdx));
+        Ex += K_E * posNodeCharge / (posdx * posdx);
         By += K_BS*(posNodeCharge * rvz * posdx) / (abs(posdx * posdx * posdx));
         Bz += K_BS*(posNodeCharge * -rvy * posdx) / (abs(posdx * posdx * posdx));
-
-        
     }
 
     if (negdx != 0)
     {
-        forceX -= K_E * ((negNodeCharge * b->charge) / (negdx * negdx));
+        Ex -= K_E * negNodeCharge / (negdx * negdx);
         By -= K_BS*(negNodeCharge * rvz * negdx) / (abs(negdx * negdx * negdx));
         Bz -= K_BS*(negNodeCharge * -rvy * negdx) / (abs(negdx * negdx * negdx));
     }
@@ -71,14 +61,14 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
     if (posdy != 0)
     {
         Bx += K_BS*(posNodeCharge * -rvz * posdy) / (abs(posdy * posdy * posdy));
-        forceY += K_E * ((posNodeCharge * b->charge) / (posdy * posdy));
+        Ey += K_E * posNodeCharge / (posdy * posdy);
         Bz += K_BS*(posNodeCharge * rvx * posdy) / (abs(posdy * posdy * posdy));
     }
 
     if (negdy != 0)
     {
         Bx -= K_BS*(negNodeCharge * -rvz * negdy) / (abs(negdy * negdy * negdy));
-        forceY -= K_E * ((negNodeCharge * b->charge) / (negdy * negdy));
+        Ey -= K_E * negNodeCharge / (negdy * negdy);
         Bz -= K_BS*(negNodeCharge * rvx * negdy) / (abs(negdy * negdy * negdy));
     }
 
@@ -86,37 +76,36 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
     {
         Bx += K_BS*(posNodeCharge * rvy * posdz) / (abs(posdz * posdz * posdz));
         By += K_BS*(posNodeCharge * -rvx * posdz) / (abs(posdz * posdz * posdz));
-        forceZ += K_E * ((posNodeCharge * b->charge) / (posdz * posdz));
+        Ez += K_E * posNodeCharge / (posdz * posdz);
     }
 
     if (negdz != 0)
     {
         Bx -= K_BS*(negNodeCharge * rvy * negdz) / (abs(negdz * negdz * negdz));
         By -= K_BS*(negNodeCharge * -rvx * negdz) / (abs(negdz * negdz * negdz));
-        forceZ -= K_E * ((negNodeCharge * b->negativeCharge) / (negdz * negdz));
+        Ez -= K_E * negNodeCharge / (negdz * negdz);
     }
 
-    if (posdx < 0)
+    if (posdx < 0 || negdx < 0)
     {
-        forceX = -forceX;
+        Ex = -Ex;
         Bx = -Bx;
     }
-    if (posdy < 0)
+    if (posdy < 0 || negdy < 0)
     {
-        forceY = -forceY;
+        Ey = -Ey;
         By = -By;
     }
-    if (posdz < 0)
+    if (posdz < 0 || negdz < 0)
     {
-        forceZ = -forceZ;
+        Ez = -Ez;
         Bz = -Bz;
     }
 
-    //need a negdx dy dz?
-
-    b->forceX = b->forceX + forceX;
-    b->forceY = b->forceY + forceY;
-    b->forceZ = b->forceZ + forceZ;
+    // Electric field set to default after every timestep
+    b->electricFieldX = b->electricFieldX + Ex;
+    b->electricFieldY = b->electricFieldY + Ey;
+    b->electricFieldZ = b->electricFieldZ + Ez;
 
     b->magneticFieldX = b->magneticFieldX + Bx;
     b->magneticFieldY = b->magneticFieldY + By;
@@ -151,7 +140,6 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
     // check if node is empty or whether it contains b
     if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)))
     {
-        // std::cout << "bad" << std::endl;
         return;
     }
 

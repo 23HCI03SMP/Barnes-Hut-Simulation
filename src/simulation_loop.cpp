@@ -49,9 +49,9 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
 
     for (Octree *child : childrenList)
     {
-        float Px = child->magneticFieldX * timeStep / child->mass;
-        float Py = child->magneticFieldY * timeStep / child->mass;
-        float Pz = child->magneticFieldZ * timeStep / child->mass;
+        float Px = child->charge * child->magneticFieldX * timeStep / child->mass;
+        float Py = child->charge * child->magneticFieldY * timeStep / child->mass;
+        float Pz = child->charge * child->magneticFieldZ * timeStep / child->mass;
 
         float x = child->point->x + child->velocityX * timeStep;
         float y = child->point->y + child->velocityY * timeStep;
@@ -73,12 +73,23 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
         // std::cout << "vy: " << Vprime(1) << std::endl;
         // std::cout << "vz: " << Vprime(2) << std::endl;
 
-        float vx = child->forceX / child->mass * timeStep;
-        //vx += Vprime(0);
-        float vy = child->forceY / child->mass * timeStep;
-        //vy += Vprime(1);
-        float vz = child->forceZ / child->mass * timeStep;
-        //vz += Vprime(2);
+        // std::cout << "Ex: " << child->electricFieldX << std::endl;
+        // std::cout << "Ey: " << child->electricFieldY << std::endl;
+        // std::cout << "Ez: " << child->electricFieldZ << std::endl;
+        // std::cout << "vx: " << child->velocityX << std::endl;
+        // std::cout << "vy: " << child->velocityY << std::endl;
+        // std::cout << "vz: " << child->velocityZ << std::endl;
+        // std::cout << "mass: " << child->mass << std::endl;
+        // std::cout << "charge: " << child->charge << std::endl;
+        // std::cout << "timestep: " << timeStep << std::endl;
+        // std::cout << std::endl;
+
+        float vx = child->velocityX + (child->charge * child->electricFieldX) / child->mass * timeStep;
+        vx += Vprime(0);
+        float vy = child->velocityY + (child->charge * child->electricFieldY) / child->mass * timeStep;
+        vy += Vprime(1);
+        float vz = child->velocityZ + (child->charge * child->electricFieldZ) / child->mass * timeStep;
+        vz += Vprime(2);
 
         newOctree->insert(
             newOctree,

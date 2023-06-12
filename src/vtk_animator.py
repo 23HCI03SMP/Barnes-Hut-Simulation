@@ -7,7 +7,7 @@ import numpy as np
 import pyvista as pv
 
 SIMULATION_VALUES = "simulation_values.csv"
-OUTPUT_VIDEO = "output.mp4"
+OUTPUT_VIDEO = "output.mov"
 COLORS = {
     "Deutron": "tan",
     "Electron": "blue"
