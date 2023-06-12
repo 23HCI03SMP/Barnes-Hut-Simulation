@@ -150,8 +150,6 @@ std::vector<CSVPoint> generateInitialPoints(Octree *&octree,
 std::vector<Octree *> getChildren(Octree *volume);
 std::vector<Octree *> getNodes(Octree *volume);
 
-void generateInitialValuesFile(std::vector<CSVPoint> points);
-void initialiseSimulationValuesFile(std::vector<CSVPoint> initialPoints);
-void generateSimulationValuesFile(Octree *octree);
+void writeSimulationValues(Octree *octree, std::ofstream &ValueFile);
 
 int tester();

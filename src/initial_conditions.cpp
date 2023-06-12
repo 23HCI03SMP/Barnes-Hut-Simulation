@@ -34,7 +34,6 @@ std::vector<CSVPoint> generateInitialPoints(
 
     std::vector<CSVPoint> points;
     std::ofstream ValueFile(std::filesystem::current_path() / INITIAL_VALUES_PATH);
-    // std::ofstream SimulationFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH);
 
     if (load)
     {
@@ -154,26 +153,6 @@ std::vector<CSVPoint> generateInitialPoints(
             }
         }
 
-        // for (int i = 0; i < nTotal; ++i)
-        // {
-        //     do
-        //     {
-        //         // generate random coordinates within the cylinder
-        //         x = gsl_ran_gaussian(rng, radius) + maxX / 2.0;
-        //         float angle = gsl_rng_uniform(rng) * 2 * PI;                 // random angle between 0 and 2π
-        //         float distance = gsl_rng_uniform(rng) * (maxZ - minZ) / 2.0; // random distance along the z-axis within the cylinder height
-        //         y = sin(angle) * radius + maxY / 2.0;
-        //         z = cos(angle) * radius + minZ + distance;
-        //     } while (pow(x - (minX + maxX) / 2, 2) + pow(y - (minY + maxY) / 2, 2) > pow(radius, 2) || (z < minZ || z > maxZ)); // ensure coordinates are within range
-
-        //     // generate random velocities for the point using Maxwell-Boltzmann distribution
-        //     vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
-        //     vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
-        //     vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
-
-        //     points.push_back(CSVPoint(x, y, z, vx, vy, vz, mass, 1.0f));
-        // }
-
         break;
     }
     default:
@@ -190,8 +169,6 @@ std::vector<CSVPoint> generateInitialPoints(
     std::filesystem::copy_file(std::filesystem::current_path() / INITIAL_VALUES_PATH,
                                std::filesystem::current_path() / SIMULATION_VALUES_PATH,
                                std::filesystem::copy_options::overwrite_existing);
-
-    // SimulationFile.close();
 
     return points;
 }

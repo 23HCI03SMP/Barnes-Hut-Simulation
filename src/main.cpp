@@ -1,5 +1,7 @@
 #include "include/barnesHut.h"
 #include <iostream>
+#include <fstream>
+#include <filesystem>
 #include <chrono>
 
 using namespace std::chrono;
@@ -7,6 +9,7 @@ using namespace std::chrono;
 void loop(Octree *octree, int iterations, float theta, float timeStep)
 {
     Octree *final = octree;
+    std::ofstream ValueFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH, std::ios::app);
 
     float totalDur = 0;
 
@@ -29,9 +32,10 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
         Simulation sim = Simulation();
         sim.mainLoop(final, timeStep);
 
-        generateSimulationValuesFile(final);
+        writeSimulationValues(final, ValueFile);
     }
 
+    ValueFile.close();
     std::cout << "Average time: " << totalDur / iterations << " ms" << std::endl;
 }
 
@@ -47,10 +51,10 @@ int main()
     Octree tree = Octree(0, 0, 0, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
-    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 100, 294, particles, Shape::SPHERE); // 293K = 20C
+    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 1000, 294, particles, Shape::SPHERE); // 293K = 20C
     // std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 10, 100, 294, particles, Shape::REGULAR_CYLINDER); // 293K = 20C
 
-    loop(tree_ptr, 50, 0, 1);
+    loop(tree_ptr, 50, 0, 1e-8);
 
     std::cout << "\nAnimator Starting...\n";
     system("py ./animator.py");
