@@ -1,15 +1,18 @@
 import glob
 import cv2
+import math
 import os
 import threading
 import time
+import concurrent.futures
 
 import matplotlib
 import matplotlib.pyplot as plt
 import matplotlib.animation
 
 SIMULATION_VALUES = "simulation_values.csv"
-OUTPUT_VIDEO = "output.mp4"
+OUTPUT_POINTS_VIDEO = "output_points.mp4"
+OUTPUT_KE_VIDEO = "output_ke.mp4"
 
 FPS = 10
 
@@ -21,11 +24,12 @@ COLORS = {
     "Electron": "blue"
 }
 
-fig = plt.figure()
-ax = fig.add_subplot(projection="3d")
-ax.set_box_aspect((1, 1, 1))
 
-def generate_frames(value, i):
+def generate_points_frames(value, i):
+    fig = plt.figure()
+    ax = fig.add_subplot(projection="3d")
+    ax.set_box_aspect((1, 1, 1))
+    
     ax.clear()
 
     xlist = [x[0] for x in value]
@@ -40,30 +44,63 @@ def generate_frames(value, i):
     ax.set_ylim(MIN, MAX)
     ax.set_zlim(MIN, MAX)
 
-    try:
-        plt.savefig(os.path.join(os.path.dirname(__file__), f"frames/frame{str(i).zfill(4)}.png"))
-        print(f"Saved frame {i}")
-    except:
-        print(f"Error saving frame {i}. Trying again...")
-        generate_frames(value, i)
+    plt.savefig(os.path.join(os.path.dirname(__file__),
+                f"point_frames/frame{str(i).zfill(4)}.png"))
+    plt.close(fig)
+    print(f"Saved particle frame {i}")
+
+
+def generate_ke_frames(i, timestep: dict):
+    num_plots = len(timestep)
+    num_cols = 2  # Number of columns in the grid
+    num_rows = math.ceil(num_plots / num_cols)  # Number of rows in the grid
+
+    fig, axs = plt.subplots(num_rows, num_cols, figsize=(12, 8))
+    axs = axs.flatten()  # Flatten the array of subplots
+
+    for idx, (key, value) in enumerate(sorted(timestep.items())):
+        ax = axs[idx]  # Get the current subplot
+
+        ax.hist(value, bins=20, label=key, color=COLORS[key])
+        ax.set_xlabel('KE')
+        ax.set_ylabel('Frequency')
+        ax.set_title(f'Distribution of initial KE of {key}s at timestep {i}')
+        ax.grid(True)
+        ax.legend()
+
+    plt.tight_layout()
+    plt.savefig(os.path.join(os.path.dirname(__file__),
+                                f"ke_frames/frame{str(i).zfill(4)}.png"))
+    plt.close(fig)
+    print(f"Saved ke frame {i}")
+
 
 # Initialize directory
 # Create a ./frames directory if it doesn't exist
 # Otherwise, delete all files in the ./frames directory
-if not os.path.exists(os.path.join(os.path.dirname(__file__), "frames")):
-    os.makedirs(os.path.join(os.path.dirname(__file__), "frames"))
+if not os.path.exists(os.path.join(os.path.dirname(__file__), "point_frames")):
+    os.makedirs(os.path.join(os.path.dirname(__file__), "point_frames"))
+elif not os.path.isdir(os.path.join(os.path.dirname(__file__), "ke_frames")):
+    os.makedirs(os.path.join(os.path.dirname(__file__), "ke_frames"))
 else:
-    for file in os.listdir(os.path.join(os.path.dirname(__file__), "frames")):
-        os.remove(os.path.join(os.path.dirname(__file__), "frames", file))
+    for file in os.listdir(os.path.join(os.path.dirname(__file__), "point_frames")):
+        os.remove(os.path.join(os.path.dirname(
+            __file__), "point_frames", file))
+
+    for file in os.listdir(os.path.join(os.path.dirname(__file__), "ke_frames")):
+        os.remove(os.path.join(os.path.dirname(
+            __file__), "ke_frames", file))
 
 process_timer_start = time.time()
 
 # Open the CSV file and read its contents
 with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
-    csv.readline() # Skip the header line
+    csv.readline()  # Skip the header line
 
-    groups = []
-    values = []
+    point_groups = []
+    point_values = []
+    particle_groups = []
+    particle_ke = {}
     i = 0
 
     # Read the CSV file line by line
@@ -71,58 +108,83 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
     # Otherwise, add the values to the values list
     for line in csv:
         if line.isspace():
-            groups.append(values)
-            values = []
+            point_groups.append(point_values)
+            point_values = []
+
+            particle_groups.append(particle_ke)
+            particle_ke = {}
         else:
             line_values = line.split(",")
 
             particle_alias = line_values[8].strip()
             color = COLORS[particle_alias]
 
-            values.append([float(line_values[0]), float(line_values[1]), float(line_values[2]), color])
+            x = float(line_values[0])
+            y = float(line_values[1])
+            z = float(line_values[2])
+            vx = float(line_values[3])
+            vy = float(line_values[4])
+            vz = float(line_values[5])
+            mass = float(line_values[6])
+            alias = line_values[8].strip()
+
+            point_values.append([x, y, z, color])
+            particle_ke.setdefault(alias, []).append(
+                0.5 * mass * (vx ** 2 + vy ** 2 + vz ** 2))
 
     lock = threading.Lock()
     threads = []
 
     frame_timer_start = time.time()
-    for i, value in enumerate(groups):
-        generate_frames(value, i)
-    #     t = threading.Thread(target=generate_frames, args=(value, i))
-
-    #     lock.acquire()
-
-    #     t.start()
-    #     threads.append(t)
-
-    #     lock.release()
     
-    # for t in threads:
-    #     t.join()
+    for i, value in enumerate(point_groups):
+        generate_points_frames(value, i)
 
-    print(f"Saved {len(groups)} frames in {time.time() - frame_timer_start}s")    
-    
+    for i, timestep in enumerate(particle_groups):
+        generate_ke_frames(i, timestep)
+
+    print(
+        f"Saved {len(point_groups)} frames in {time.time() - frame_timer_start}s")
+
     # Create the animation by combining all the images together
-    output_video = os.path.join(os.path.dirname(__file__), OUTPUT_VIDEO)
-    images = glob.glob(os.path.join(os.path.dirname(__file__), "frames", "*.png"))
+    point_output_video = os.path.join(os.path.dirname(__file__), OUTPUT_POINTS_VIDEO)
+    point_images = glob.glob(os.path.join(
+        os.path.dirname(__file__), "point_frames", "*.png"))
+    
+    ke_output_video = os.path.join(os.path.dirname(__file__), OUTPUT_KE_VIDEO)
+    ke_images = glob.glob(os.path.join(
+        os.path.dirname(__file__), "ke_frames", "*.png"))
 
-    frames = []
+    point_frames = []
+    ke_frames = []
 
-    for image in images:
+    for image in point_images:
         frame = cv2.imread(image)
-        frames.append(frame)
+        point_frames.append(frame)
+
+    for image in ke_images:
+        frame = cv2.imread(image)
+        ke_frames.append(frame)
 
     # get the height and width of frames
-    height, width, _ = frames[0].shape
+    point_height, point_width, _ = point_frames[0].shape if len(point_frames) > 0 else (0, 0, 0)
+    ke_height, ke_width, _ = ke_frames[0].shape if len(ke_frames) > 0 else (0, 0, 0)
 
     # create the video writer object
     fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-    video_writer = cv2.VideoWriter(output_video, fourcc, FPS, (width, height))
+    point_video_writer = cv2.VideoWriter(point_output_video, fourcc, FPS, (point_width, point_height))
+    ke_video_writer = cv2.VideoWriter(ke_output_video, fourcc, FPS, (ke_width, ke_height))
 
     # write frames to video
-    for frame in frames:
-        video_writer.write(frame)
+    for frame in point_frames:
+        point_video_writer.write(frame)
+    
+    for frame in ke_frames:
+        ke_video_writer.write(frame)
 
     # release the video writer object
-    video_writer.release()
-    print(f"Saved video to {output_video}")
+    point_video_writer.release()
+    ke_video_writer.release()
+    print(f"Saved point video to {point_output_video}")
+    print(f"Saved ke video to {ke_output_video}")
     print(f"Task completed in {time.time() - process_timer_start}s")
