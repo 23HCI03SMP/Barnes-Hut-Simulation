@@ -14,7 +14,7 @@ OUTPUT_VIDEO = "output.mov"
 FPS = 10
 
 MIN = 0
-MAX = 20
+MAX = 5
 
 COLORS = {
     "Deutron": "red",

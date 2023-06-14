@@ -49,9 +49,12 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
 
     for (Octree *child : childrenList)
     {
-        float Px = child->charge * child->magneticFieldX * timeStep / child->mass;
-        float Py = child->charge * child->magneticFieldY * timeStep / child->mass;
-        float Pz = child->charge * child->magneticFieldZ * timeStep / child->mass;
+        bool MagneticField = !(child->magneticFieldX == 0 && child->magneticFieldY == 0 && child->magneticFieldZ == 0);
+        bool ElectricField = !(child->electricFieldX == 0 && child->electricFieldY == 0 && child->electricFieldZ == 0);
+
+        float Px = child->magneticFieldX * timeStep / child->mass;
+        float Py = child->magneticFieldY * timeStep / child->mass;
+        float Pz = child->magneticFieldZ * timeStep / child->mass;
 
         float x = child->point->x + child->velocityX * timeStep;
         float y = child->point->y + child->velocityY * timeStep;
@@ -69,27 +72,21 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
         Eigen::Matrix3f IA = (I + A).inverse();
 
         Eigen::Vector3f Vprime = IA * (I - A) * Eigen::Vector3f(child->velocityX, child->velocityY, child->velocityZ);
-        // std::cout << "vx: " << Vprime(0) << std::endl;
-        // std::cout << "vy: " << Vprime(1) << std::endl;
-        // std::cout << "vz: " << Vprime(2) << std::endl;
 
-        // std::cout << "Ex: " << child->electricFieldX << std::endl;
-        // std::cout << "Ey: " << child->electricFieldY << std::endl;
-        // std::cout << "Ez: " << child->electricFieldZ << std::endl;
-        // std::cout << "vx: " << child->velocityX << std::endl;
-        // std::cout << "vy: " << child->velocityY << std::endl;
-        // std::cout << "vz: " << child->velocityZ << std::endl;
-        // std::cout << "mass: " << child->mass << std::endl;
-        // std::cout << "charge: " << child->charge << std::endl;
-        // std::cout << "timestep: " << timeStep << std::endl;
-        // std::cout << std::endl;
+        float vx = 0, vy = 0, vz = 0;
+        vx = ElectricField ? child->velocityX + ((child->charge * child->electricFieldX) / child->mass * timeStep) : 0;
+        vx += MagneticField ? Vprime(0) : 0;
+        vy = ElectricField ? child->velocityY + ((child->charge * child->electricFieldY) / child->mass * timeStep) : 0;
+        vy += MagneticField ? Vprime(1) : 0;
+        vz = ElectricField ? child->velocityZ + ((child->charge * child->electricFieldZ) / child->mass * timeStep) : 0;
+        vz += MagneticField ? Vprime(2) : 0;
 
-        float vx = child->velocityX + (child->charge * child->electricFieldX) / child->mass * timeStep;
-        vx += Vprime(0);
-        float vy = child->velocityY + (child->charge * child->electricFieldY) / child->mass * timeStep;
-        vy += Vprime(1);
-        float vz = child->velocityZ + (child->charge * child->electricFieldZ) / child->mass * timeStep;
-        vz += Vprime(2);
+        if (!MagneticField && !ElectricField)
+        {
+            vx = child->velocityX;
+            vy = child->velocityY;
+            vz = child->velocityZ;
+        }
 
         newOctree->insert(
             newOctree,

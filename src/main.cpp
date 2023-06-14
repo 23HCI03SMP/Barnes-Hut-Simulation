@@ -56,10 +56,10 @@ int main()
 
     // Generate initial points
     //std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 10, 100, 294, particles, Shape::REGULAR_CYLINDER); // 293K = 20C
-    tree.insert(tree_ptr, "Deutron", 1, 1, 1, 1, 1, 1, 1, 1);
+    tree.insert(tree_ptr, "Deutron", 1, 1, 1, 0, 0, 1, 1, 1);
 
     // Start simulation loop
-    loop(tree_ptr, 50, 0, 1e10);
+    loop(tree_ptr, 50, 0, 1);
 
     // Animate and generate .vtk files
     system("py ./animator.py");

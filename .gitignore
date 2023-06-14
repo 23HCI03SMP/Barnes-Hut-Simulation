@@ -4,8 +4,9 @@ vtk/
 *.exe
 *.csv
 
-# mp4 files as output
+# video files as output
 *.mp4
+*.mov
 
 # frames
 *.png
