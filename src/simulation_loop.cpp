@@ -74,12 +74,12 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
         Eigen::Vector3f Vprime = IA * (I - A) * Eigen::Vector3f(child->velocityX, child->velocityY, child->velocityZ);
 
         float vx = 0, vy = 0, vz = 0;
-        vx = ElectricField ? child->velocityX + ((child->charge * child->electricFieldX) / child->mass * timeStep) : 0;
-        vx += MagneticField ? Vprime(0) : 0;
-        vy = ElectricField ? child->velocityY + ((child->charge * child->electricFieldY) / child->mass * timeStep) : 0;
-        vy += MagneticField ? Vprime(1) : 0;
-        vz = ElectricField ? child->velocityZ + ((child->charge * child->electricFieldZ) / child->mass * timeStep) : 0;
-        vz += MagneticField ? Vprime(2) : 0;
+        vx = Vprime(0); 
+        vx += ((child->charge * child->electricFieldX) / child->mass * timeStep);
+        vy = Vprime(1); 
+        vy += ((child->charge * child->electricFieldY) / child->mass * timeStep);
+        vz = Vprime(2);
+        vz += ((child->charge * child->electricFieldZ) / child->mass * timeStep);
 
         if (!MagneticField && !ElectricField)
         {
