@@ -43,7 +43,7 @@ int main()
 {
     std::vector<InsertedParticle> particles = {
         InsertedParticle("Deutron", 2, 1, 0.5),
-        InsertedParticle("Electron", 1/1823.0f, -1, 0.5),
+        InsertedParticle("Electron", 1 / 1823.0f, -1, 0.5),
     };
 
     std::cout << "Starting simulation..." << std::endl;
@@ -51,15 +51,15 @@ int main()
     Octree tree = Octree(0, 0, 0, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
-    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 1000, 294, particles, Shape::SPHERE); // 293K = 20C
-    // std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 10, 100, 294, particles, Shape::REGULAR_CYLINDER); // 293K = 20C
+    // std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 1000, 294, particles, Shape::SPHERE, {2}); // 293K = 20C
+    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 20, 294, particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}); // 293K = 20C
 
     loop(tree_ptr, 50, 0, 1e-8);
 
     std::cout << "\nAnimator Starting...\n";
-    system("py ./vtk_animator.py");
+    system("py ./animator.py");
 
-    //tester();
+    // tester();
 
     return 0;
 }
