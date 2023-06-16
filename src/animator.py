@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation
 
 SIMULATION_VALUES = "simulation_values.csv"
-OUTPUT_VIDEO = "output.mp4"
+OUTPUT_VIDEO = "output.mov"
 
 FPS = 10
 

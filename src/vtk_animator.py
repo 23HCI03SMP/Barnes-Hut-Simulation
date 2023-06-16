@@ -7,20 +7,13 @@ import numpy as np
 import pyvista as pv
 
 SIMULATION_VALUES = "simulation_values.csv"
-OUTPUT_VIDEO = "output.mp4"
+OUTPUT_VIDEO = "output.mov"
 COLORS = {
-    "Deutron": "tan",
-    "Electron": "blue"
+    "Deutron": "fuchsia",
+    "Electron": "aqua"
 }
 
 FPS = 10
-
-# Create/empty the frames directory
-if not os.path.exists(os.path.join(os.path.dirname(__file__), "frames")):
-    os.makedirs(os.path.join(os.path.dirname(__file__), "frames"))
-else:
-    for file in os.listdir(os.path.join(os.path.dirname(__file__), "frames")):
-        os.remove(os.path.join(os.path.dirname(__file__), "frames", file))
 
 # Create/empty the vtk directory
 if not os.path.exists(os.path.join(os.path.dirname(__file__), "vtk")):
@@ -28,7 +21,6 @@ if not os.path.exists(os.path.join(os.path.dirname(__file__), "vtk")):
 else:
     for file in os.listdir(os.path.join(os.path.dirname(__file__), "vtk")):
         os.remove(os.path.join(os.path.dirname(__file__), "vtk", file))
-
 
 
 with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
@@ -67,43 +59,12 @@ for values in groups:
     mesh = pv.PolyData(points)
     mesh.point_data["Colors"] = colors
 
-    print("Rendering frame %i"%(i+1))
-
-    # Create, view and save the frame
+    # Create the frame
     plotter = pv.Plotter(off_screen=True)
 
-    # Changes depending on the radius and other factors (change manually)
-    plotter.camera.position = (13.562428421039028, 13.58590842103903, 13.63003842103903)
-
     try:
-        #plotter.show_bounds(axes_range=[1,1,1,5,5,5])
         plotter.add_mesh(mesh, render_points_as_spheres=True, scalars="Colors")
-        plotter.show(screenshot="./frames/test%s.png"%(str(i).zfill(4)))
         mesh.save("./vtk/test%s.vtk"%(str(i).zfill(4)), binary=False)
     except Exception as e:
         print(e)
     i += 1
-
-# Animate the frames
-
-output_video = os.path.join(os.path.dirname(__file__), OUTPUT_VIDEO)
-images = glob.glob(os.path.join(os.path.dirname(__file__), "frames", "*.png"))
-
-frames = []
-for image in images:
-    frame = cv2.imread(image)
-    frames.append(frame)
-
-# get the height and width of frames
-height, width, _ = frames[0].shape
-
-# create the video writer object
-fourcc = cv2.VideoWriter_fourcc(*"mp4v")
-video_writer = cv2.VideoWriter(output_video, fourcc, FPS, (width, height))
-
-# write frames to video
-for frame in frames:
-    video_writer.write(frame)
-
-# release the video writer object
-video_writer.release()
