@@ -13,6 +13,7 @@ The Barnes Hut Model is a method for calculating the gravitational force between
   - matplotlib
   - pandas
   - numpy
+  - pyvista (for running [vtk_animator.py](./src/vtk_animator.py))
 
 ## To-do list
 
@@ -80,13 +81,18 @@ The initial values for the particles are generated using the `initial_conditions
 
 $$f(x) = \frac{1}{\sigma\sqrt{2\pi}}e^{-\frac{1}{2}(\frac{x-\mu}{\sigma})^2}$$
 
-where $\mu$ is the mean and $\sigma$ is the standard deviation. The particles are given a random position within the sphere, and a random velocity. The velocity is given a random direction, and a random magnitude. The magnitude of the velocity is calculated using the following equation:
+where $\mu$ is the mean and $\sigma$ is the standard deviation. The particles are given a random position within the sphere, and a random velocity. The velocity is given a random direction, and a random magnitude.
 
 The number of particles is given by the following equation:
 
-$$N = \lceil \frac{4}{3}\pi r^3 \rho \rceil$$
+$$N = \lceil f(x) \rho \rceil$$
 
-where $r$ is the radius of the sphere, and $\rho$ is the density of the sphere. 
+where $f(x)$ describes the shape to be generated, and $\rho$ is the density of the sphere. 
+
+$f(x)$ varies depending on the shape to be generated. 
+- For a sphere, $f(x) = \frac{4}{3} \pi r^3$
+- For a cylinder, $f(x) = \pi r^2 h$
+- For a hollow cylinder, $f(x) = \pi (r_2^2 - r_1^2) h$, where $r_2$ is the outer radius and $r_1$ is the inner radius
 
 Their initial velocities in the (x, y, z) directions are calculated using the Maxwell-Boltzmann distribution:
 
