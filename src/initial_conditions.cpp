@@ -1,4 +1,5 @@
 #include <cmath>
+#include <cstdarg>
 #include <stdexcept>
 #include "include/barnesHut.h"
 #include <gsl/gsl_rng.h>
@@ -6,23 +7,25 @@
 #include <fstream>
 #include <filesystem>
 
-/*
-Automatically loads to file and octree by default. To disable, set load to false.
-
-For parameters length, breadth and height:
-
-If shape is SPHERE, length is the diameter of the sphere. Breadth and height are supposed to be the same as length.
-If shape is REGULAR_CYLINDER, length is the diameter of the cylinder. Breadth is the same as length. Height is the height of the cylinder.
-*/
+/**
+ * @brief Generates initial points in a given shape and inserts them into the octree
+ *
+ * @param particles List of particles to be inserted into the octree
+ * @param shape of the initial points
+ * @param dimensions Dimensions of the shape. Pass in a certain number of values based on the shape paramater.
+ * @param load Automatically loads initial values to file and octree by default. Set to true by default.
+ *
+ * @note For a sphere, only one dimension is required. Pass in the radius as dimensions.
+ * @note For a regular cylinder, two dimensions are required. Pass in the radius and height as dimensions.
+ * @note For a holllow cylinder, three dimensions are required. Pass in the inner radius, outer radius, and height as dimensions.
+ */
 std::vector<CSVPoint> generateInitialPoints(
     Octree *&octree,
-    float length,
-    float breadth,
-    float height,
     float density,
     float temperature,
     std::vector<InsertedParticle> particles,
     Shape shape,
+    std::initializer_list<float> dimensions,
     bool load)
 {
     float minX = octree->minPoints->x;
@@ -34,7 +37,6 @@ std::vector<CSVPoint> generateInitialPoints(
 
     std::vector<CSVPoint> points;
     std::ofstream ValueFile(std::filesystem::current_path() / INITIAL_VALUES_PATH);
-    // std::ofstream SimulationFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH);
 
     if (load)
     {
@@ -55,10 +57,7 @@ std::vector<CSVPoint> generateInitialPoints(
     {
     case Shape::SPHERE:
     {
-        if (length != breadth || length != height || breadth != height)
-            throw std::invalid_argument("Length, breadth and height must be equal for a sphere");
-
-        float radius = length / 2.0f;
+        float radius = *dimensions.begin();
         nTotal = std::ceil(density * 4.0f * PI * std::pow(radius, 3.0f) / 3.0f);
 
         for (InsertedParticle particle : particles)
@@ -106,10 +105,9 @@ std::vector<CSVPoint> generateInitialPoints(
 
     case Shape::REGULAR_CYLINDER:
     {
-        if (length != breadth)
-            throw std::invalid_argument("Length and breadth must be equal for a regular cylinder");
+        float radius = *dimensions.begin();
+        float height = *(dimensions.begin() + 1);
 
-        float radius = length / 2.0f;
         nTotal = std::ceil(density * PI * radius * radius * height);
 
         for (InsertedParticle particle : particles)
@@ -154,28 +152,61 @@ std::vector<CSVPoint> generateInitialPoints(
             }
         }
 
-        // for (int i = 0; i < nTotal; ++i)
-        // {
-        //     do
-        //     {
-        //         // generate random coordinates within the cylinder
-        //         x = gsl_ran_gaussian(rng, radius) + maxX / 2.0;
-        //         float angle = gsl_rng_uniform(rng) * 2 * PI;                 // random angle between 0 and 2π
-        //         float distance = gsl_rng_uniform(rng) * (maxZ - minZ) / 2.0; // random distance along the z-axis within the cylinder height
-        //         y = sin(angle) * radius + maxY / 2.0;
-        //         z = cos(angle) * radius + minZ + distance;
-        //     } while (pow(x - (minX + maxX) / 2, 2) + pow(y - (minY + maxY) / 2, 2) > pow(radius, 2) || (z < minZ || z > maxZ)); // ensure coordinates are within range
-
-        //     // generate random velocities for the point using Maxwell-Boltzmann distribution
-        //     vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
-        //     vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
-        //     vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(mass);
-
-        //     points.push_back(CSVPoint(x, y, z, vx, vy, vz, mass, 1.0f));
-        // }
-
         break;
     }
+
+    case Shape::HOLLOW_CYLINDER:
+    {
+        float innerRadius = *dimensions.begin();
+        float outerRadius = *(dimensions.begin() + 1);
+        float height = *(dimensions.begin() + 2);
+
+        nTotal = density * PI * (outerRadius * outerRadius - innerRadius * innerRadius) * height;
+
+        for (InsertedParticle particle : particles)
+        {
+            float nType = particle.percentage * nTotal;
+
+            // Generate particles inside the hollow cylinder
+            for (int i = 0; i < nType; ++i)
+            {
+                do
+                {
+                    // Generate random coordinates within the hollow cylinder
+                    float radius = gsl_ran_flat(rng, innerRadius, outerRadius);
+                    float angle = gsl_ran_flat(rng, 0.0f, 2 * PI);
+                    x = radius * std::cos(angle) + centerX;
+                    y = radius * std::sin(angle) + centerY;
+                    z = gsl_ran_flat(rng, -height / 2.0f, height / 2.0f) + centerZ;
+                } while (pow(x - centerX, 2) + pow(y - centerY, 2) > pow(outerRadius, 2)); // Ensure coordinates are within the outer radius
+
+                // Generate random velocities for the point using Maxwell-Boltzmann distribution
+                vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+
+                points.push_back(CSVPoint(particle.alias, x, y, z, vx, vy, vz, particle.mass, 1.0f));
+
+                if (load)
+                {
+                    ValueFile
+                        << "\n"
+                        << x << ","
+                        << y << ","
+                        << z << ","
+                        << vx << ","
+                        << vy << ","
+                        << vz << ","
+                        << particle.mass << ","
+                        << particle.charge << ","
+                        << particle.alias;
+
+                    octree->insert(octree, particle.alias, x, y, z, vx, vy, vz, particle.mass, particle.charge);
+                }
+            }
+        }
+    }
+
     default:
         break;
     }
@@ -190,8 +221,6 @@ std::vector<CSVPoint> generateInitialPoints(
     std::filesystem::copy_file(std::filesystem::current_path() / INITIAL_VALUES_PATH,
                                std::filesystem::current_path() / SIMULATION_VALUES_PATH,
                                std::filesystem::copy_options::overwrite_existing);
-
-    // SimulationFile.close();
 
     return points;
 }

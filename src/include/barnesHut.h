@@ -40,7 +40,8 @@ constexpr float M_ELECTRON = 9.1093837015e-31;
 enum Shape
 {
     SPHERE,
-    REGULAR_CYLINDER
+    REGULAR_CYLINDER,
+    HOLLOW_CYLINDER,
 };
 
 struct InsertedParticle
@@ -99,7 +100,7 @@ public:
     float forceX = 0, forceY = 0, forceZ = 0;
 
     float mass = 0;
-    float velocityX = 0, velocityY = 0, velocityZ = 0; //current velocity of the particle
+    float velocityX = 0, velocityY = 0, velocityZ = 0; // current velocity of the particle
     std::vector<Octree *> children;
     float magneticFieldX = 0;
     float magneticFieldY = 0;
@@ -109,9 +110,9 @@ public:
     float electricFieldY = 0;
     float electricFieldZ = 0;
 
-    float charge = 0;         // IMPORTANT: USE THIS VALUE when calculating charge of single particles!
-    float positiveCharge = 0; // IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
-    float negativeCharge = 0; // IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
+    float charge = 0;         // @attention IMPORTANT: USE THIS VALUE when calculating charge of single particles!
+    float positiveCharge = 0; // @attention IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
+    float negativeCharge = 0; // @attention IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
 
     std::string alias;
 
@@ -142,20 +143,16 @@ public:
 
 std::vector<CSVPoint> loadInitialValues();
 std::vector<CSVPoint> generateInitialPoints(Octree *&octree,
-                                            float length,
-                                            float breadth,
-                                            float height,
                                             float density,
                                             float temperature,
                                             std::vector<InsertedParticle> particles,
                                             Shape shape,
+                                            std::initializer_list<float> dimensions,
                                             bool load = true);
 
 std::vector<Octree *> getChildren(Octree *volume);
 std::vector<Octree *> getNodes(Octree *volume);
 
-void generateInitialValuesFile(std::vector<CSVPoint> points);
-void initialiseSimulationValuesFile(std::vector<CSVPoint> initialPoints);
-void generateSimulationValuesFile(Octree *octree);
+void writeSimulationValues(Octree *octree, std::ofstream &ValueFile);
 
 int tester();

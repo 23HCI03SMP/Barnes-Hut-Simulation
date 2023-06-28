@@ -1,5 +1,7 @@
 #include "include/barnesHut.h"
 #include <iostream>
+#include <fstream>
+#include <filesystem>
 #include <chrono>
 
 using namespace std::chrono;
@@ -7,6 +9,7 @@ using namespace std::chrono;
 void loop(Octree *octree, int iterations, float theta, float timeStep)
 {
     Octree *final = octree;
+    std::ofstream ValueFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH, std::ios::app);
 
     float totalDur = 0;
 
@@ -35,10 +38,10 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
         Simulation sim = Simulation();
         sim.mainLoop(final, timeStep);
 
-        // Update simulation_values.csv file
-        generateSimulationValuesFile(final);
+        writeSimulationValues(final, ValueFile);
     }
 
+    ValueFile.close();
     std::cout << "Average time: " << totalDur / iterations << " ms" << std::endl;
 }
 
@@ -47,15 +50,15 @@ int main()
     // Define particles in plasma
     std::vector<InsertedParticle> particles = {
         InsertedParticle("Deutron", 2, 1, 0.5),
-        InsertedParticle("Electron", 1/1823.0f, -1, 0.5),
+        InsertedParticle("Electron", 1 / 1823.0f, -1, 0.5),
     };
 
     // Create Octree object
     Octree tree = Octree(0, 0, 0, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
-    // Generate initial points
-    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 100, 294, particles, Shape::SPHERE); // 293K = 20C
+    // std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 1000, 294, particles, Shape::SPHERE, {2}); // 293K = 20C
+    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 20, 294, particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}); // 293K = 20C
 
     // Start simulation loop
     loop(tree_ptr, 50, 0, 1e-8);
