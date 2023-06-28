@@ -106,6 +106,10 @@ public:
     float magneticFieldY = 0;
     float magneticFieldZ = 0;
 
+    float electricFieldX = 0;
+    float electricFieldY = 0;
+    float electricFieldZ = 0;
+
     float charge = 0;         // @attention IMPORTANT: USE THIS VALUE when calculating charge of single particles!
     float positiveCharge = 0; // @attention IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
     float negativeCharge = 0; // @attention IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
