@@ -13,6 +13,7 @@
  * @param particles List of particles to be inserted into the octree
  * @param shape of the initial points
  * @param dimensions Dimensions of the shape. Pass in a certain number of values based on the shape paramater.
+ * @param append Appends to the initial values file by default. Set to false by default.
  * @param load Automatically loads initial values to file and octree by default. Set to true by default.
  *
  * @note For a sphere, only one dimension is required. Pass in the radius as dimensions.
@@ -26,6 +27,7 @@ std::vector<CSVPoint> generateInitialPoints(
     std::vector<InsertedParticle> particles,
     Shape shape,
     std::initializer_list<float> dimensions,
+    bool append,
     bool load)
 {
     float minX = octree->minPoints->x;
@@ -36,9 +38,10 @@ std::vector<CSVPoint> generateInitialPoints(
     float maxZ = octree->maxPoints->z;
 
     std::vector<CSVPoint> points;
-    std::ofstream ValueFile(std::filesystem::current_path() / INITIAL_VALUES_PATH);
+    std::ofstream ValueFile = append ? std::ofstream(std::filesystem::current_path() / INITIAL_VALUES_PATH, std::ios_base::app)
+                                     : std::ofstream(std::filesystem::current_path() / INITIAL_VALUES_PATH, std::ios_base::trunc);
 
-    if (load)
+    if (load && !append)
     {
         ValueFile << "x,y,z,vx,vy,vz,mass,charge,alias"; // Insert headers into csv file
     }
