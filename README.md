@@ -25,11 +25,13 @@ The Barnes Hut Model is a method for calculating the gravitational force between
 - [x] initialConditions.cpp
 - [x] initialConditions.cpp - implement initial velocity
 - [x] Create initial values csv file
-- [ ] Utilise OpenMP/CUDA to parallelise the code
-- [ ] Different types of particles
+- ~~[ ] Utilise OpenMP/CUDA to parallelise the code~~
+- [x] Different types of particles
 - [x] Optimise Insertion
-- [ ] Check Energy Conservation
+- [x] Check Energy Conservation
 - [x] Implement Magnetic Field
+- [x] Implement liner cylinder
+- [ ] Move liner towards centre
 
 ## Running the project
 ### Visualising generated points
