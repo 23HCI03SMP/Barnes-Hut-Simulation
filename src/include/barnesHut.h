@@ -147,7 +147,8 @@ std::vector<CSVPoint> generateInitialPoints(Octree *&octree,
                                             float temperature,
                                             std::vector<InsertedParticle> particles,
                                             Shape shape,
-                                            std::initializer_list<float> dimensions,
+                                            std::initializer_list<float> dimensions, 
+                                            bool append = false,
                                             bool load = true);
 
 std::vector<Octree *> getChildren(Octree *volume);

@@ -48,24 +48,28 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
 int main()
 {
     // Define particles in plasma
-    std::vector<InsertedParticle> particles = {
+    std::vector<InsertedParticle> fuel_particles = {
         InsertedParticle("Deutron", 2, 1, 0.5),
         InsertedParticle("Electron", 1 / 1823.0f, -1, 0.5),
+    };
+
+    std::vector<InsertedParticle> liner_particles = {
+        InsertedParticle("Beryllium", 9, 4, 1)
     };
 
     // Create Octree object
     Octree tree = Octree(0, 0, 0, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
-    // std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 1000, 294, particles, Shape::SPHERE, {2}); // 293K = 20C
-    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 20, 294, particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}); // 293K = 20C
+    generateInitialPoints(tree_ptr, 20, 293, liner_particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}); // Generate liner
+    generateInitialPoints(tree_ptr, 20, 293, fuel_particles, Shape::SPHERE, {2}, true); // Generate sphere   
 
     // Start simulation loop
     loop(tree_ptr, 50, 0, 1e-8);
 
     // Animate and generate .vtk files
     system("py ./animator.py");
-    system("py ./vtk_animator.py");
+    // system("py ./vtk_animator.py");
 
     return 0;
 }

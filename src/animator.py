@@ -18,7 +18,8 @@ MAX = 20
 
 COLORS = {
     "Deutron": "red",
-    "Electron": "blue"
+    "Electron": "blue",
+    "Beryllium": "green",
 }
 
 fig = plt.figure()
