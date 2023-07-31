@@ -19,22 +19,6 @@ std::vector<Octree *> getChildren(Octree *volume)
     return childrenList;
 }
 
-//Gets all nodes in octree
-std::vector<Octree *> getNodes(Octree *volume)
-{
-    std::vector<Octree *> childrenList;
-    for (Octree *child : volume->children)
-    {
-        if (child->mass != 0)
-        {
-            childrenList.push_back(child);
-        }
-        std::vector<Octree *> recursChildren = getChildren(child);
-        childrenList.insert(childrenList.end(), recursChildren.begin(), recursChildren.end());
-    }
-    return childrenList;
-}
-
 void Simulation::mainLoop(Octree *&volume, float timeStep)
 {
     Octree *newOctree = new Octree(

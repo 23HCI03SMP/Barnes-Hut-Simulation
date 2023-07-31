@@ -38,13 +38,17 @@ std::vector<CSVPoint> generateInitialPoints(
     float maxZ = octree->maxPoints->z;
 
     std::vector<CSVPoint> points;
-    std::ofstream ValueFile = append ? std::ofstream(std::filesystem::current_path() / INITIAL_VALUES_PATH, std::ios_base::app)
+    std::ofstream InitialValueFile = append ? std::ofstream(std::filesystem::current_path() / INITIAL_VALUES_PATH, std::ios_base::app)
                                      : std::ofstream(std::filesystem::current_path() / INITIAL_VALUES_PATH, std::ios_base::trunc);
+    std::ofstream SimulationValueFile = std::ofstream(std::filesystem::current_path() / SIMULATION_VALUES_PATH, std::ios_base::trunc);
 
     if (load && !append)
     {
-        ValueFile << "x,y,z,vx,vy,vz,mass,charge,alias"; // Insert headers into csv file
+        InitialValueFile << VALUE_FILE_HEADER; // Insert headers into csv file
     }
+
+    SimulationValueFile << VALUE_FILE_HEADER; // Insert headers into csv file
+    SimulationValueFile.close();
 
     float centerX = (minX + maxX) / 2.0f;
     float centerY = (minY + maxY) / 2.0f;
@@ -86,7 +90,7 @@ std::vector<CSVPoint> generateInitialPoints(
 
                 if (load)
                 {
-                    ValueFile
+                    InitialValueFile
                         << "\n"
                         << x << ","
                         << y << ","
@@ -138,7 +142,7 @@ std::vector<CSVPoint> generateInitialPoints(
 
                 if (load)
                 {
-                    ValueFile
+                    InitialValueFile
                         << "\n"
                         << x << ","
                         << y << ","
@@ -192,7 +196,7 @@ std::vector<CSVPoint> generateInitialPoints(
 
                 if (load)
                 {
-                    ValueFile
+                    InitialValueFile
                         << "\n"
                         << x << ","
                         << y << ","
@@ -217,13 +221,7 @@ std::vector<CSVPoint> generateInitialPoints(
     octree->recalculateCenterOfCharge(octree);
     gsl_rng_free(rng);
 
-    ValueFile.close();
-
-    // Copy over values
-    std::filesystem::remove(std::filesystem::current_path() / SIMULATION_VALUES_PATH);
-    std::filesystem::copy_file(std::filesystem::current_path() / INITIAL_VALUES_PATH,
-                               std::filesystem::current_path() / SIMULATION_VALUES_PATH,
-                               std::filesystem::copy_options::overwrite_existing);
+    InitialValueFile.close();
 
     return points;
 }
