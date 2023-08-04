@@ -23,7 +23,7 @@ constexpr float PI = 3.14159265358979323846;
 constexpr float K_E = 8.9875517923e9;
 
 // Boltzmann constant
-constexpr float K_B = 1.380649e-23;
+constexpr float K_B = 8.617333e-5;
 
 // Biot Savart constant
 constexpr float K_BS = 1e-7;
