@@ -23,7 +23,7 @@ constexpr float PI = 3.14159265358979323846;
 constexpr float K_E = 8.9875517923e9;
 
 // Boltzmann constant
-constexpr float K_B = 1.380649e-23;
+constexpr float K_B = 8.617333e-5;
 
 // Biot Savart constant
 constexpr float K_BS = 1e-7;
@@ -36,6 +36,9 @@ constexpr float M_NEUTRON = 1.67492749804e-27;
 
 // Mass of an electron
 constexpr float M_ELECTRON = 9.1093837015e-31;
+
+// Headers for values csv file
+constexpr char VALUE_FILE_HEADER[] = "x,y,z,vx,vy,vz,mass,charge,alias";
 
 enum Shape
 {
@@ -147,12 +150,12 @@ std::vector<CSVPoint> generateInitialPoints(Octree *&octree,
                                             float temperature,
                                             std::vector<InsertedParticle> particles,
                                             Shape shape,
-                                            std::initializer_list<float> dimensions,
+                                            std::initializer_list<float> dimensions, 
+                                            bool append = false,
                                             bool load = true);
 
 std::vector<Octree *> getChildren(Octree *volume);
-std::vector<Octree *> getNodes(Octree *volume);
 
-void writeSimulationValues(Octree *octree, std::ofstream &ValueFile);
+void writeSimulationValues(std::vector<Octree *> children, std::ofstream &ValueFile);
 
 int tester();

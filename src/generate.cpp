@@ -3,10 +3,8 @@
 #include <fstream>
 #include <filesystem>
 
-void writeSimulationValues(Octree *octree, std::ofstream &ValueFile)
+void writeSimulationValues(std::vector<Octree *> children, std::ofstream &ValueFile)
 {
-    std::vector<Octree *> children = getChildren(octree);
-
     for (Octree *child : children)
     {
         std::string alias = child->alias;
