@@ -27,6 +27,7 @@ std::vector<CSVPoint> generateInitialPoints(
     std::vector<InsertedParticle> particles,
     Shape shape,
     std::initializer_list<float> dimensions,
+    bool isLiner,
     bool append,
     bool load)
 {
@@ -39,7 +40,7 @@ std::vector<CSVPoint> generateInitialPoints(
 
     std::vector<CSVPoint> points;
     std::ofstream InitialValueFile = append ? std::ofstream(std::filesystem::current_path() / INITIAL_VALUES_PATH, std::ios_base::app)
-                                     : std::ofstream(std::filesystem::current_path() / INITIAL_VALUES_PATH, std::ios_base::trunc);
+                                            : std::ofstream(std::filesystem::current_path() / INITIAL_VALUES_PATH, std::ios_base::trunc);
     std::ofstream SimulationValueFile = std::ofstream(std::filesystem::current_path() / SIMULATION_VALUES_PATH, std::ios_base::trunc);
 
     if (load && !append)
@@ -81,10 +82,19 @@ std::vector<CSVPoint> generateInitialPoints(
                     z = gsl_ran_gaussian(rng, radius) + centerZ;
                 } while (pow(x - centerX, 2) + pow(y - centerY, 2) + pow(z - centerZ, 2) > pow(radius, 2)); // ensure coordinates are within range
 
-                // generate random velocities for the point using Maxwell-Boltzmann distribution
-                vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
-                vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
-                vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                if (isLiner)
+                {
+                    vx = 0;
+                    vy = 0;
+                    vz = 0;
+                }
+                else
+                {
+                    // generate random velocities for the point using Maxwell-Boltzmann distribution
+                    vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                    vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                    vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                }
 
                 points.push_back(CSVPoint(particle.alias, x, y, z, vx, vy, vz, particle.mass, 1.0f));
 
@@ -133,10 +143,16 @@ std::vector<CSVPoint> generateInitialPoints(
                     z = gsl_ran_gaussian(rng, height) + centerZ;
                 } while (pow(x - centerX, 2) + pow(y - centerY, 2) > pow(radius * 2, 2) || pow(z - centerZ, 2) > pow(height, 2)); // ensure coordinates are within range
 
-                // generate random velocities for the point using Maxwell-Boltzmann distribution
-                vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
-                vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
-                vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                if(isLiner) {
+                    vx = 0;
+                    vy = 0;
+                    vz = 0;
+                } else {
+                    // generate random velocities for the point using Maxwell-Boltzmann distribution
+                    vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                    vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                    vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                }
 
                 points.push_back(CSVPoint(particle.alias, x, y, z, vx, vy, vz, particle.mass, 1.0f));
 
@@ -187,10 +203,19 @@ std::vector<CSVPoint> generateInitialPoints(
                     z = gsl_ran_flat(rng, -height / 2.0f, height / 2.0f) + centerZ;
                 } while (pow(x - centerX, 2) + pow(y - centerY, 2) > pow(outerRadius, 2)); // Ensure coordinates are within the outer radius
 
-                // Generate random velocities for the point using Maxwell-Boltzmann distribution
-                vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
-                vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
-                vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                if (isLiner)
+                {
+                    vx = 0;
+                    vy = 0;
+                    vz = 0;
+                }
+                else
+                {
+                    // Generate random velocities for the point using Maxwell-Boltzmann distribution
+                    vx = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                    vy = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                    vz = gsl_ran_gaussian(rng, sqrt(K_B * temperature)) / sqrt(particle.mass);
+                }
 
                 points.push_back(CSVPoint(particle.alias, x, y, z, vx, vy, vz, particle.mass, 1.0f));
 

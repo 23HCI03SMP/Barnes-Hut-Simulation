@@ -17,8 +17,9 @@ MIN = 0
 MAX = 20
 
 COLORS = {
-    "Deutron": "red",
+    "Deuteron": "red",
     "Electron": "blue",
+    "LinerElectron": "black",
     "Beryllium": "green",
 }
 
@@ -40,6 +41,10 @@ def generate_frames(value, i):
     ax.set_xlim(MIN, MAX)
     ax.set_ylim(MIN, MAX)
     ax.set_zlim(MIN, MAX)
+
+    ax.set_xlabel("X")
+    ax.set_ylabel("Y")
+    ax.set_zlabel("Z")
 
     try:
         plt.savefig(os.path.join(os.path.dirname(__file__), f"frames/frame{str(i).zfill(4)}.png"))
@@ -78,6 +83,9 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
             line_values = line.split(",")
 
             particle_alias = line_values[8].strip()
+            if particle_alias == "Beryllium" or particle_alias == "LinerElectron":
+                continue
+
             color = COLORS[particle_alias]
 
             values.append([float(line_values[0]), float(line_values[1]), float(line_values[2]), color])

@@ -105,13 +105,16 @@ public:
     float mass = 0;
     float velocityX = 0, velocityY = 0, velocityZ = 0; // current velocity of the particle
     std::vector<Octree *> children;
+
+    // Change values accordingly
     float magneticFieldX = 0;
     float magneticFieldY = 0;
-    float magneticFieldZ = 0;
+    float magneticFieldZ = 30;
 
     float electricFieldX = 0;
     float electricFieldY = 0;
-    float electricFieldZ = 0;
+    float electricFieldZ = 20;
+    // -------------------------
 
     float charge = 0;         // @attention IMPORTANT: USE THIS VALUE when calculating charge of single particles!
     float positiveCharge = 0; // @attention IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
@@ -151,6 +154,7 @@ std::vector<CSVPoint> generateInitialPoints(Octree *&octree,
                                             std::vector<InsertedParticle> particles,
                                             Shape shape,
                                             std::initializer_list<float> dimensions, 
+                                            bool isLiner = false,
                                             bool append = false,
                                             bool load = true);
 

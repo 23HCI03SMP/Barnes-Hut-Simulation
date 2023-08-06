@@ -12,8 +12,8 @@ x_positions = []
 y_positions = []
 z_positions = []
 
-initial_particle_ke = {}
-final_particle_ke = {}
+initial_particle_v = {}
+final_particle_v = {}
 
 # Read data from initial CSV file
 with open(os.path.join(os.path.dirname(__file__), INITIAL_VALUES), 'r') as file:
@@ -30,10 +30,12 @@ with open(os.path.join(os.path.dirname(__file__), INITIAL_VALUES), 'r') as file:
         vx = float(row[3])
         vy = float(row[4])
         vz = float(row[5])
-        mass = float(row[6])
+        # mass = float(row[6])
 
-        initial_particle_ke.setdefault(row[8], []).append(
-            0.5 * mass * (vx ** 2 + vy ** 2 + vz ** 2))
+        # initial_particle_v.setdefault(row[8], []).append(
+        #     0.5 * mass * (vx ** 2 + vy ** 2 + vz ** 2))
+        initial_particle_v.setdefault(row[8], []).append(
+            np.sqrt(vx ** 2 + vy ** 2 + vz ** 2))
 
 # Read data from simulation CSV file
 with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES), 'r') as file:
@@ -53,7 +55,7 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES), 'r') as fi
         vz = float(row[5])
         mass = float(row[6])
 
-        final_particle_ke.setdefault(row[8], []).append(
+        final_particle_v.setdefault(row[8], []).append(
             0.5 * mass * (vx ** 2 + vy ** 2 + vz ** 2))
 
 
@@ -82,23 +84,37 @@ plt.ylabel('Frequency')
 plt.title('Distribution of z Positions')
 plt.grid(True)
 
-for i, (key, value) in enumerate(sorted(initial_particle_ke.items())):
+# initial particle velocity
+for i, (key, value) in enumerate(sorted(initial_particle_v.items())):
     plt.subplot(334 + i)
     plt.hist(value, bins=20, label=key, color="red")
-    plt.xlabel('KE')
+    plt.xlabel('Velocity')
     plt.ylabel('Frequency')
-    plt.title(f'Distribution of initial KE of {key}s')
+    plt.title(f'Distribution of initial velocity of {key}s')
     plt.grid(True)
     plt.legend()
 
-for i, (key, value) in enumerate(sorted(final_particle_ke.items())):
-    plt.subplot(337 + i)
-    plt.hist(value, bins=20, label=key, color="blue")
-    plt.xlabel('KE')
-    plt.ylabel('Frequency')
-    plt.title(f'Distribution of final KE of {key}s')
-    plt.grid(True)
-    plt.legend()
+# get average velocity of each particle type and print it
+for key, value in initial_particle_v.items():
+    print(f"Average velocity of {key}s: {np.mean(value)}")
+
+# for i, (key, value) in enumerate(sorted(initial_particle_ke.items())):
+#     plt.subplot(334 + i)
+#     plt.hist(value, bins=20, label=key, color="red")
+#     plt.xlabel('KE')
+#     plt.ylabel('Frequency')
+#     plt.title(f'Distribution of initial KE of {key}s')
+#     plt.grid(True)
+#     plt.legend()
+
+# for i, (key, value) in enumerate(sorted(final_particle_ke.items())):
+#     plt.subplot(337 + i)
+#     plt.hist(value, bins=20, label=key, color="blue")
+#     plt.xlabel('KE')
+#     plt.ylabel('Frequency')
+#     plt.title(f'Distribution of final KE of {key}s')
+#     plt.grid(True)
+#     plt.legend()
 
 plt.tight_layout()
 
