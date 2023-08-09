@@ -3,6 +3,14 @@
 #include <fstream>
 #include <filesystem>
 
+void clearSimulationValues()
+{
+    std::ofstream ValueFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH, std::ios::trunc);
+
+    ValueFile << VALUE_FILE_HEADER;
+    ValueFile.close();
+}
+
 void writeSimulationValues(std::vector<Octree *> children, std::ofstream &ValueFile)
 {
     for (Octree *child : children)

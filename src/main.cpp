@@ -52,24 +52,25 @@ int main()
     // Define particles in plasma
     std::vector<InsertedParticle> fuel_particles = {
         InsertedParticle("Deuteron", 2, 1, 0.5),
-        InsertedParticle("Electron", 1 / 1823.0f, -1, 0.5),
+        InsertedParticle("Electron", 1 / 1836.0f, -1, 0.5),
     };
 
     std::vector<InsertedParticle> liner_particles = {
-        InsertedParticle("Beryllium", 9, 4, 0.2),
-        InsertedParticle("LinerElectron", 1 / 1823.0f, -1, 0.8)};
+        InsertedParticle("Beryllium", 9, 2, 0.333),
+        InsertedParticle("LinerElectron", 1 / 1836.0f, -1, 0.667)
+    };
 
     // Create Octree object
     Octree tree = Octree(0, 0, 0, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
-    generateInitialPoints(tree_ptr, 100, 293, fuel_particles, Shape::REGULAR_CYLINDER, {1, 8}, true);    // Generate hot rod
-    generateInitialPoints(tree_ptr, 500, 293, liner_particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}, true); // Generate liner
-    // generateInitialPoints(tree_ptr, 20, 294, fuel_particles, Shape::HOLLOW_CYLINDER, {2, 4, 10});
-    // generateInitialPoints(tree_ptr, 20, 294, fuel_particles, Shape::SPHERE, {4});
+    generateInitialPoints(tree_ptr, 500, 293, fuel_particles, Shape::REGULAR_CYLINDER, {1, 8});               // Generate hot rod
+    generateInitialPoints(tree_ptr, 100, 293, liner_particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}, true, true); // Generate liner
+    // generateInitialPoints(tree_ptr, 20, 294, liner_particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}, true);
+    // generateInitialPoints(tree_ptr, 20, 11000, fuel_particles, Shape::SPHERE, {4});
 
     // Start simulation loop
-    loop(tree_ptr, 50, 0, 1e-8);
+    loop(tree_ptr, 200, 0, 1e-9);
 
     // Animate and generate .vtk files
     system("py ./animator.py");

@@ -113,7 +113,7 @@ public:
 
     float electricFieldX = 0;
     float electricFieldY = 0;
-    float electricFieldZ = 20;
+    float electricFieldZ = 2;
     // -------------------------
 
     float charge = 0;         // @attention IMPORTANT: USE THIS VALUE when calculating charge of single particles!
@@ -160,6 +160,7 @@ std::vector<CSVPoint> generateInitialPoints(Octree *&octree,
 
 std::vector<Octree *> getChildren(Octree *volume);
 
+void clearSimulationValues();
 void writeSimulationValues(std::vector<Octree *> children, std::ofstream &ValueFile);
 
 int tester();

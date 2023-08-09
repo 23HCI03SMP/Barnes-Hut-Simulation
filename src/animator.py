@@ -9,7 +9,7 @@ import matplotlib.pyplot as plt
 import matplotlib.animation
 
 SIMULATION_VALUES = "simulation_values.csv"
-OUTPUT_VIDEO = "output.mov"
+OUTPUT_VIDEO = "output.mp4"
 
 FPS = 10
 
@@ -83,8 +83,11 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
             line_values = line.split(",")
 
             particle_alias = line_values[8].strip()
-            if particle_alias == "Beryllium" or particle_alias == "LinerElectron":
+            if particle_alias == "Beryllium" or particle_alias == "LinerElectron" or particle_alias == "Electron":
                 continue
+
+            # if particle_alias == "Deuteron" or particle_alias == "Electron":
+            #     continue
 
             color = COLORS[particle_alias]
 
