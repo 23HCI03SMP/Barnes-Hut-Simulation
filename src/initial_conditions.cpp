@@ -248,5 +248,7 @@ std::vector<CSVPoint> generateInitialPoints(
 
     InitialValueFile.close();
 
+    std::cout << "Generated " << nTotal << " particles (Density " << density << ") at " << temperature << "K" << std::endl;
+
     return points;
 }
