@@ -74,13 +74,13 @@ int main()
     Octree tree = Octree(0, 0, 0, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
-    // generateInitialPoints(tree_ptr, 500, 34800, fuel_particles, Shape::REGULAR_CYLINDER, {1, 8});               // Generate hot rod
-    // generateInitialPoints(tree_ptr, 100, 293, liner_particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}, true, true); // Generate liner
-    // generateInitialPoints(tree_ptr, 20, 294, liner_particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}, true);
-    generateInitialPoints(tree_ptr, 14000, 11000, fuel_particles, Shape::SPHERE, {4});
+    generateInitialPoints(tree_ptr, 50, 34800, fuel_particles, Shape::REGULAR_CYLINDER, {2, 10});               // Generate hot rod
+    generateInitialPoints(tree_ptr, 100, 293, liner_particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}, true, true); // Generate liner
+    // generateInitialPoints(tree_ptr, 5, 294, liner_particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}, true);
+    // generateInitialPoints(tree_ptr, 50, 11000, fuel_particles, Shape::SPHERE, {4});
 
     // Start simulation loop
-    loop(tree_ptr, 50, 0.5, 1e-15);
+    loop(tree_ptr, 50, 0.5, 1e-8);
 
     // Animate and generate .vtk files
     system("py ./animator.py");

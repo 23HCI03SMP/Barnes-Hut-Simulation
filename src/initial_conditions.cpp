@@ -77,9 +77,9 @@ std::vector<CSVPoint> generateInitialPoints(
                 do
                 {
                     // generate random coordinates within the sphere
-                    x = gsl_ran_gaussian(rng, radius) + centerX;
-                    y = gsl_ran_gaussian(rng, radius) + centerY;
-                    z = gsl_ran_gaussian(rng, radius) + centerZ;
+                    x = gsl_ran_flat(rng, -radius, radius) + centerX;
+                    y = gsl_ran_flat(rng, -radius, radius) + centerY;
+                    z = gsl_ran_flat(rng, -radius, radius) + centerZ;
                 } while (pow(x - centerX, 2) + pow(y - centerY, 2) + pow(z - centerZ, 2) > pow(radius, 2)); // ensure coordinates are within range
 
                 if (isLiner)
@@ -138,10 +138,10 @@ std::vector<CSVPoint> generateInitialPoints(
                 do
                 {
                     // generate random coordinates within the cylinder
-                    x = gsl_ran_gaussian(rng, radius) + centerX;
-                    y = gsl_ran_gaussian(rng, radius) + centerY;
-                    z = gsl_ran_gaussian(rng, height) + centerZ;
-                } while (pow(x - centerX, 2) + pow(y - centerY, 2) > pow(radius * 2, 2) || pow(z - centerZ, 2) > pow(height, 2)); // ensure coordinates are within range
+                    x = gsl_ran_flat(rng, -radius, radius) + centerX;
+                    y = gsl_ran_flat(rng, -radius, radius) + centerY;
+                    z = gsl_ran_flat(rng, -height / 2.0f, height / 2.0f) + centerZ;
+                } while (pow(x - centerX, 2) + pow(y - centerY, 2) > pow(radius, 2)); // ensure coordinates are within range
 
                 if(isLiner) {
                     vx = 0;
