@@ -85,7 +85,10 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
             child->charge);
     }
 
-    newOctree->recalculateCenterOfCharge(newOctree);
+    newOctree->recalculateParentParameters(newOctree);
 
     volume = newOctree;
+
+    // output kinetic energy
+    std::cout << "Kinetic energy: " << volume->kineticEnergy << std::endl;
 }

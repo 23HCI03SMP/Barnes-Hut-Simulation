@@ -255,7 +255,11 @@ void Octree::insert(Octree *root, std::string alias, float x, float y, float z, 
     }
 }
 
-void Octree::recalculateCenterOfCharge(Octree *octree)
+// Recalculates the following properties for each node in the octree
+// 1. Center of charge
+// 2. Potential energy stores (only does the summation of the stores, not the calculation)
+// 3. Kinetic energy stores
+void Octree::recalculateParentParameters(Octree *octree)
 {
     if (octree->children.size() == 0)
     {
@@ -271,6 +275,11 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
         {
             octree->negativeCoc = octree->point;
         }
+
+        // calculate potential energy
+        
+        // calculate kinetic energy
+        octree->kineticEnergy = 0.5 * octree->mass * (octree->velocityX * octree->velocityX + octree->velocityY * octree->velocityY + octree->velocityZ * octree->velocityZ);
 
         return;
     }
@@ -293,6 +302,9 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
         float positiveChargeSum = 0;
         float negativeChargeSum = 0;
 
+        float potentialEnergySum = 0;
+        float kineticEnergySum = 0;
+
         float xVelSum = 0;
         float yVelSum = 0;
         float zVelSum = 0;
@@ -303,7 +315,7 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
         {
             if (child != nullptr || child->point->x != -1)
             {
-                recalculateCenterOfCharge(child);
+                recalculateParentParameters(child);
 
                 massSum += child->mass;
 
@@ -335,6 +347,9 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
                 xVelSum += child->velocityX;
                 yVelSum += child->velocityY;
                 zVelSum += child->velocityZ;
+
+                // calculate kinetic energy
+                kineticEnergySum += 0.5 * child->mass * (child->velocityX * child->velocityX + child->velocityY * child->velocityY + child->velocityZ * child->velocityZ);
             }
         }
 
@@ -347,6 +362,8 @@ void Octree::recalculateCenterOfCharge(Octree *octree)
         octree->velocityY = yVelSum;
         octree->velocityZ = zVelSum;
 
+        octree->potentialEnergy = potentialEnergySum;
+        octree->kineticEnergy = kineticEnergySum;
 
         // Set centre of charges for positive and negative charges
         if (positiveChargeSum != 0)
