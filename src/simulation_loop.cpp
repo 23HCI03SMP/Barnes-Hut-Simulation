@@ -1,6 +1,8 @@
 #include <iostream>
 #include "include/barnesHut.h"
 #include <eigen3/Eigen/Dense>
+#include <fstream>
+#include <filesystem>
 
 
 //Gets all particles in octree
@@ -72,8 +74,7 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
             vz = child->velocityZ;
         }
 
-        newOctree->insert(
-            newOctree,
+        Octree* newChild = new Octree(
             child->alias,
             x,
             y,
@@ -83,9 +84,29 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
             vz,
             child->mass,
             child->charge);
+        
+        // because potential energy is calculated in the calcForce function, we need to copy it over
+        newChild->potentialEnergy = child->potentialEnergy;
+
+        newOctree->insert(newOctree, newChild);
     }
 
-    newOctree->recalculateCenterOfCharge(newOctree);
+    newOctree->recalculateParentParameters(newOctree);
 
     volume = newOctree;
+
+    // output average kinetic energy
+    std::cout << "Average kinetic energy: " << volume->kineticEnergy / volume->mass << std::endl;
+
+    // output kinetic energy
+    // std::cout << "Kinetic energy: " << volume->kineticEnergy << std::endl;
+    // std::cout << "Potential energy: " << volume->potentialEnergy << std::endl;
+
+    // std::cout << "Sum of kinetic and potential energy: " << volume->kineticEnergy + volume->potentialEnergy << std::endl;
+    
+    // output ke, pe and sum to energy.txt file
+    std::ofstream energyFile;
+    energyFile.open(std::filesystem::current_path() / "energy.txt", std::ios::app);
+    energyFile << volume->kineticEnergy << "," << volume->potentialEnergy << "," << volume->kineticEnergy + volume->potentialEnergy << std::endl;
+    energyFile.close();
 }

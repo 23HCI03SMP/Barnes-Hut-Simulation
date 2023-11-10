@@ -243,7 +243,7 @@ std::vector<CSVPoint> generateInitialPoints(
         break;
     }
 
-    octree->recalculateCenterOfCharge(octree);
+    octree->recalculateParentParameters(octree);
     gsl_rng_free(rng);
 
     InitialValueFile.close();

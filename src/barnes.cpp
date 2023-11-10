@@ -1,5 +1,6 @@
 #include <iostream>
 #include "include/barnesHut.h"
+#include <csignal>
 
 // If the current node is an external node (and it is not body b), calculate the force exerted by the current node on b, and add this amount to b’s net force.
 // Otherwise, calculate the ratio s/d. If s/d < θ, treat this internal node as a single body, and calculate the force it exerts on body b, and add this amount to b’s net force.
@@ -32,9 +33,9 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
     // Lorentz's force
     // qvx * BX = qvY * BY = qvZ * BZ = F = 0
 
-    float rvx = b->velocityX - node->velocityX; //relative velocity x
-    float rvy = b->velocityY - node->velocityY; //relative velocity y
-    float rvz = b->velocityZ - node->velocityZ; //relative velocity z
+    float rvx = b->velocityX - node->velocityX; // relative velocity x
+    float rvy = b->velocityY - node->velocityY; // relative velocity y
+    float rvz = b->velocityZ - node->velocityZ; // relative velocity z
 
     float crossVelX = 0, crossVelY = 0, crossVelZ = 0;
     float Bx = 0, By = 0, Bz = 0;
@@ -47,42 +48,42 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
     if (posdx != 0)
     {
         Ex += K_E * posNodeCharge / (posdx * posdx);
-        By += K_BS*(posNodeCharge * rvz * posdx) / (abs(posdx * posdx * posdx));
-        Bz += K_BS*(posNodeCharge * -rvy * posdx) / (abs(posdx * posdx * posdx));
+        By += K_BS * (posNodeCharge * rvz * posdx) / (abs(posdx * posdx * posdx));
+        Bz += K_BS * (posNodeCharge * -rvy * posdx) / (abs(posdx * posdx * posdx));
     }
 
     if (negdx != 0)
     {
         Ex -= K_E * negNodeCharge / (negdx * negdx);
-        By -= K_BS*(negNodeCharge * rvz * negdx) / (abs(negdx * negdx * negdx));
-        Bz -= K_BS*(negNodeCharge * -rvy * negdx) / (abs(negdx * negdx * negdx));
+        By -= K_BS * (negNodeCharge * rvz * negdx) / (abs(negdx * negdx * negdx));
+        Bz -= K_BS * (negNodeCharge * -rvy * negdx) / (abs(negdx * negdx * negdx));
     }
 
     if (posdy != 0)
     {
-        Bx += K_BS*(posNodeCharge * -rvz * posdy) / (abs(posdy * posdy * posdy));
+        Bx += K_BS * (posNodeCharge * -rvz * posdy) / (abs(posdy * posdy * posdy));
         Ey += K_E * posNodeCharge / (posdy * posdy);
-        Bz += K_BS*(posNodeCharge * rvx * posdy) / (abs(posdy * posdy * posdy));
+        Bz += K_BS * (posNodeCharge * rvx * posdy) / (abs(posdy * posdy * posdy));
     }
 
     if (negdy != 0)
     {
-        Bx -= K_BS*(negNodeCharge * -rvz * negdy) / (abs(negdy * negdy * negdy));
+        Bx -= K_BS * (negNodeCharge * -rvz * negdy) / (abs(negdy * negdy * negdy));
         Ey -= K_E * negNodeCharge / (negdy * negdy);
-        Bz -= K_BS*(negNodeCharge * rvx * negdy) / (abs(negdy * negdy * negdy));
+        Bz -= K_BS * (negNodeCharge * rvx * negdy) / (abs(negdy * negdy * negdy));
     }
 
     if (posdz != 0)
     {
-        Bx += K_BS*(posNodeCharge * rvy * posdz) / (abs(posdz * posdz * posdz));
-        By += K_BS*(posNodeCharge * -rvx * posdz) / (abs(posdz * posdz * posdz));
+        Bx += K_BS * (posNodeCharge * rvy * posdz) / (abs(posdz * posdz * posdz));
+        By += K_BS * (posNodeCharge * -rvx * posdz) / (abs(posdz * posdz * posdz));
         Ez += K_E * posNodeCharge / (posdz * posdz);
     }
 
     if (negdz != 0)
     {
-        Bx -= K_BS*(negNodeCharge * rvy * negdz) / (abs(negdz * negdz * negdz));
-        By -= K_BS*(negNodeCharge * -rvx * negdz) / (abs(negdz * negdz * negdz));
+        Bx -= K_BS * (negNodeCharge * rvy * negdz) / (abs(negdz * negdz * negdz));
+        By -= K_BS * (negNodeCharge * -rvx * negdz) / (abs(negdz * negdz * negdz));
         Ez -= K_E * negNodeCharge / (negdz * negdz);
     }
 
@@ -137,23 +138,47 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
         negdz = node->negativeCoc->z - b->negativeCoc->z;
     }
 
-    // check if node is empty or whether it contains b
-    if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)))
+    // check if node is empty or whether it contains b or cell is b
+    if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)) || node == b)
     {
         return;
     }
 
     if (isExternalNode(node))
     {
+        float distance = sqrt(pow(node->point->x - b->point->x, 2) + pow(node->point->y - b->point->y, 2) + pow(node->point->z - b->point->z, 2));
+
+        // if (distance == 0)
+        // {
+        //     // check if node pointer is the same as b pointer
+        //     std::cout << (node == b) << std::endl;
+
+        //     asm("int3");
+        // }
+
+        // calculate potential energy between node and b
+        float pe = (K_E * node->charge * b->charge) / distance;
+
+        // update potential energy
+        b->potentialEnergy += pe;
+        node->potentialEnergy += pe;
+
+        if (pe == 0) {
+            asm("int3");
+        }
+
+        // std::cout << "Potential energy: " << pe << " Charge node: " << node->charge << " Charge b: " << b->charge << " distance: " << distance << std::endl;
+
         addForce(node, b, posdx, posdy, posdz, negdx, negdy, negdz);
         return;
     }
 
-    // calculate theta (length/distance)
-    float length = abs(node->minPoints->x - node->maxPoints->x);
+    // calculate distance between node and b
     float distance = sqrt(pow(posdx, 2) + pow(posdy, 2) + pow(posdz, 2));
+    float length = abs(node->minPoints->x - node->maxPoints->x);
     float theta = length / distance;
 
+    // calculate theta (length/distance)
     // if theta < 0.5(arbitrary number), treat as a single body
     if (theta < thetaLimit)
     {

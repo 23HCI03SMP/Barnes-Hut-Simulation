@@ -120,15 +120,19 @@ public:
     float positiveCharge = 0; // @attention IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
     float negativeCharge = 0; // @attention IMPORTANT: positiveCharge and negativeCharge do not exist on single particles, and only for octrees! DO NOT USE for single particles
 
+    float kineticEnergy = 0;
+    float potentialEnergy = 0;
+
     std::string alias;
 
     Octree();
     Octree(std::string alias, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
     Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ);
 
-    void recalculateCenterOfCharge(Octree *octree);
+    void recalculateParentParameters(Octree *octree);
 
     void insert(Octree *root, std::string alias, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
+    void insert(Octree *root, Octree *octree);
     bool find(float x, float y, float z);
 };
 
