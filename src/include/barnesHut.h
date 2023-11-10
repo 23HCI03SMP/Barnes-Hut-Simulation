@@ -132,6 +132,7 @@ public:
     void recalculateParentParameters(Octree *octree);
 
     void insert(Octree *root, std::string alias, float x, float y, float z, float vx, float vy, float vz, float mass, float charge);
+    void insert(Octree *root, Octree *octree);
     bool find(float x, float y, float z);
 };
 

@@ -123,15 +123,15 @@ bool Octree::find(float x, float y, float z)
     return false;
 }
 
-void Octree::insert(Octree *root, std::string alias, float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
+void Octree::insert(Octree *root, Octree *octree)
 {
-    if (find(x, y, z))
+    if (find(octree->point->x, octree->point->y, octree->point->z))
     {
         std::cout << "point already exists" << std::endl;
         return;
     }
 
-    if (x < minPoints->x || x > maxPoints->x || y < minPoints->y || y > maxPoints->y || z < minPoints->z || z > maxPoints->z)
+    if (octree->point->x < minPoints->x || octree->point->x > maxPoints->x || octree->point->y < minPoints->y || octree->point->y > maxPoints->y || octree->point->z < minPoints->z || octree->point->z > maxPoints->z)
     {
         // std::cout << "Out of bound" << std::endl;
         return;
@@ -142,11 +142,11 @@ void Octree::insert(Octree *root, std::string alias, float x, float y, float z, 
     float midZ = (minPoints->z + maxPoints->z) / 2;
     float pos = -1;
 
-    if (x <= midX)
+    if (octree->point->x <= midX)
     {
-        if (y <= midY)
+        if (octree->point->y <= midY)
         {
-            if (z <= midZ)
+            if (octree->point->z <= midZ)
             {
                 pos = o1;
             }
@@ -157,7 +157,7 @@ void Octree::insert(Octree *root, std::string alias, float x, float y, float z, 
         }
         else
         {
-            if (z <= midZ)
+            if (octree->point->z <= midZ)
             {
                 pos = o3;
             }
@@ -169,9 +169,9 @@ void Octree::insert(Octree *root, std::string alias, float x, float y, float z, 
     }
     else
     {
-        if (y <= midY)
+        if (octree->point->y <= midY)
         {
-            if (z <= midZ)
+            if (octree->point->z <= midZ)
             {
                 pos = o2;
             }
@@ -182,7 +182,7 @@ void Octree::insert(Octree *root, std::string alias, float x, float y, float z, 
         }
         else
         {
-            if (z <= midZ)
+            if (octree->point->z <= midZ)
             {
                 pos = o4;
             }
@@ -195,12 +195,12 @@ void Octree::insert(Octree *root, std::string alias, float x, float y, float z, 
 
     if (children[pos]->point == nullptr)
     {
-        children[pos]->insert(root, alias, x, y, z, vx, vy, vz, mass, charge);
+        children[pos]->insert(root, new Octree(octree->alias, octree->point->x, octree->point->y, octree->point->z, octree->velocityX, octree->velocityY, octree->velocityZ, octree->mass, octree->charge));
     }
     else if (children[pos]->point->x == -1)
     {
         delete children[pos];
-        children[pos] = new Octree(alias, x, y, z, vx, vy, vz, mass, charge);
+        children[pos] = octree;
     }
     else
     {
@@ -251,8 +251,142 @@ void Octree::insert(Octree *root, std::string alias, float x, float y, float z, 
         }
 
         children[pos]->insert(root, alias_, x_, y_, z_, vx_, vy_, vz_, mass_, charge_);
-        children[pos]->insert(root, alias, x, y, z, vx, vy, vz, mass, charge);
+        children[pos]->insert(root, octree);
     }
+}
+
+void Octree::insert(Octree *root, std::string alias, float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
+{
+    insert(root, new Octree(alias, x, y, z, vx, vy, vz, mass, charge));
+
+    // if (find(x, y, z))
+    // {
+    //     std::cout << "point already exists" << std::endl;
+    //     return;
+    // }
+
+    // if (x < minPoints->x || x > maxPoints->x || y < minPoints->y || y > maxPoints->y || z < minPoints->z || z > maxPoints->z)
+    // {
+    //     // std::cout << "Out of bound" << std::endl;
+    //     return;
+    // }
+
+    // float midX = (minPoints->x + maxPoints->x) / 2;
+    // float midY = (minPoints->y + maxPoints->y) / 2;
+    // float midZ = (minPoints->z + maxPoints->z) / 2;
+    // float pos = -1;
+
+    // if (x <= midX)
+    // {
+    //     if (y <= midY)
+    //     {
+    //         if (z <= midZ)
+    //         {
+    //             pos = o1;
+    //         }
+    //         else
+    //         {
+    //             pos = o5;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         if (z <= midZ)
+    //         {
+    //             pos = o3;
+    //         }
+    //         else
+    //         {
+    //             pos = o7;
+    //         }
+    //     }
+    // }
+    // else
+    // {
+    //     if (y <= midY)
+    //     {
+    //         if (z <= midZ)
+    //         {
+    //             pos = o2;
+    //         }
+    //         else
+    //         {
+    //             pos = o6;
+    //         }
+    //     }
+    //     else
+    //     {
+    //         if (z <= midZ)
+    //         {
+    //             pos = o4;
+    //         }
+    //         else
+    //         {
+    //             pos = o8;
+    //         }
+    //     }
+    // }
+
+    // if (children[pos]->point == nullptr)
+    // {
+    //     children[pos]->insert(root, alias, x, y, z, vx, vy, vz, mass, charge);
+    // }
+    // else if (children[pos]->point->x == -1)
+    // {
+    //     delete children[pos];
+    //     children[pos] = new Octree(alias, x, y, z, vx, vy, vz, mass, charge);
+    // }
+    // else
+    // {
+    //     float x_ = children[pos]->point->x;
+    //     float y_ = children[pos]->point->y;
+    //     float z_ = children[pos]->point->z;
+    //     float vx_ = children[pos]->velocityX;
+    //     float vy_ = children[pos]->velocityY;
+    //     float vz_ = children[pos]->velocityZ;
+    //     float charge_ = children[pos]->charge;
+    //     float mass_ = children[pos]->mass;
+    //     std::string alias_ = children[pos]->alias;
+
+    //     delete children[pos];
+    //     children[pos] = nullptr;
+
+    //     if (pos == o1)
+    //     {
+    //         children[pos] = new Octree(minPoints->x, minPoints->y, minPoints->z, midX, midY, midZ);
+    //     }
+    //     else if (pos == o2)
+    //     {
+    //         children[pos] = new Octree(midX, minPoints->y, minPoints->z, maxPoints->x, midY, midZ);
+    //     }
+    //     else if (pos == o3)
+    //     {
+    //         children[pos] = new Octree(minPoints->x, midY, minPoints->z, midX, maxPoints->y, midZ);
+    //     }
+    //     else if (pos == o4)
+    //     {
+    //         children[pos] = new Octree(midX, midY, minPoints->z, maxPoints->x, maxPoints->y, midZ);
+    //     }
+    //     else if (pos == o5)
+    //     {
+    //         children[pos] = new Octree(minPoints->x, minPoints->y, midZ, midX, midY, maxPoints->z);
+    //     }
+    //     else if (pos == o6)
+    //     {
+    //         children[pos] = new Octree(midX, minPoints->y, midZ, maxPoints->x, midY, maxPoints->z);
+    //     }
+    //     else if (pos == o7)
+    //     {
+    //         children[pos] = new Octree(minPoints->x, midY, midZ, midX, maxPoints->y, maxPoints->z);
+    //     }
+    //     else if (pos == o8)
+    //     {
+    //         children[pos] = new Octree(midX, midY, midZ, maxPoints->x, maxPoints->y, maxPoints->z);
+    //     }
+
+    //     children[pos]->insert(root, alias_, x_, y_, z_, vx_, vy_, vz_, mass_, charge_);
+    //     children[pos]->insert(root, alias, x, y, z, vx, vy, vz, mass, charge);
+    // }
 }
 
 // Recalculates the following properties for each node in the octree
@@ -277,7 +411,7 @@ void Octree::recalculateParentParameters(Octree *octree)
         }
 
         // calculate potential energy
-        
+
         // calculate kinetic energy
         octree->kineticEnergy = 0.5 * octree->mass * (octree->velocityX * octree->velocityX + octree->velocityY * octree->velocityY + octree->velocityZ * octree->velocityZ);
 
@@ -350,6 +484,7 @@ void Octree::recalculateParentParameters(Octree *octree)
 
                 // calculate kinetic energy
                 kineticEnergySum += 0.5 * child->mass * (child->velocityX * child->velocityX + child->velocityY * child->velocityY + child->velocityZ * child->velocityZ);
+                potentialEnergySum += child->potentialEnergy;
             }
         }
 
