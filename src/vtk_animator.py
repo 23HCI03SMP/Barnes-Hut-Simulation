@@ -9,7 +9,7 @@ import pyvista as pv
 SIMULATION_VALUES = "simulation_values.csv"
 OUTPUT_VIDEO = "output.mov"
 COLORS = {
-    "Deutron": "fuchsia",
+    "Deuteron": "fuchsia",
     "Electron": "aqua"
 }
 
