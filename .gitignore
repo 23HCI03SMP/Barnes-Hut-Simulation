@@ -13,3 +13,5 @@ vtk/
 
 # vtk
 *.vtk
+
+*.txt

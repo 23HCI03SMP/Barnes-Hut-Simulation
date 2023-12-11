@@ -65,6 +65,11 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
         vz = Vprime(2);
         vz += ((child->charge * child->electricFieldZ) / child->mass * timeStep);
 
+        // output velocity to file.txt
+        // std::ofstream velocityFile;
+        // velocityFile.open(std::filesystem::current_path() / "velocity.txt", std::ios_base::app);
+        // velocityFile << "vx: " << vx << " vy: " << vy << " vz: " << vz << std::endl;
+
         if (!MagneticField && !ElectricField)
         {
             vx = child->velocityX;
@@ -72,8 +77,12 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
             vz = child->velocityZ;
         }
 
-        newOctree->insert(
-            newOctree,
+        // output positions to positions.txt
+        // std::ofstream positionFile;
+        // positionFile.open(std::filesystem::current_path() / "position.txt", std::ios_base::app);
+        // positionFile << "x: " << x << " y: " << y << " z: " << z << std::endl;
+
+        Octree* newChild = new Octree(
             child->alias,
             x,
             y,
