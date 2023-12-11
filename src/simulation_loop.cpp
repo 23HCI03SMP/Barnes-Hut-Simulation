@@ -21,7 +21,7 @@ std::vector<Octree *> getChildren(Octree *volume)
     return childrenList;
 }
 
-void Simulation::mainLoop(Octree *&volume, float timeStep)
+void Simulation::mainLoop(Octree *&volume, double timeStep)
 {
     Octree *newOctree = new Octree(
         volume->minPoints->x,
@@ -38,28 +38,28 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
         bool MagneticField = !(child->magneticFieldX == 0 && child->magneticFieldY == 0 && child->magneticFieldZ == 0);
         bool ElectricField = !(child->electricFieldX == 0 && child->electricFieldY == 0 && child->electricFieldZ == 0);
 
-        float Px = child->magneticFieldX * timeStep / child->mass;
-        float Py = child->magneticFieldY * timeStep / child->mass;
-        float Pz = child->magneticFieldZ * timeStep / child->mass;
+        double Px = child->magneticFieldX * timeStep / child->mass;
+        double Py = child->magneticFieldY * timeStep / child->mass;
+        double Pz = child->magneticFieldZ * timeStep / child->mass;
 
-        float x = child->point->x + child->velocityX * timeStep;
-        float y = child->point->y + child->velocityY * timeStep;
-        float z = child->point->z + child->velocityZ * timeStep;
+        double x = child->point->x + child->velocityX * timeStep;
+        double y = child->point->y + child->velocityY * timeStep;
+        double z = child->point->z + child->velocityZ * timeStep;
 
-        Eigen::Matrix3f A
+        Eigen::Matrix3d A
         {
             {0, -Py, Py},
             {Pz, 0, -Px},
             {-Py, Px, 0}
         };
 
-        Eigen::Matrix3f I = Eigen::Matrix3f::Identity();
+        Eigen::Matrix3d I = Eigen::Matrix3d::Identity();
 
-        Eigen::Matrix3f IA = (I + A).inverse();
+        Eigen::Matrix3d IA = (I + A).inverse();
 
-        Eigen::Vector3f Vprime = IA * (I - A) * Eigen::Vector3f(child->velocityX, child->velocityY, child->velocityZ);
+        Eigen::Vector3d Vprime = IA * (I - A) * Eigen::Vector3d(child->velocityX, child->velocityY, child->velocityZ);
 
-        float vx = 0, vy = 0, vz = 0;
+        double vx = 0, vy = 0, vz = 0;
         vx = Vprime(0); 
         vx += ((child->charge * child->electricFieldX) / child->mass * timeStep);
         vy = Vprime(1); 

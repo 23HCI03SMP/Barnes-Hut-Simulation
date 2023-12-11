@@ -13,8 +13,8 @@ OUTPUT_VIDEO = "output.mp4"
 
 FPS = 10
 
-MIN = 40
-MAX = 60
+MIN = 30
+MAX = 70
 
 COLORS = {
     "Deuteron": "red",
@@ -127,7 +127,7 @@ with open(os.path.join(os.path.dirname(__file__), SIMULATION_VALUES)) as csv:
     height, width, _ = frames[0].shape
 
     # create the video writer object
-    fourcc = cv2.VideoWriter_fourcc(*"mp4v")
+    fourcc = cv2.VideoWriter_fourcc(*'H264')
     video_writer = cv2.VideoWriter(output_video, fourcc, FPS, (width, height))
 
     # write frames to video

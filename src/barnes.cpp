@@ -29,25 +29,25 @@ bool cell_contains_position(Octree *cell, Point *pos)
     return true;
 }
 
-void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float posdz, float negdx, float negdy, float negdz)
+void Barnes::addForce(Octree *node, Octree *b, double posdx, double posdy, double posdz, double negdx, double negdy, double negdz)
 {
     // Lorentz's force
     // qvx * BX = qvY * BY = qvZ * BZ = F = 0
 
-    float rvx = b->velocityX - node->velocityX; // relative velocity x
-    float rvy = b->velocityY - node->velocityY; // relative velocity y
-    float rvz = b->velocityZ - node->velocityZ; // relative velocity z
+    double rvx = b->velocityX - node->velocityX; // relative velocity x
+    double rvy = b->velocityY - node->velocityY; // relative velocity y
+    double rvz = b->velocityZ - node->velocityZ; // relative velocity z
 
-    float crossVelX = 0, crossVelY = 0, crossVelZ = 0;
-    float Bx = 0, By = 0, Bz = 0;
-    float Ex = 0, Ey = 0, Ez = 0;
+    double crossVelX = 0, crossVelY = 0, crossVelZ = 0;
+    double Bx = 0, By = 0, Bz = 0;
+    double Ex = 0, Ey = 0, Ez = 0;
 
-    float distance = sqrt(pow(node->point->x - b->point->x, 2) + pow(node->point->y - b->point->y, 2) + pow(node->point->z - b->point->z, 2));
+    double distance = sqrt(pow(node->point->x - b->point->x, 2) + pow(node->point->y - b->point->y, 2) + pow(node->point->z - b->point->z, 2));
 
-    float posNodeCharge = isExternalNode(node) ? node->charge : node->positiveCharge;
-    float negNodeCharge = isExternalNode(node) ? node->charge : node->negativeCharge;
-    // float posNodeCharge = isExternalNode(node) ? node->charge > 0 ? node->charge : 0 : node->positiveCharge;
-    // float negNodeCharge = isExternalNode(node) ? node->charge < 0 ? node->charge : 0 : node->negativeCharge;
+    double posNodeCharge = isExternalNode(node) ? node->charge : node->positiveCharge;
+    double negNodeCharge = isExternalNode(node) ? node->charge : node->negativeCharge;
+    // double posNodeCharge = isExternalNode(node) ? node->charge > 0 ? node->charge : 0 : node->positiveCharge;
+    // double negNodeCharge = isExternalNode(node) ? node->charge < 0 ? node->charge : 0 : node->negativeCharge;
 
     if (distance != 0)
     { // Coulomb's Law
@@ -99,21 +99,21 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
     // forcesFile.open("forces.txt", std::ios_base::app);
     // forcesFile << "Ex: " << Ex << " Ey: " << Ey << " Ez: " << Ez << " Bx: " << Bx << " By: " << By << " Bz: " << Bz << std::endl;
 
-    // if (posdx < 0 || negdx < 0)
-    // {
-    //     Ex = -Ex;
-    //     Bx = -Bx;
-    // }
-    // if (posdy < 0 || negdy < 0)
-    // {
-    //     Ey = -Ey;
-    //     By = -By;
-    // }
-    // if (posdz < 0 || negdz < 0)
-    // {
-    //     Ez = -Ez;
-    //     Bz = -Bz;
-    // }
+    if (posdx < 0 || negdx < 0)
+    {
+        Ex = -Ex;
+        Bx = -Bx;
+    }
+    if (posdy < 0 || negdy < 0)
+    {
+        Ey = -Ey;
+        By = -By;
+    }
+    if (posdz < 0 || negdz < 0)
+    {
+        Ez = -Ez;
+        Bz = -Bz;
+    }
 
     // Electric field set to default after every timestep
     b->electricFieldX = b->electricFieldX + Ex;
@@ -125,16 +125,16 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
     b->magneticFieldZ = b->magneticFieldZ + Bz;
 }
 
-void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
+void Barnes::calcForce(Octree *node, Octree *b, double thetaLimit)
 {
     // if negative, force on b is in the negative direction
-    float posdx = 0;
-    float posdy = 0;
-    float posdz = 0;
+    double posdx = 0;
+    double posdy = 0;
+    double posdz = 0;
 
-    float negdx = 0;
-    float negdy = 0;
-    float negdz = 0;
+    double negdx = 0;
+    double negdy = 0;
+    double negdz = 0;
 
     if (node->positiveCoc->x != -1 && b->positiveCoc->x != -1)
     {
@@ -158,7 +158,7 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
 
     if (isExternalNode(node))
     {
-        float distance = sqrt(pow(node->point->x - b->point->x, 2) + pow(node->point->y - b->point->y, 2) + pow(node->point->z - b->point->z, 2));
+        double distance = sqrt(pow(node->point->x - b->point->x, 2) + pow(node->point->y - b->point->y, 2) + pow(node->point->z - b->point->z, 2));
 
         // if (distance == 0)
         // {
@@ -169,7 +169,7 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
         // }
 
         // calculate potential energy between node and b
-        float pe = (K_E * node->charge * b->charge) / distance;
+        double pe = (K_E * node->charge * b->charge) / distance;
 
         // update potential energy
         b->potentialEnergy += pe;
@@ -186,9 +186,9 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
     }
 
     // calculate distance between node and b
-    float distance = sqrt(pow(posdx, 2) + pow(posdy, 2) + pow(posdz, 2));
-    float length = abs(node->minPoints->x - node->maxPoints->x);
-    float theta = length / distance;
+    double distance = sqrt(pow(posdx, 2) + pow(posdy, 2) + pow(posdz, 2));
+    double length = abs(node->minPoints->x - node->maxPoints->x);
+    double theta = length / distance;
 
     // calculate theta (length/distance)
     // if theta < 0.5(arbitrary number), treat as a single body

@@ -12,7 +12,7 @@ std::vector<CSVPoint> loadInitialValues()
     std::string headers;
     std::getline(ValueString, headers);
 
-    // Loop through each line, and then float parse each value in the line
+    // Loop through each line, and then double parse each value in the line
     std::string line;
     std::array<std::string, 9> values;
     while (std::getline(ValueString, line))
@@ -27,14 +27,14 @@ std::vector<CSVPoint> loadInitialValues()
             i++;
         }
 
-        float x = std::stof(values[0]);
-        float y = std::stof(values[1]);
-        float z = std::stof(values[2]);
-        float vx = std::stof(values[3]);
-        float vy = std::stof(values[4]);
-        float vz = std::stof(values[5]);
-        float mass = std::stof(values[6]);
-        float charge = std::stof(values[7]);
+        double x = std::stof(values[0]);
+        double y = std::stof(values[1]);
+        double z = std::stof(values[2]);
+        double vx = std::stof(values[3]);
+        double vy = std::stof(values[4]);
+        double vz = std::stof(values[5]);
+        double mass = std::stof(values[6]);
+        double charge = std::stof(values[7]);
         std::string alias = values[8];
 
         valuesVect.push_back(CSVPoint(alias, x, y, z, vx, vy, vz, mass, charge));

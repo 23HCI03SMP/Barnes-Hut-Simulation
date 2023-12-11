@@ -6,16 +6,16 @@
 
 using namespace std::chrono;
 
-void loop(Octree *octree, int iterations, float theta, float timeStep)
+void loop(Octree *octree, int iterations, double theta, double timeStep)
 {
     std::cout << "Starting simulation loop of theta of " << theta << " and time step of " << timeStep << " for " << iterations << " iterations" << std::endl;
 
     Octree *final = octree;
     std::ofstream ValueFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH, std::ios::app);
 
-    float totalDur = 0;
-    float totalProcessingDur = 0;
-    float peSum = 0;
+    double totalDur = 0;
+    double totalProcessingDur = 0;
+    double peSum = 0;
 
     // @note: Basically there's a change in how values are logged to the simulation_values.csv. We no longer
     //        log the values of the initial conditions, but rather the values of the simulation before each loop is performed.
@@ -41,19 +41,19 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
         // calculate pe between children in a list of chidren
         // lop through children and calculate pe between each pair
         // add pe to total pe
-        for (int i = 0; i < children.size(); i++)
-        {
-            for (int j = i + 1; j < children.size(); j++)
-            {
-                Octree *node = children[i];
-                Octree *b = children[j];
+        // for (int i = 0; i < children.size(); i++)
+        // {
+        //     for (int j = i + 1; j < children.size(); j++)
+        //     {
+        //         Octree *node = children[i];
+        //         Octree *b = children[j];
 
-                float distance = sqrt(pow(node->point->x - b->point->x, 2) + pow(node->point->y - b->point->y, 2) + pow(node->point->z - b->point->z, 2));
-                float pe = (K_E * node->charge * b->charge) / distance;
+        //         double distance = sqrt(pow(node->point->x - b->point->x, 2) + pow(node->point->y - b->point->y, 2) + pow(node->point->z - b->point->z, 2));
+        //         double pe = (K_E * node->charge * b->charge) / distance;
 
-                peSum += 2 * pe;
-            }
-        }
+        //         peSum += 2 * pe;
+        //     }
+        // }
 
         // Update positions and velocities
         Simulation sim = Simulation();
@@ -118,10 +118,10 @@ int main()
     // tree_ptr->insert(tree_ptr, new Octree("Electron", 10, 10, 10, 0, 0, 0, 1, -1));
 
     // Start simulation loop
-    loop(tree_ptr, 50, 0, 1e3);
+    loop(tree_ptr, 20, 0, 1e-4);
 
     // Animate and generate .vtk files
-    system("py ./animator.py");
+    system("C:/Users/ngyuh/AppData/Local/Microsoft/WindowsApps/python3.9.exe ./animator.py");
     // system("py ./vtk_animator.py");
 
     return 0;

@@ -16,14 +16,14 @@ void writeSimulationValues(std::vector<Octree *> children, std::ofstream &ValueF
     for (Octree *child : children)
     {
         std::string alias = child->alias;
-        float x = child->point->x;
-        float y = child->point->y;
-        float z = child->point->z;
-        float vx = child->velocityX;
-        float vy = child->velocityY;
-        float vz = child->velocityZ;
-        float mass = child->mass;
-        float charge = child->charge;
+        double x = child->point->x;
+        double y = child->point->y;
+        double z = child->point->z;
+        double vx = child->velocityX;
+        double vy = child->velocityY;
+        double vz = child->velocityZ;
+        double mass = child->mass;
+        double charge = child->charge;
 
         ValueFile
             << "\n"

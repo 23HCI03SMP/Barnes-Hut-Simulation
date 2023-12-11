@@ -22,21 +22,21 @@
  */
 std::vector<CSVPoint> generateInitialPoints(
     Octree *&octree,
-    float density,
-    float temperature,
+    double density,
+    double temperature,
     std::vector<InsertedParticle> particles,
     Shape shape,
-    std::initializer_list<float> dimensions,
+    std::initializer_list<double> dimensions,
     bool isLiner,
     bool append,
     bool load)
 {
-    float minX = octree->minPoints->x;
-    float minY = octree->minPoints->y;
-    float minZ = octree->minPoints->z;
-    float maxX = octree->maxPoints->x;
-    float maxY = octree->maxPoints->y;
-    float maxZ = octree->maxPoints->z;
+    double minX = octree->minPoints->x;
+    double minY = octree->minPoints->y;
+    double minZ = octree->minPoints->z;
+    double maxX = octree->maxPoints->x;
+    double maxY = octree->maxPoints->y;
+    double maxZ = octree->maxPoints->z;
 
     std::vector<CSVPoint> points;
     std::ofstream InitialValueFile = append ? std::ofstream(std::filesystem::current_path() / INITIAL_VALUES_PATH, std::ios_base::app)
@@ -51,12 +51,12 @@ std::vector<CSVPoint> generateInitialPoints(
     SimulationValueFile << VALUE_FILE_HEADER; // Insert headers into csv file
     SimulationValueFile.close();
 
-    float centerX = (minX + maxX) / 2.0f;
-    float centerY = (minY + maxY) / 2.0f;
-    float centerZ = (minZ + maxZ) / 2.0f;
+    double centerX = (minX + maxX) / 2.0f;
+    double centerY = (minY + maxY) / 2.0f;
+    double centerZ = (minZ + maxZ) / 2.0f;
 
     int nTotal;
-    float x, y, z, vx, vy, vz;
+    double x, y, z, vx, vy, vz;
 
     gsl_rng *rng = gsl_rng_alloc(gsl_rng_default);
     gsl_rng_set(rng, time(NULL));
@@ -65,12 +65,12 @@ std::vector<CSVPoint> generateInitialPoints(
     {
     case Shape::SPHERE:
     {
-        float radius = *dimensions.begin();
+        double radius = *dimensions.begin();
         nTotal = std::ceil(density * 4.0f * PI * std::pow(radius, 3.0f) / 3.0f);
 
         for (InsertedParticle particle : particles)
         {
-            float nType = particle.percentage * nTotal;
+            double nType = particle.percentage * nTotal;
 
             for (int i = 0; i < nType; ++i)
             {
@@ -122,14 +122,14 @@ std::vector<CSVPoint> generateInitialPoints(
 
     case Shape::REGULAR_CYLINDER:
     {
-        float radius = *dimensions.begin();
-        float height = *(dimensions.begin() + 1);
+        double radius = *dimensions.begin();
+        double height = *(dimensions.begin() + 1);
 
         nTotal = std::ceil(density * PI * radius * radius * height);
 
         for (InsertedParticle particle : particles)
         {
-            float nType = particle.percentage * nTotal;
+            double nType = particle.percentage * nTotal;
 
             // with reference to the sphere code above, generate a cylinder in the same fashion
             // except that the z-coordinate is limited to the height of the cylinder
@@ -180,15 +180,15 @@ std::vector<CSVPoint> generateInitialPoints(
 
     case Shape::HOLLOW_CYLINDER:
     {
-        float innerRadius = *dimensions.begin();
-        float outerRadius = *(dimensions.begin() + 1);
-        float height = *(dimensions.begin() + 2);
+        double innerRadius = *dimensions.begin();
+        double outerRadius = *(dimensions.begin() + 1);
+        double height = *(dimensions.begin() + 2);
 
         nTotal = density * PI * (outerRadius * outerRadius - innerRadius * innerRadius) * height;
 
         for (InsertedParticle particle : particles)
         {
-            float nType = particle.percentage * nTotal;
+            double nType = particle.percentage * nTotal;
 
             // Generate particles inside the hollow cylinder
             for (int i = 0; i < nType; ++i)
@@ -196,8 +196,8 @@ std::vector<CSVPoint> generateInitialPoints(
                 do
                 {
                     // Generate random coordinates within the hollow cylinder
-                    float radius = gsl_ran_flat(rng, innerRadius, outerRadius);
-                    float angle = gsl_ran_flat(rng, 0.0f, 2 * PI);
+                    double radius = gsl_ran_flat(rng, innerRadius, outerRadius);
+                    double angle = gsl_ran_flat(rng, 0.0f, 2 * PI);
                     x = radius * std::cos(angle) + centerX;
                     y = radius * std::sin(angle) + centerY;
                     z = gsl_ran_flat(rng, -height / 2.0f, height / 2.0f) + centerZ;

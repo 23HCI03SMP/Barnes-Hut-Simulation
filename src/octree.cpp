@@ -22,7 +22,7 @@ Octree::Octree()
     point = new Point();
 }
 
-Octree::Octree(std::string alias, float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
+Octree::Octree(std::string alias, double x, double y, double z, double vx, double vy, double vz, double mass, double charge)
 {
     point = new Point(x, y, z);
 
@@ -35,7 +35,7 @@ Octree::Octree(std::string alias, float x, float y, float z, float vx, float vy,
 }
 
 // Initializing a base octree
-Octree::Octree(float minX, float minY, float minZ, float maxX, float maxY, float maxZ)
+Octree::Octree(double minX, double minY, double minZ, double maxX, double maxY, double maxZ)
 {
     if (maxX < minX || maxY < minY || maxZ < minZ)
     {
@@ -53,7 +53,7 @@ Octree::Octree(float minX, float minY, float minZ, float maxX, float maxY, float
     }
 }
 
-bool Octree::find(float x, float y, float z)
+bool Octree::find(double x, double y, double z)
 {
     // If point is out of bound
     if (x < minPoints->x || x > maxPoints->x || y < minPoints->y || y > maxPoints->y || z < minPoints->z || z > maxPoints->z)
@@ -61,10 +61,10 @@ bool Octree::find(float x, float y, float z)
 
     // Otherwise perform binary search
     // for each ordinate
-    float midx = (minPoints->x + maxPoints->x) / 2;
-    float midy = (minPoints->y + maxPoints->y) / 2;
-    float midz = (minPoints->z + maxPoints->z) / 2;
-    float pos = -1;
+    double midx = (minPoints->x + maxPoints->x) / 2;
+    double midy = (minPoints->y + maxPoints->y) / 2;
+    double midz = (minPoints->z + maxPoints->z) / 2;
+    double pos = -1;
 
     // Deciding the position
     // where to move
@@ -137,10 +137,10 @@ void Octree::insert(Octree *root, Octree *octree)
         return;
     }
 
-    float midX = (minPoints->x + maxPoints->x) / 2;
-    float midY = (minPoints->y + maxPoints->y) / 2;
-    float midZ = (minPoints->z + maxPoints->z) / 2;
-    float pos = -1;
+    double midX = (minPoints->x + maxPoints->x) / 2;
+    double midY = (minPoints->y + maxPoints->y) / 2;
+    double midZ = (minPoints->z + maxPoints->z) / 2;
+    double pos = -1;
 
     if (octree->point->x <= midX)
     {
@@ -204,14 +204,14 @@ void Octree::insert(Octree *root, Octree *octree)
     }
     else
     {
-        float x_ = children[pos]->point->x;
-        float y_ = children[pos]->point->y;
-        float z_ = children[pos]->point->z;
-        float vx_ = children[pos]->velocityX;
-        float vy_ = children[pos]->velocityY;
-        float vz_ = children[pos]->velocityZ;
-        float charge_ = children[pos]->charge;
-        float mass_ = children[pos]->mass;
+        double x_ = children[pos]->point->x;
+        double y_ = children[pos]->point->y;
+        double z_ = children[pos]->point->z;
+        double vx_ = children[pos]->velocityX;
+        double vy_ = children[pos]->velocityY;
+        double vz_ = children[pos]->velocityZ;
+        double charge_ = children[pos]->charge;
+        double mass_ = children[pos]->mass;
         std::string alias_ = children[pos]->alias;
 
         delete children[pos];
@@ -255,7 +255,7 @@ void Octree::insert(Octree *root, Octree *octree)
     }
 }
 
-void Octree::insert(Octree *root, std::string alias, float x, float y, float z, float vx, float vy, float vz, float mass, float charge)
+void Octree::insert(Octree *root, std::string alias, double x, double y, double z, double vx, double vy, double vz, double mass, double charge)
 {
     insert(root, new Octree(alias, x, y, z, vx, vy, vz, mass, charge));
 
@@ -271,10 +271,10 @@ void Octree::insert(Octree *root, std::string alias, float x, float y, float z, 
     //     return;
     // }
 
-    // float midX = (minPoints->x + maxPoints->x) / 2;
-    // float midY = (minPoints->y + maxPoints->y) / 2;
-    // float midZ = (minPoints->z + maxPoints->z) / 2;
-    // float pos = -1;
+    // double midX = (minPoints->x + maxPoints->x) / 2;
+    // double midY = (minPoints->y + maxPoints->y) / 2;
+    // double midZ = (minPoints->z + maxPoints->z) / 2;
+    // double pos = -1;
 
     // if (x <= midX)
     // {
@@ -338,14 +338,14 @@ void Octree::insert(Octree *root, std::string alias, float x, float y, float z, 
     // }
     // else
     // {
-    //     float x_ = children[pos]->point->x;
-    //     float y_ = children[pos]->point->y;
-    //     float z_ = children[pos]->point->z;
-    //     float vx_ = children[pos]->velocityX;
-    //     float vy_ = children[pos]->velocityY;
-    //     float vz_ = children[pos]->velocityZ;
-    //     float charge_ = children[pos]->charge;
-    //     float mass_ = children[pos]->mass;
+    //     double x_ = children[pos]->point->x;
+    //     double y_ = children[pos]->point->y;
+    //     double z_ = children[pos]->point->z;
+    //     double vx_ = children[pos]->velocityX;
+    //     double vy_ = children[pos]->velocityY;
+    //     double vz_ = children[pos]->velocityZ;
+    //     double charge_ = children[pos]->charge;
+    //     double mass_ = children[pos]->mass;
     //     std::string alias_ = children[pos]->alias;
 
     //     delete children[pos];
@@ -423,27 +423,27 @@ void Octree::recalculateParentParameters(Octree *octree)
         // using the formula for center of mass, where
         // coordinate = m1x1 + m2x2 + ... / m1 + m2 + ...
 
-        float xPosPositiveChargeSum = 0;
-        float yPosPositiveChargeSum = 0;
-        float zPosPositiveChargeSum = 0;
+        double xPosPositiveChargeSum = 0;
+        double yPosPositiveChargeSum = 0;
+        double zPosPositiveChargeSum = 0;
 
-        float xPosNegativeChargeSum = 0;
-        float yPosNegativeChargeSum = 0;
-        float zPosNegativeChargeSum = 0;
+        double xPosNegativeChargeSum = 0;
+        double yPosNegativeChargeSum = 0;
+        double zPosNegativeChargeSum = 0;
 
-        float massSum = 0;
-        float chargeSum = 0;
-        float positiveChargeSum = 0;
-        float negativeChargeSum = 0;
+        double massSum = 0;
+        double chargeSum = 0;
+        double positiveChargeSum = 0;
+        double negativeChargeSum = 0;
 
-        float potentialEnergySum = 0;
-        float kineticEnergySum = 0;
+        double potentialEnergySum = 0;
+        double kineticEnergySum = 0;
 
-        float xVelSum = 0;
-        float yVelSum = 0;
-        float zVelSum = 0;
+        double xVelSum = 0;
+        double yVelSum = 0;
+        double zVelSum = 0;
 
-        float numChildren = 0;
+        double numChildren = 0;
 
         for (Octree *child : octree->children)
         {
