@@ -20,13 +20,19 @@ constexpr char THETA_PATH[] = "theta.csv";
 constexpr float PI = 3.14159265358979323846;
 
 // Coulomb's constant
-constexpr float K_E = 8.9875517923e9;
+// constexpr float K_E = 8.9875517923e9;
+// constexpr float K_E = 9.937e-13;
+// constexpr float K_E = 0;
+constexpr float K_E = 2.948680828e33;
 
-// Boltzmann constant
-constexpr float K_B = 8.617333e-5;
+// Boltzmann constant (J/K)
+// constexpr float K_B = 8.617333e-5;
+// constexpr float K_B = 1.380649e-23;
+constexpr float K_B = 8314.457947; 
 
 // Biot Savart constant
-constexpr float K_BS = 1e-7;
+// constexpr float K_BS = 1e-7;
+constexpr float K_BS = 0;
 
 // Mass of a proton
 constexpr float M_PROTON = 1.67262192369e-27;
@@ -109,11 +115,11 @@ public:
     // Change values accordingly
     float magneticFieldX = 0;
     float magneticFieldY = 0;
-    float magneticFieldZ = 30;
+    float magneticFieldZ = 0;
 
     float electricFieldX = 0;
     float electricFieldY = 0;
-    float electricFieldZ = 2;
+    float electricFieldZ = 0;
     // -------------------------
 
     float charge = 0;         // @attention IMPORTANT: USE THIS VALUE when calculating charge of single particles!

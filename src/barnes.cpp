@@ -1,6 +1,7 @@
 #include <iostream>
 #include "include/barnesHut.h"
 #include <csignal>
+#include <fstream>
 
 // If the current node is an external node (and it is not body b), calculate the force exerted by the current node on b, and add this amount to b’s net force.
 // Otherwise, calculate the ratio s/d. If s/d < θ, treat this internal node as a single body, and calculate the force it exerts on body b, and add this amount to b’s net force.
@@ -41,67 +42,78 @@ void Barnes::addForce(Octree *node, Octree *b, float posdx, float posdy, float p
     float Bx = 0, By = 0, Bz = 0;
     float Ex = 0, Ey = 0, Ez = 0;
 
+    float distance = sqrt(pow(node->point->x - b->point->x, 2) + pow(node->point->y - b->point->y, 2) + pow(node->point->z - b->point->z, 2));
+
     float posNodeCharge = isExternalNode(node) ? node->charge : node->positiveCharge;
     float negNodeCharge = isExternalNode(node) ? node->charge : node->negativeCharge;
+    // float posNodeCharge = isExternalNode(node) ? node->charge > 0 ? node->charge : 0 : node->positiveCharge;
+    // float negNodeCharge = isExternalNode(node) ? node->charge < 0 ? node->charge : 0 : node->negativeCharge;
 
-    // Coulomb's Law
-    if (posdx != 0)
-    {
-        Ex += K_E * posNodeCharge / (posdx * posdx);
-        By += K_BS * (posNodeCharge * rvz * posdx) / (abs(posdx * posdx * posdx));
-        Bz += K_BS * (posNodeCharge * -rvy * posdx) / (abs(posdx * posdx * posdx));
+    if (distance != 0)
+    { // Coulomb's Law
+        if (posdx != 0)
+        {
+            Ex += K_E * posNodeCharge * posdx / (distance * distance * distance);
+            By += K_BS * (posNodeCharge * rvz * posdx) / (abs(distance * distance * distance));
+            Bz += K_BS * (posNodeCharge * -rvy * posdx) / (abs(distance * distance * distance));
+        }
+
+        if (negdx != 0)
+        {
+            Ex -= K_E * negNodeCharge * negdx / (distance * distance * distance);
+            By -= K_BS * (negNodeCharge * rvz * negdx) / (abs(distance * distance * distance));
+            Bz -= K_BS * (negNodeCharge * -rvy * negdx) / (abs(distance * distance * distance));
+        }
+
+        if (posdy != 0)
+        {
+            Bx += K_BS * (posNodeCharge * -rvz * posdy) / (abs(distance * distance * distance));
+            Ey += K_E * posNodeCharge * posdy / (distance * distance * distance);
+            Bz += K_BS * (posNodeCharge * rvx * posdy) / (abs(distance * distance * distance));
+        }
+
+        if (negdy != 0)
+        {
+            Bx -= K_BS * (negNodeCharge * -rvz * negdy) / (abs(distance * distance * distance));
+            Ey -= K_E * negNodeCharge * negdy / (distance * distance * distance);
+            Bz -= K_BS * (negNodeCharge * rvx * negdy) / (abs(distance * distance * distance));
+        }
+
+        if (posdz != 0)
+        {
+            Bx += K_BS * (posNodeCharge * rvy * posdz) / (abs(distance * distance * distance));
+            By += K_BS * (posNodeCharge * -rvx * posdz) / (abs(distance * distance * distance));
+            Ez += K_E * posNodeCharge * posdz / (distance * distance * distance);
+        }
+
+        if (negdz != 0)
+        {
+            Bx -= K_BS * (negNodeCharge * rvy * negdz) / (abs(distance * distance * distance));
+            By -= K_BS * (negNodeCharge * -rvx * negdz) / (abs(distance * distance * distance));
+            Ez -= K_E * negNodeCharge * negdz / (distance * distance * distance);
+        }
     }
 
-    if (negdx != 0)
-    {
-        Ex -= K_E * negNodeCharge / (negdx * negdx);
-        By -= K_BS * (negNodeCharge * rvz * negdx) / (abs(negdx * negdx * negdx));
-        Bz -= K_BS * (negNodeCharge * -rvy * negdx) / (abs(negdx * negdx * negdx));
-    }
+    // // output values to forces.txt
+    // std::ofstream forcesFile;
+    // forcesFile.open("forces.txt", std::ios_base::app);
+    // forcesFile << "Ex: " << Ex << " Ey: " << Ey << " Ez: " << Ez << " Bx: " << Bx << " By: " << By << " Bz: " << Bz << std::endl;
 
-    if (posdy != 0)
-    {
-        Bx += K_BS * (posNodeCharge * -rvz * posdy) / (abs(posdy * posdy * posdy));
-        Ey += K_E * posNodeCharge / (posdy * posdy);
-        Bz += K_BS * (posNodeCharge * rvx * posdy) / (abs(posdy * posdy * posdy));
-    }
-
-    if (negdy != 0)
-    {
-        Bx -= K_BS * (negNodeCharge * -rvz * negdy) / (abs(negdy * negdy * negdy));
-        Ey -= K_E * negNodeCharge / (negdy * negdy);
-        Bz -= K_BS * (negNodeCharge * rvx * negdy) / (abs(negdy * negdy * negdy));
-    }
-
-    if (posdz != 0)
-    {
-        Bx += K_BS * (posNodeCharge * rvy * posdz) / (abs(posdz * posdz * posdz));
-        By += K_BS * (posNodeCharge * -rvx * posdz) / (abs(posdz * posdz * posdz));
-        Ez += K_E * posNodeCharge / (posdz * posdz);
-    }
-
-    if (negdz != 0)
-    {
-        Bx -= K_BS * (negNodeCharge * rvy * negdz) / (abs(negdz * negdz * negdz));
-        By -= K_BS * (negNodeCharge * -rvx * negdz) / (abs(negdz * negdz * negdz));
-        Ez -= K_E * negNodeCharge / (negdz * negdz);
-    }
-
-    if (posdx < 0 || negdx < 0)
-    {
-        Ex = -Ex;
-        Bx = -Bx;
-    }
-    if (posdy < 0 || negdy < 0)
-    {
-        Ey = -Ey;
-        By = -By;
-    }
-    if (posdz < 0 || negdz < 0)
-    {
-        Ez = -Ez;
-        Bz = -Bz;
-    }
+    // if (posdx < 0 || negdx < 0)
+    // {
+    //     Ex = -Ex;
+    //     Bx = -Bx;
+    // }
+    // if (posdy < 0 || negdy < 0)
+    // {
+    //     Ey = -Ey;
+    //     By = -By;
+    // }
+    // if (posdz < 0 || negdz < 0)
+    // {
+    //     Ez = -Ez;
+    //     Bz = -Bz;
+    // }
 
     // Electric field set to default after every timestep
     b->electricFieldX = b->electricFieldX + Ex;
@@ -124,7 +136,7 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
     float negdy = 0;
     float negdz = 0;
 
-    if (node->positiveCoc->x != -1 || b->positiveCoc->x != -1)
+    if (node->positiveCoc->x != -1 && b->positiveCoc->x != -1)
     {
         posdx = node->positiveCoc->x - b->positiveCoc->x;
         posdy = node->positiveCoc->y - b->positiveCoc->y;
@@ -163,9 +175,9 @@ void Barnes::calcForce(Octree *node, Octree *b, float thetaLimit)
         b->potentialEnergy += pe;
         node->potentialEnergy += pe;
 
-        if (pe == 0) {
-            asm("int3");
-        }
+        // if (pe == 0) {
+        //     asm("int3");
+        // }
 
         // std::cout << "Potential energy: " << pe << " Charge node: " << node->charge << " Charge b: " << b->charge << " distance: " << distance << std::endl;
 

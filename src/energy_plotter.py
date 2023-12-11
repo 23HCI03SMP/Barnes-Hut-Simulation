@@ -11,9 +11,10 @@ ENERGY_VALUES = "energy.txt"
 data = np.loadtxt(os.path.join(os.path.dirname(__file__), ENERGY_VALUES), delimiter=",")
 
 # plot the data
-plt.plot(data[:, 0], label="Kinetic Energy")
-# plt.plot(data[:, 1], label="Potential Energy")
-# plt.plot(data[:, 2], label="Total Energy")
+# plt.plot(data[:, 0], label="Kinetic Energy")
+plt.plot(data[:, 1], label="Potential Energy")
+# total energy by adding pe and ke data fields
+# plt.plot(data[:, 0] + data[:, 1], label="Total Energy")
 
 # add labels and legend
 plt.xlabel("Time")
