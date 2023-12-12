@@ -94,10 +94,10 @@ void Barnes::addForce(Octree *node, Octree *b, double posdx, double posdy, doubl
         }
     }
 
-    // // output values to forces.txt
+    // // output values to forces.csv
     // std::ofstream forcesFile;
-    // forcesFile.open("forces.txt", std::ios_base::app);
-    // forcesFile << "Ex: " << Ex << " Ey: " << Ey << " Ez: " << Ez << " Bx: " << Bx << " By: " << By << " Bz: " << Bz << std::endl;
+    // forcesFile.open("forces.csv", std::ios_base::app);
+    // forcesFile << Ex << "," << Ey << "," << Ez << "," << Bx << "," << By << "," << Bz << "," << std::endl;
 
     if (posdx < 0 || negdx < 0)
     {

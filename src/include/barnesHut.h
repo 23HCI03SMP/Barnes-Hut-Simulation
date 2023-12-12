@@ -20,10 +20,10 @@ constexpr char THETA_PATH[] = "theta.csv";
 constexpr double PI = 3.14159265358979323846;
 
 // Coulomb's constant
-// constexpr double K_E = 8.9875517923e9;
+constexpr double K_E = 8.9875517923e9;
 // constexpr double K_E = 9.937e-13;
-constexpr double K_E = 0;
-// constexpr double K_E = 5.41e36;
+// constexpr double K_E = 0;
+// constexpr double K_E = 2.947877826e33;
 
 // Boltzmann constant (J/K)
 // constexpr double K_B = 8.617333e-5;

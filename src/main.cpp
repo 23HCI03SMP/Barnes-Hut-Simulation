@@ -15,7 +15,8 @@ void loop(Octree *octree, int iterations, double theta, double timeStep)
 
     double totalDur = 0;
     double totalProcessingDur = 0;
-    double peSum = 0;
+    double EpeSum = 0;
+    double BpeSum = 0;
 
     // @note: Basically there's a change in how values are logged to the simulation_values.csv. We no longer
     //        log the values of the initial conditions, but rather the values of the simulation before each loop is performed.
@@ -38,9 +39,9 @@ void loop(Octree *octree, int iterations, double theta, double timeStep)
             barnes.calcForce(final, child, theta);
         }
 
-        // calculate pe between children in a list of chidren
-        // lop through children and calculate pe between each pair
-        // add pe to total pe
+        //calculate pe between children in a list of chidren
+        //lop through children and calculate pe between each pair
+        //add pe to total pe
         // for (int i = 0; i < children.size(); i++)
         // {
         //     for (int j = i + 1; j < children.size(); j++)
@@ -49,9 +50,9 @@ void loop(Octree *octree, int iterations, double theta, double timeStep)
         //         Octree *b = children[j];
 
         //         double distance = sqrt(pow(node->point->x - b->point->x, 2) + pow(node->point->y - b->point->y, 2) + pow(node->point->z - b->point->z, 2));
-        //         double pe = (K_E * node->charge * b->charge) / distance;
+        //         double pe = (K_E * node->charge * b->charge) / distance; 
 
-        //         peSum += 2 * pe;
+        //         EpeSum += pe;
         //     }
         // }
 
@@ -73,9 +74,9 @@ void loop(Octree *octree, int iterations, double theta, double timeStep)
         // output pe to pe.txt
         std::ofstream peFile;
         peFile.open(std::filesystem::current_path() / "pe.txt", std::ios_base::app);
-        peFile << "pe: " << peSum << std::endl;
+        peFile << EpeSum << std::endl;
 
-        peSum = 0;
+        EpeSum = 0;
     }
 
     ValueFile.close();
@@ -118,7 +119,7 @@ int main()
     // tree_ptr->insert(tree_ptr, new Octree("Electron", 10, 10, 10, 0, 0, 0, 1, -1));
 
     // Start simulation loop
-    loop(tree_ptr, 20, 0, 1e-4);
+    loop(tree_ptr, 20, 0, 1e-5);
 
     // Animate and generate .vtk files
     system("C:/Users/ngyuh/AppData/Local/Microsoft/WindowsApps/python3.9.exe ./animator.py");

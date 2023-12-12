@@ -42,9 +42,14 @@ void Simulation::mainLoop(Octree *&volume, double timeStep)
         double Py = child->magneticFieldY * timeStep / child->mass;
         double Pz = child->magneticFieldZ * timeStep / child->mass;
 
-        double x = child->point->x + child->velocityX * timeStep;
-        double y = child->point->y + child->velocityY * timeStep;
-        double z = child->point->z + child->velocityZ * timeStep;
+        // Calculate Lorentz Force in x, y and z directions
+        double Fx = child->charge * (child->electricFieldX + child->velocityY * child->magneticFieldZ - child->velocityZ * child->magneticFieldY);
+        double Fy = child->charge * (child->electricFieldY + child->velocityZ * child->magneticFieldX - child->velocityX * child->magneticFieldZ);
+        double Fz = child->charge * (child->electricFieldZ + child->velocityX * child->magneticFieldY - child->velocityY * child->magneticFieldX);
+
+        double x = child->point->x + (child->velocityX * timeStep); //- 0.5 * (Fx/child->mass) * timeStep * timeStep);
+        double y = child->point->y + (child->velocityY * timeStep); //- 0.5 * (Fy/child->mass) * timeStep * timeStep);
+        double z = child->point->z + (child->velocityZ * timeStep); //- 0.5 * (Fz/child->mass) * timeStep * timeStep);
 
         Eigen::Matrix3d A
         {
@@ -67,10 +72,11 @@ void Simulation::mainLoop(Octree *&volume, double timeStep)
         vz = Vprime(2);
         vz += ((child->charge * child->electricFieldZ) / child->mass * timeStep);
 
-        // output velocity to file.txt
+        // // output velocity to velocity.csv csv file
         // std::ofstream velocityFile;
-        // velocityFile.open(std::filesystem::current_path() / "velocity.txt", std::ios_base::app);
-        // velocityFile << "vx: " << vx << " vy: " << vy << " vz: " << vz << std::endl;
+        // velocityFile.open(std::filesystem::current_path() / "velocity.csv", std::ios_base::app);
+        // velocityFile << vx << "," << vy << "," << vz << std::endl;
+
 
         if (!MagneticField && !ElectricField)
         {
@@ -79,10 +85,10 @@ void Simulation::mainLoop(Octree *&volume, double timeStep)
             vz = child->velocityZ;
         }
 
-        // output positions to positions.txt
+        // // output positions to positions.csv csv file
         // std::ofstream positionFile;
-        // positionFile.open(std::filesystem::current_path() / "position.txt", std::ios_base::app);
-        // positionFile << "x: " << x << " y: " << y << " z: " << z << std::endl;
+        // positionFile.open(std::filesystem::current_path() / "position.csv", std::ios_base::app);
+        // positionFile << x << "," << y << "," << z << std::endl;
 
         Octree* newChild = new Octree(
             child->alias,
