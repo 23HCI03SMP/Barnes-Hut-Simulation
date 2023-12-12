@@ -96,6 +96,11 @@ int main()
         InsertedParticle("Electron", 1, -1, 0.5),
     };
 
+    std::vector<InsertedParticle> test_particles_2 = {
+        InsertedParticle("Deuteron", M_NEUTRON + M_PROTON, 1, 0.5),
+        InsertedParticle("Electron", M_ELECTRON, -1, 0.5),
+    };
+
     std::vector<InsertedParticle> liner_particles = {
         InsertedParticle("Beryllium", 9, 2, 0.333),
         InsertedParticle("LinerElectron", 1 / 1836.0f, -1, 0.667)
@@ -113,16 +118,16 @@ int main()
     // generateInitialPoints(tree_ptr, 5, 294, liner_particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}, true);
     // generateInitialPoints(tree_ptr, 100, 11000, fuel_particles, Shape::SPHERE, {4});
     // generateInitialPoints(tree_ptr, 100, 293, {InsertedParticle("Deuteron", 2, 1, 0.5)}, Shape::SPHERE, {4}); // Generate liner
-    generateInitialPoints(tree_ptr, 50, 11.6e6, test_particles, Shape::SPHERE, {4}); 
+    generateInitialPoints(tree_ptr, 50000, 11.6e6, test_particles_2, Shape::SPHERE, {1.3e-4}); 
 
     // tree_ptr->insert(tree_ptr, new Octree("Electron", 1, 1, 1, 0, 0, 0, 1, -1));
     // tree_ptr->insert(tree_ptr, new Octree("Electron", 10, 10, 10, 0, 0, 0, 1, -1));
 
     // Start simulation loop
-    loop(tree_ptr, 20, 0, 1e-5);
+    loop(tree_ptr, 20, 0, 1e-10);
 
     // Animate and generate .vtk files
-    system("C:/Users/ngyuh/AppData/Local/Microsoft/WindowsApps/python3.9.exe ./animator.py");
+    system("py ./animator.py");
     // system("py ./vtk_animator.py");
 
     return 0;

@@ -27,13 +27,17 @@ constexpr double K_E = 8.9875517923e9;
 
 // Boltzmann constant (J/K)
 // constexpr double K_B = 8.617333e-5;
-// constexpr double K_B = 1.380649e-23;
-constexpr double K_B = 4.528468561; 
+constexpr double K_B = 1.380649e-23;
+// constexpr double K_B = 4.528468561; 
 
 // Biot Savart constant
-// constexpr double K_BS = 1e-7;
+constexpr double K_BS = 1e-7;
 // constexpr double K_BS = 0;
-constexpr double K_BS = 3.279956427e23;
+// constexpr double K_BS = 3.279956427e23;
+
+constexpr double M_PROTON = 1.67262192369e-27;
+constexpr double M_ELECTRON = 9.1093837015e-31;
+constexpr double M_NEUTRON = 1.67492749804e-27;
 
 // Headers for values csv file
 constexpr char VALUE_FILE_HEADER[] = "x,y,z,vx,vy,vz,mass,charge,alias";
