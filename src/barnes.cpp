@@ -42,55 +42,57 @@ void Barnes::addForce(Octree *node, Octree *b, double posdx, double posdy, doubl
     double Bx = 0, By = 0, Bz = 0;
     double Ex = 0, Ey = 0, Ez = 0;
 
-    double distance = sqrt(pow(node->point->x - b->point->x, 2) + pow(node->point->y - b->point->y, 2) + pow(node->point->z - b->point->z, 2));
+    double posDistance = sqrt(pow(posdx, 2) + pow(posdy, 2) + pow(posdz, 2));
+    double negDistance = sqrt(pow(negdx, 2) + pow(negdy, 2) + pow(negdz, 2));
 
     double posNodeCharge = isExternalNode(node) ? node->charge : node->positiveCharge;
     double negNodeCharge = isExternalNode(node) ? node->charge : node->negativeCharge;
     // double posNodeCharge = isExternalNode(node) ? node->charge > 0 ? node->charge : 0 : node->positiveCharge;
     // double negNodeCharge = isExternalNode(node) ? node->charge < 0 ? node->charge : 0 : node->negativeCharge;
 
-    if (distance != 0)
+    if (posDistance != 0)
     { // Coulomb's Law
         if (posdx != 0)
         {
-            Ex += K_E * posNodeCharge * posdx / (distance * distance * distance);
-            By += K_BS * (posNodeCharge * rvz * posdx) / (abs(distance * distance * distance));
-            Bz += K_BS * (posNodeCharge * -rvy * posdx) / (abs(distance * distance * distance));
-        }
-
-        if (negdx != 0)
-        {
-            Ex -= K_E * negNodeCharge * negdx / (distance * distance * distance);
-            By -= K_BS * (negNodeCharge * rvz * negdx) / (abs(distance * distance * distance));
-            Bz -= K_BS * (negNodeCharge * -rvy * negdx) / (abs(distance * distance * distance));
+            Ex += K_E * posNodeCharge * posdx / (posDistance * posDistance * posDistance);
+            By += K_BS * (posNodeCharge * rvz * posdx) / (abs(posDistance * posDistance * posDistance));
+            Bz += K_BS * (posNodeCharge * -rvy * posdx) / (abs(posDistance * posDistance * posDistance));
         }
 
         if (posdy != 0)
         {
-            Bx += K_BS * (posNodeCharge * -rvz * posdy) / (abs(distance * distance * distance));
-            Ey += K_E * posNodeCharge * posdy / (distance * distance * distance);
-            Bz += K_BS * (posNodeCharge * rvx * posdy) / (abs(distance * distance * distance));
-        }
-
-        if (negdy != 0)
-        {
-            Bx -= K_BS * (negNodeCharge * -rvz * negdy) / (abs(distance * distance * distance));
-            Ey -= K_E * negNodeCharge * negdy / (distance * distance * distance);
-            Bz -= K_BS * (negNodeCharge * rvx * negdy) / (abs(distance * distance * distance));
+            Bx += K_BS * (posNodeCharge * -rvz * posdy) / (abs(posDistance * posDistance * posDistance));
+            Ey += K_E * posNodeCharge * posdy / (posDistance * posDistance * posDistance);
+            Bz += K_BS * (posNodeCharge * rvx * posdy) / (abs(posDistance * posDistance * posDistance));
         }
 
         if (posdz != 0)
         {
-            Bx += K_BS * (posNodeCharge * rvy * posdz) / (abs(distance * distance * distance));
-            By += K_BS * (posNodeCharge * -rvx * posdz) / (abs(distance * distance * distance));
-            Ez += K_E * posNodeCharge * posdz / (distance * distance * distance);
+            Bx += K_BS * (posNodeCharge * rvy * posdz) / (abs(posDistance * posDistance * posDistance));
+            By += K_BS * (posNodeCharge * -rvx * posdz) / (abs(posDistance * posDistance * posDistance));
+            Ez += K_E * posNodeCharge * posdz / (posDistance * posDistance * posDistance);
         }
+    }
 
+    if (negDistance != 0)
+    {
+        if (negdx != 0)
+        {
+            Ex -= K_E * negNodeCharge * negdx / (negNodeCharge * negNodeCharge * negNodeCharge);
+            By -= K_BS * (negNodeCharge * rvz * negdx) / (abs(negNodeCharge * negNodeCharge * negNodeCharge));
+            Bz -= K_BS * (negNodeCharge * -rvy * negdx) / (abs(negNodeCharge * negNodeCharge * negNodeCharge));
+        }
+        if (negdy != 0)
+        {
+            Bx -= K_BS * (negNodeCharge * -rvz * negdy) / (abs(negNodeCharge * negNodeCharge * negNodeCharge));
+            Ey -= K_E * negNodeCharge * negdy / (negNodeCharge * negNodeCharge * negNodeCharge);
+            Bz -= K_BS * (negNodeCharge * rvx * negdy) / (abs(negNodeCharge * negNodeCharge * negNodeCharge));
+        }
         if (negdz != 0)
         {
-            Bx -= K_BS * (negNodeCharge * rvy * negdz) / (abs(distance * distance * distance));
-            By -= K_BS * (negNodeCharge * -rvx * negdz) / (abs(distance * distance * distance));
-            Ez -= K_E * negNodeCharge * negdz / (distance * distance * distance);
+            Bx -= K_BS * (negNodeCharge * rvy * negdz) / (abs(negNodeCharge * negNodeCharge * negNodeCharge));
+            By -= K_BS * (negNodeCharge * -rvx * negdz) / (abs(negNodeCharge * negNodeCharge * negNodeCharge));
+            Ez -= K_E * negNodeCharge * negdz / (negNodeCharge * negNodeCharge * negNodeCharge);
         }
     }
 
@@ -151,7 +153,7 @@ void Barnes::calcForce(Octree *node, Octree *b, double thetaLimit)
     }
 
     // check if node is empty or whether it contains b or cell is b
-    if (node->mass == 0 || (!isExternalNode(node) && !cell_contains_position(node, b->point)) || node == b)
+    if ((node->positiveCharge == 0 && node->negativeCharge == 0 && node->charge == 0) || node == b)
     {
         return;
     }
@@ -185,10 +187,20 @@ void Barnes::calcForce(Octree *node, Octree *b, double thetaLimit)
         return;
     }
 
-    // calculate distance between node and b
-    double distance = sqrt(pow(posdx, 2) + pow(posdy, 2) + pow(posdz, 2));
+    // calculate distance between node and b node may not have
+    // average point of positive and negative COCs of node
+    double avgPointx = (node->positiveCoc->x + node->negativeCoc->x) / 2;
+    double avgPointy = (node->positiveCoc->y + node->negativeCoc->y) / 2;
+    double avgPointz = (node->positiveCoc->z + node->negativeCoc->z) / 2;
+    double distance = sqrt(pow(avgPointx - b->point->x, 2) + pow(avgPointy - b->point->y, 2) + pow(avgPointz - b->point->z, 2));
+
     double length = abs(node->minPoints->x - node->maxPoints->x);
     double theta = length / distance;
+
+    // //output theta to theta.csv
+    // std::ofstream thetaFile;
+    // thetaFile.open("theta.csv", std::ios_base::app);
+    // thetaFile << theta << "," << std::endl;
 
     // calculate theta (length/distance)
     // if theta < 0.5(arbitrary number), treat as a single body

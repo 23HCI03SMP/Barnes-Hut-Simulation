@@ -13,3 +13,6 @@ vtk/
 
 # vtk
 *.vtk
+
+# python run command
+python_run.txt

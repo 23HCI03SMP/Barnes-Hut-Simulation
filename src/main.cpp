@@ -39,6 +39,14 @@ void loop(Octree *octree, int iterations, double theta, double timeStep)
             barnes.calcForce(final, child, theta);
         }
 
+        // for (Octree *i:children)
+        // {
+        //     for (Octree *j:children)
+        //     {
+        //         barnes.calcForce(i, j, theta);
+        //     }
+        // }
+
         //calculate pe between children in a list of chidren
         //lop through children and calculate pe between each pair
         //add pe to total pe
@@ -110,7 +118,7 @@ int main()
     std::remove(filePath.string().c_str());
 
     // Create Octree object
-    Octree tree = Octree(0, 0, 0, 100, 100, 100);
+    Octree tree = Octree(0, 0, 0, 500, 500, 500);
     Octree *tree_ptr = &tree;
 
     // generateInitialPoints(tree_ptr, 50, 34800, fuel_particles, Shape::REGULAR_CYLINDER, {2, 10});               // Generate hot rod
@@ -118,16 +126,30 @@ int main()
     // generateInitialPoints(tree_ptr, 5, 294, liner_particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}, true);
     // generateInitialPoints(tree_ptr, 100, 11000, fuel_particles, Shape::SPHERE, {4});
     // generateInitialPoints(tree_ptr, 100, 293, {InsertedParticle("Deuteron", 2, 1, 0.5)}, Shape::SPHERE, {4}); // Generate liner
-    generateInitialPoints(tree_ptr, 50000, 11.6e6, test_particles_2, Shape::SPHERE, {1.3e-4}); 
+    // generateInitialPoints(tree_ptr, 0.00125, 11.6e6, test_particles_2, Shape::SPHERE, {130}); 
+    auto a = loadInitialValues();
+
+    for (CSVPoint point : a)
+    {
+        tree_ptr->insert(tree_ptr, new Octree(point.alias, point.x, point.y, point.z, point.vx, point.vy, point.vz, point.mass, point.charge));
+    }
 
     // tree_ptr->insert(tree_ptr, new Octree("Electron", 1, 1, 1, 0, 0, 0, 1, -1));
     // tree_ptr->insert(tree_ptr, new Octree("Electron", 10, 10, 10, 0, 0, 0, 1, -1));
 
     // Start simulation loop
-    loop(tree_ptr, 20, 0, 1e-10);
+    loop(tree_ptr, 5, 0.5, 1e-8);
+
+    // read from python_run.txt to get python run command and then run animator.py using console commands
+    std::ifstream pyRunFile;
+    pyRunFile.open(std::filesystem::current_path() / "python_run.txt");
+    std::string pyRun;
+    std::getline(pyRunFile, pyRun);
+    pyRunFile.close();
+    std::string cmd = pyRun + " ./animator.py";
 
     // Animate and generate .vtk files
-    system("py ./animator.py");
+    system(cmd.c_str());
     // system("py ./vtk_animator.py");
 
     return 0;

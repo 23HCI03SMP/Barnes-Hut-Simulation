@@ -14,7 +14,7 @@ OUTPUT_VIDEO = "output.mp4"
 FPS = 10
 
 MIN = 0
-MAX = 100
+MAX = 500
 
 COLORS = {
     "Deuteron": "red",
