@@ -11,13 +11,8 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
     Octree *final = octree;
     std::ofstream ValueFile(std::filesystem::current_path() / SIMULATION_VALUES_PATH, std::ios::app);
 
-    float totalDur = 0;
-
     for (int i = 0; i <= iterations; i++)
     {
-        // Start timer
-        auto start = high_resolution_clock::now();
-
         // Get all particles in octree
         std::vector<Octree *> childVect = getChildren(final);
 
@@ -28,21 +23,16 @@ void loop(Octree *octree, int iterations, float theta, float timeStep)
             barnes.calcForce(final, child, theta);
         }
 
-        // Stop timer
-        auto stop = high_resolution_clock::now();
-        auto duration = duration_cast<milliseconds>(stop - start);
-        totalDur += duration.count();
-        std::cout << duration.count() << " ms " << std::endl;
-
         // Update positions and velocities
         Simulation sim = Simulation();
         sim.mainLoop(final, timeStep);
+
+        std::cout << i << " / " << iterations << std::endl;
 
         writeSimulationValues(final, ValueFile);
     }
 
     ValueFile.close();
-    std::cout << "Average time: " << totalDur / iterations << " ms" << std::endl;
 }
 
 int main()
@@ -61,8 +51,9 @@ int main()
     Octree tree = Octree(0, 0, 0, 20, 20, 20);
     Octree *tree_ptr = &tree;
 
-    generateInitialPoints(tree_ptr, 20, 293, liner_particles, Shape::HOLLOW_CYLINDER, {2, 4, 10}); // Generate liner
-    generateInitialPoints(tree_ptr, 20, 293, fuel_particles, Shape::SPHERE, {2}, true); // Generate sphere   
+    generateInitialPoints(tree_ptr, 20, 293, liner_particles, Shape::HOLLOW_CYLINDER, {4, 6, 10}); // Generate liner
+    generateInitialPoints(tree_ptr, 20, 293, fuel_particles, Shape::REGULAR_CYLINDER, {2, 4}, false); // Generate sphere
+    // generateInitialPoints(tree_ptr, 20, 293, fuel_particles, Shape::SPHERE, {2}, true); // Generate sphere   
 
     // Start simulation loop
     loop(tree_ptr, 50, 0, 1e-8);

@@ -56,9 +56,9 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
         float Py = child->magneticFieldY * timeStep / child->mass;
         float Pz = child->magneticFieldZ * timeStep / child->mass;
 
-        float x = child->point->x + child->velocityX * timeStep;
-        float y = child->point->y + child->velocityY * timeStep;
-        float z = child->point->z + child->velocityZ * timeStep;
+        float x = child->alias == "Beryllium" ? child->point->x : child->point->x + child->velocityX * timeStep;
+        float y = child->alias == "Beryllium" ? child->point->y : child->point->y + child->velocityY * timeStep;
+        float z = child->alias == "Beryllium" ? child->point->z : child->point->z + child->velocityZ * timeStep;
 
         Eigen::Matrix3f A
         {
@@ -86,6 +86,13 @@ void Simulation::mainLoop(Octree *&volume, float timeStep)
             vx = child->velocityX;
             vy = child->velocityY;
             vz = child->velocityZ;
+        }
+
+        if (child->alias == "Beryllium")
+        {
+            vx = 0;
+            vy = 0;
+            vz = 0;
         }
 
         newOctree->insert(
