@@ -55,14 +55,14 @@ int main()
     Octree *tree_ptr = &tree;
 
     // Generate initial points
-    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 2, 100, 294, particles, Shape::SPHERE); // 293K = 20C
+    std::vector<CSVPoint> points = generateInitialPoints(tree_ptr, 2, 2, 5, 100, 294, particles, Shape::REGULAR_CYLINDER); // 293K = 20C
 
     // Start simulation loop
     loop(tree_ptr, 50, 0, 1e-8);
 
     // Animate and generate .vtk files
     system("py ./animator.py");
-    system("py ./vtk_animator.py");
+    // system("py ./vtk_animator.py");
 
     return 0;
 }
